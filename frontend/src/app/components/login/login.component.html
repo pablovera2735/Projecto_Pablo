@@ -1,0 +1,18 @@
+<div class="container mt-5">
+    <div class="card p-4">
+      <h3 class="mb-4">Iniciar Sesión</h3>
+      <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+      <form (ngSubmit)="login()">
+        <div class="mb-3">
+          <label for="email" class="form-label">Correo electrónico</label>
+          <input type="email" [(ngModel)]="email" name="email" class="form-control" required />
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Contraseña</label>
+          <input type="password" [(ngModel)]="password" name="password" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+      </form>
+    </div>
+  </div>
+  
