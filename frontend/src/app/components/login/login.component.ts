@@ -17,18 +17,26 @@ export class LoginComponent {
 
   login() {
     this.loading = true;
-
+  
     this.authService.login(this.email, this.password).subscribe({
       next: (response) => {
-        localStorage.setItem('token', response.token);
-        alert('Inicio de sesión exitoso');
-        this.router.navigate(['/home']);
+        /*console.log(response);  // Verifica la respuesta */
+        if (response && response.data && response.data.accessToken) {
+          localStorage.setItem('token', response.data.accessToken);
+          alert('Inicio de sesión exitoso');
+          this.router.navigate(['/home']);
+        } else {
+          console.error('Token no recibido');
+          this.errorMessage = 'Error al obtener el token';
+        }
         this.loading = false;
       },
       error: (error) => {
+        console.error('Error en la respuesta:', error);
         this.errorMessage = 'Credenciales incorrectas';
         this.loading = false;
       }
     });
   }
+  
 }
