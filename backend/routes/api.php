@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => ['cors']], function () {
 
     Route::post('/login', 'AuthController@login');
+    Route::post('/register', 'AuthController@register');
+    Route::post('/send-reset-password', 'AuthController@sendResetPassword');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/logout', 'AuthController@logout');
