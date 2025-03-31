@@ -19,7 +19,7 @@ Laravel: He configurado las rutas en Laravel para las funciones necesarias del b
 
 
 
-Día 3: [31 de Marzo]
+## Día 3: [31 de Marzo]
 
 Tarea realizada:
 
