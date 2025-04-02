@@ -27,3 +27,15 @@ Laravel:He configurado la API para el registro de usuarios, permitiendo que los 
 Además, he configurado el envío de correos utilizando la API de Gmail, permitiendo que los mensajes de recuperación de contraseña se envíen directamente desde una cuenta de Gmail. Se implementó el uso del sistema de notificaciones de Laravel para enviar el correo con el token de recuperación.
 
 Angular:He diseñado el formulario de registro y el de recuperación de contraseña utilizando HTML y CSS, asegurándome de que tengan una apariencia moderna y clara. En el componente de registro, configuré el archivo TypeScript para manejar el envío del formulario y la conexión con la API del backend. En el componente de "Olvidar Contraseña", también se implementó la lógica para enviar el correo de recuperación al backend, mostrando mensajes de éxito o error según corresponda. Los mensajes de respuesta se muestran de manera clara para que el usuario sepa si el proceso se completó correctamente o si hubo algún problema.
+
+
+
+## Día 4: [2 de abril]
+
+Tarea no realizada:
+
+Me falta añadir la barra de búsqueda, mejorar algunos detalles del diseño para que sea más atractivo y configurar la API privada para que, después de iniciar sesión, los usuarios puedan comentar y valorar las películas.
+
+Tarea realizada:
+
+He integrado la API de TMDB en el backend de Laravel, configurando el controlador y los géneros de las películas. Esto me permite obtener datos sobre las películas populares y sus respectivas categorías desde TMDB, lo cual facilita la visualización y filtrado de películas en la aplicación.

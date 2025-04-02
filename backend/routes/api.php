@@ -24,4 +24,12 @@ Route::group(['middleware' => ['cors']], function () {
         Route::get('/logout', 'AuthController@logout');
     });
 
+
+    /* Me faltaria añadir tras inciiar sesion que pyeda acceder a la api de peliculas */
+
+    Route::get('/movies/popular', 'MovieController@getPopularMovies');
+    Route::get('/movies/genres', 'MovieController@listGenres');
+    Route::get('/movies/genre/{genreId}', 'MovieController@getMoviesByGenre' );
+    Route::get('/movies/search', 'MovieController@searchMovie' );
+    Route::get('/movies/{id}', 'MovieController@getMovieDetails' );
 });
