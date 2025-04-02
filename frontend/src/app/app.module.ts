@@ -8,12 +8,14 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { MovieComponent } from './components/movie/movie.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'recover-password', component: ForgotPasswordComponent },
+  { path: 'movies', component: MovieComponent },
   { path: '**', redirectTo: '/login' }
 ];
 
@@ -23,6 +25,7 @@ const routes: Routes = [
     LoginComponent,
     RegisterComponent,
     ForgotPasswordComponent,
+    MovieComponent,
   ],
   imports: [
     BrowserModule,
