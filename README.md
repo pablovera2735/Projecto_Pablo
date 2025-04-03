@@ -39,3 +39,16 @@ Me falta añadir la barra de búsqueda, mejorar algunos detalles del diseño par
 Tarea realizada:
 
 He integrado la API de TMDB en el backend de Laravel, configurando el controlador y los géneros de las películas. Esto me permite obtener datos sobre las películas populares y sus respectivas categorías desde TMDB, lo cual facilita la visualización y filtrado de películas en la aplicación.
+
+
+
+## Día 5: [3 de abril]
+
+tarea realizada:
+
+Acabo de hacer seccion por categoria de cada pelicula
+
+
+tarea no realizad:
+
+Me fataria diseña poco mas el diseño y adaptar en cada dispositivos
