@@ -8,15 +8,18 @@ use Illuminate\Support\Facades\Http;
 class MovieController extends Controller
 {
     // Obtener las películas populares
-    public function getPopularMovies()
+    public function getPopularMovies(Request $request)
     {
         // Obtener configuraciones desde services.php
         $apiKey = config('services.tmdb.api_key');
         $baseUrl = config('services.tmdb.base_url');
         $language = config('services.tmdb.language');
 
-        // Endpoint de películas populares
-        $url = "$baseUrl/discover/movie?sort_by=popularity.desc&language=$language&api_key=$apiKey";
+        // Obtener el número de página desde la solicitud, por defecto será la página 1
+        $page = $request->get('page', 1);
+
+        // Endpoint de películas populares con paginación
+        $url = "$baseUrl/discover/movie?sort_by=popularity.desc&language=$language&api_key=$apiKey&page=$page";
 
         // Consumir la API de TMDb
         $response = Http::get($url);
@@ -24,10 +27,12 @@ class MovieController extends Controller
         // Verificar si la solicitud fue exitosa
         if ($response->successful()) {
             $movies = $response->json()['results'];
+            $totalPages = $response->json()['total_pages'];  // Total de páginas disponibles
 
             return response()->json([
                 'status' => 'success',
-                'movies' => $movies
+                'movies' => $movies,
+                'total_pages' => $totalPages
             ]);
         }
 
@@ -50,15 +55,18 @@ class MovieController extends Controller
     }
 
     // Obtener películas por género
-    public function getMoviesByGenre($genreId)
+    public function getMoviesByGenre(Request $request, $genreId)
     {
         // Obtener configuraciones desde services.php
         $apiKey = config('services.tmdb.api_key');
         $baseUrl = config('services.tmdb.base_url');
         $language = config('services.tmdb.language');
 
-        // Endpoint para obtener películas por género
-        $url = "$baseUrl/discover/movie?with_genres=$genreId&language=$language&api_key=$apiKey";
+        // Obtener el número de página desde la solicitud, por defecto será la página 1
+        $page = $request->get('page', 1);
+
+        // Endpoint para obtener películas por género con paginación
+        $url = "$baseUrl/discover/movie?with_genres=$genreId&language=$language&api_key=$apiKey&page=$page";
 
         // Consumir la API de TMDb
         $response = Http::get($url);
@@ -66,10 +74,12 @@ class MovieController extends Controller
         // Verificar si la solicitud fue exitosa
         if ($response->successful()) {
             $movies = $response->json()['results'];
+            $totalPages = $response->json()['total_pages'];  // Total de páginas disponibles
 
             return response()->json([
                 'status' => 'success',
-                'movies' => $movies
+                'movies' => $movies,
+                'total_pages' => $totalPages
             ]);
         }
 
