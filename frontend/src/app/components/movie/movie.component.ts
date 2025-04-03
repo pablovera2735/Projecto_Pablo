@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../../services/auth.service';
 
 interface Movie {
   title: string;
@@ -16,11 +17,13 @@ interface Movie {
 })
 export class MovieComponent implements OnInit {
   movies: Movie[] = [];
+  userName: string = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.getMovies();
+    this.checkAuth();
   }
 
   getMovies(): void {
@@ -34,4 +37,25 @@ export class MovieComponent implements OnInit {
         }
       });
   }
+
+
+checkAuth(): void {
+  if (this.authService.isLoggedIn()) {
+    const user = this.authService.getUser(); // Recuperamos el nombre del usuario desde el AuthService
+    this.userName = user.name || 'Usuario'; // Asignamos el nombre
+  }
+}
+
+logout(): void {
+  this.authService.logout().subscribe(() => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    alert('Has cerrado sesión');
+    window.location.reload();  // Recargamos la página para reflejar los cambios
+  });
+}
+
+isAuthenticated(): boolean {
+  return this.authService.isLoggedIn(); // Usamos el servicio de autenticación
+}
 }

@@ -31,6 +31,15 @@ export class AuthService {
     return !!localStorage.getItem('token');
   }
 
+  storeUserData(token: string, user: any) {
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
+  getUser() {
+    return JSON.parse(localStorage.getItem('user') || '{}');
+  }
+
   recoverPassword(email: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/send-reset-password`, { email });
   }  

@@ -24,7 +24,7 @@ export class LoginComponent {
         if (response && response.data && response.data.accessToken) {
           localStorage.setItem('token', response.data.accessToken);
           alert('Inicio de sesión exitoso');
-          this.router.navigate(['/home']);
+          this.router.navigate(['/movies']);
         } else {
           console.error('Token no recibido');
           this.errorMessage = 'Error al obtener el token';

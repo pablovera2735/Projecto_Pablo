@@ -1,65 +1,79 @@
-<div class="container">
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-          <div class="container-fluid">
-            <!-- Logo -->
-            <a class="navbar-brand" href="#">Pelis-Puerto</a>
-            
-            <!-- Toggle Button (para pantallas pequeñas) -->
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+<header>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary w-100">
+      <div class="container-fluid">
+          <!-- Logo -->
+          <a class="navbar-brand" href="#">Filmania</a>
+
+          <!-- Toggle Button (para pantallas pequeñas) -->
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
-            </button>
-      
-            <!-- Links del menú -->
-            <div class="collapse navbar-collapse" id="navbarNav">
+          </button>
+
+          <!-- Links del menú -->
+          <div class="collapse navbar-collapse" id="navbarNav">
               <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                  <a class="nav-link active" href="#">Inicio</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Películas</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Series</a>
-                </li>
+                  <li class="nav-item">
+                      <a class="nav-link active" href="#">Inicio</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="#">Películas</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="#">Series</a>
+                  </li>
+                  <!-- Mostrar opciones si el usuario está autenticado -->
+                  <li *ngIf="isAuthenticated()" class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          <i class="bi bi-person-circle"></i> {{ userName }}
+                      </a>
+                      <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          <li><a class="dropdown-item" href="#">Ver perfil</a></li>
+                          <li><a class="dropdown-item" href="#">Ajustes de usuario</a></li>
+                          <li><a class="dropdown-item" href="#" (click)="logout()">Cerrar sesión</a></li>
+                      </ul>
+                  </li>
+
+                  <!-- Si no está autenticado, mostrar opción de login -->
+                  <li *ngIf="!isAuthenticated()" class="nav-item">
+                      <a class="nav-link" href="/login">Iniciar sesión</a>
+                  </li>
               </ul>
-      
+
               <!-- Barra de búsqueda -->
               <form class="d-flex ms-3">
-                <input class="form-control me-2" type="search" placeholder="Buscar..." aria-label="Search">
+                  <input class="form-control me-2" type="search" placeholder="Buscar..." aria-label="Search">
               </form>
-            </div>
           </div>
-        </nav>
-      </header>
-    <main>
-      <div class="movie-grid">
-        <div *ngFor="let movie of movies" class="movie-card">
+      </div>
+  </nav>
+</header>
+
+<main>
+  <div class="movie-grid">
+      <div *ngFor="let movie of movies" class="movie-card">
           <img [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path" alt="{{ movie.title }}" class="movie-img" />
           <div class="movie-info">
-            <h3 class="movie-title">{{ movie.title }}</h3>
-            <span class="rating" [ngClass]="{
-              'green': movie.vote_average >= 7, 
-              'orange': movie.vote_average >= 5 && movie.vote_average < 7, 
-              'red': movie.vote_average < 5
-            }">
-              {{ movie.vote_average }}
-            </span>
+              <h3 class="movie-title">{{ movie.title }}</h3>
+              <span class="rating" [ngClass]="{
+                  'green': movie.vote_average >= 7,
+                  'orange': movie.vote_average >= 5 && movie.vote_average < 7,
+                  'red': movie.vote_average < 5
+              }">
+                  {{ movie.vote_average }}
+              </span>
           </div>
           <div class="movie-overview">
-            <h4>Sinopsis</h4>
-            <p>{{ movie.overview | slice:0:100 }}...</p>
+              <h4>Sinopsis</h4>
+              <p>{{ movie.overview | slice:0:100 }}...</p>
           </div>
-        </div>
       </div>
-    </main>
-  
-    <footer>
-      <div class="pagination">
-        <div class="page" id="prev">Página Anterior</div>
-        <div class="current" id="current">1</div>
-        <div class="page" id="next">Página Siguiente</div>
-      </div>
-    </footer>
   </div>
-  
+</main>
+
+<footer>
+  <div class="pagination">
+      <div class="page" id="prev">Página Anterior</div>
+      <div class="current" id="current">1</div>
+      <div class="page" id="next">Página Siguiente</div>
+  </div>
+</footer>
