@@ -29,6 +29,7 @@ export class MovieComponent implements OnInit {
   moviesPerPage: number = 5;  // Limitar a 4 películas por página
 
   constructor(private http: HttpClient, private authService: AuthService) {}
+  movies: any[] = [];
 
   ngOnInit(): void {
     this.getGenres();

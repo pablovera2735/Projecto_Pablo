@@ -9,13 +9,16 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { MovieComponent } from './components/movie/movie.component';
+import { MovieForumComponent } from './components/movie-forum/movie-forum.component';
+import { MovieListComponent } from './components/movie-list/movie-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'recover-password', component: ForgotPasswordComponent },
-  { path: 'movies', component: MovieComponent },
+  { path: 'movies', component: MovieListComponent }, // <- NUEVO: catálogo
+  { path: 'movies/:id/forum', component: MovieForumComponent }, // foro individual
   { path: '**', redirectTo: '/login' }
 ];
 
@@ -26,6 +29,8 @@ const routes: Routes = [
     RegisterComponent,
     ForgotPasswordComponent,
     MovieComponent,
+    MovieForumComponent,
+    MovieListComponent,
   ],
   imports: [
     BrowserModule,

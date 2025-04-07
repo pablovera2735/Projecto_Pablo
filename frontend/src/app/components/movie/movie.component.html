@@ -9,13 +9,16 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
             <li class="nav-item">
-              <a class="nav-link active" href="#">Inicio</a>
+              <a class="nav-link active" routerLink="/">Inicio</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Películas</a>
+              <a class="nav-link" routerLink="/movies">Películas</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="#">Series</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/movies/1/forum">Foro</a>
             </li>
             <li *ngIf="isAuthenticated()" class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -28,7 +31,7 @@
               </ul>
             </li>
             <li *ngIf="!isAuthenticated()" class="nav-item">
-              <a class="nav-link" href="/login">Iniciar sesión</a>
+              <a class="nav-link" routerLink="/login">Iniciar sesión</a>
             </li>
           </ul>
   

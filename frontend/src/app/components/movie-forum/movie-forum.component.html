@@ -1,0 +1,23 @@
+<div class="container mt-4" *ngIf="thread">
+  <h4>Foro de discusión sobre "{{ movie?.title }}"</h4>
+
+  <textarea class="form-control mb-2" [(ngModel)]="newComment" placeholder="Escribe un comentario..."></textarea>
+  <button class="btn btn-primary mb-4" (click)="postComment()" [disabled]="loading">
+    {{ loading ? 'Enviando...' : 'Comentar' }}
+  </button>
+
+  <div *ngIf="thread?.comments?.length === 0">Sé el primero en comentar.</div>
+
+  <div *ngFor="let comment of thread.comments" class="mb-3 p-3 border rounded">
+    <strong>{{ comment.user.name }}</strong>
+    <p>{{ comment.content }}</p>
+
+    <input type="text" [(ngModel)]="comment.replyText" class="form-control form-control-sm" placeholder="Responder..." />
+    <button class="btn btn-link btn-sm" (click)="replyTo(comment.id, comment.replyText)">Responder</button>
+
+    <div *ngFor="let reply of comment.replies" class="ms-4 border-start ps-2 mt-2">
+      <strong>{{ reply.user.name }}</strong>
+      <p>{{ reply.content }}</p>
+    </div>
+  </div>
+</div>
