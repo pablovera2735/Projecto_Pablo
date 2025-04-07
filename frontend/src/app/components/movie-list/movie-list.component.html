@@ -1,15 +1,21 @@
-<div class="container mt-4">
-    <h2>Catálogo de Películas</h2>
+<div *ngFor="let genre of genres">
+    <h3>{{ genre.name }}</h3>
+  
     <div class="row">
-      <div *ngFor="let movie of movies" class="col-md-3 mb-4">
+      <div *ngFor="let movie of moviesByGenre[genre.id]" class="col-md-3 mb-4">
         <div class="card h-100">
-          <img [src]="movie.image_url" class="card-img-top" alt="{{ movie.title }}">
+            <img [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path"
+     alt="{{ movie.title }}"
+     class="movie-img img-fluid mx-auto d-block"
+     style="max-height: 300px; object-fit: cover;" />
           <div class="card-body d-flex flex-column">
             <h5 class="card-title">{{ movie.title }}</h5>
-            <button class="btn btn-primary mt-auto" (click)="goToForum(movie.id)">Ir al Foro</button>
+            <p class="card-text">{{ movie.release_date }}</p>
+            <button class="btn btn-primary mt-auto" (click)="goToForum(movie.id)">
+              Ir al Foro
+            </button>
           </div>
         </div>
       </div>
     </div>
-  </div>
   

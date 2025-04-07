@@ -18,6 +18,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'recover-password', component: ForgotPasswordComponent },
   { path: 'movies', component: MovieComponent },
+  { path: 'foro', component: MovieListComponent},
   { path: 'movies/:id/forum', component: MovieForumComponent },
   { path: '**', redirectTo: '/login' }
 ];
