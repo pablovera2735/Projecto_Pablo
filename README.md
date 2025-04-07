@@ -52,3 +52,10 @@ Acabo de hacer seccion por categoria de cada pelicula
 tarea no realizad:
 
 Me fataria diseña poco mas el diseño y adaptar en cada dispositivos
+
+
+## Día 6: [7 de abril]
+
+tarea realizada:
+
+Acabo de terminar la api de los foro y he hecho el postman y me funciona y solamente me faltaria acabar lo de angular que ya me queda poco
