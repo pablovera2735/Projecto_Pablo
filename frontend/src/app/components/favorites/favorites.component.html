@@ -1,0 +1,31 @@
+<div class="container my-4">
+    <h2 class="text-center">⭐ Tus Favoritos</h2>
+    <div class="row">
+      <div *ngFor="let movie of userFavorites" class="col-md-3 mb-4">
+        <div class="card h-100">
+          <img [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path" class="card-img-top" alt="{{ movie.title }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ movie.title }}</h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <hr>
+  
+    <h3 class="mt-5">📁 Tus Listas Personalizadas</h3>
+    <div *ngFor="let list of customLists" class="mb-4">
+      <h5>{{ list.name }}</h5>
+      <div class="row">
+        <div *ngFor="let movie of list.movies" class="col-md-3 mb-3">
+          <div class="card h-100">
+            <img [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path" class="card-img-top" alt="{{ movie.title }}">
+            <div class="card-body">
+              <h6 class="card-title">{{ movie.title }}</h6>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

@@ -11,9 +11,15 @@ Route::group(['middleware' => ['cors']], function () {
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/logout', 'AuthController@logout');
-
-
         Route::post('/comments', 'CommentController@store');
+
+        Route::get('/favorites/{userId}', 'FavoriteController@index');
+        Route::post('/favorites', 'FavoriteController@store');
+        Route::delete('/favorites/{id}', 'FavoriteController@destroy');
+
+        Route::get('/lists/{userId}', 'ListController@index');
+        Route::post('/lists', 'ListController@store');
+        Route::post('/lists/{listId}/add-movie', 'ListController@addMovie');
     });
 
     Route::get('/movies/popular', 'MovieController@getPopularMovies');
