@@ -59,3 +59,9 @@ Me fataria diseña poco mas el diseño y adaptar en cada dispositivos
 tarea realizada:
 
 Acabo de terminar la api de los foro y he hecho el postman y me funciona y solamente me faltaria acabar lo de angular que ya me queda poco
+
+## Día 7: [11 de abril]
+
+tarea realizada:
+
+He terminado la api de cuando tu le da me gusta al catalogo de pelicula y se guaerde estos datos en el perfil
