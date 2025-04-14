@@ -21,6 +21,7 @@ newReview = { rating: 5, comment: '' };
     this.movieId = this.route.snapshot.paramMap.get('id')!;
     this.loadMovie();
     this.loadCast();
+    this.loadReviews();
   }
 
   loadMovie() {
@@ -45,20 +46,24 @@ newReview = { rating: 5, comment: '' };
   }
 
   submitReview() {
+    if (!this.newReview.comment.trim()) return alert('Por favor, escribe un comentario.');
+  
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  
+    
     const data = {
       movie_id: this.movie.id,
       rating: this.newReview.rating,
       comment: this.newReview.comment
     };
-  
-    this.http.post('http://localhost:8000/api/reviews', data, { headers }).subscribe(() => {
+    
+    this.http.post('http://localhost:8000/api/reviews', data, { headers }).subscribe(response => {
+      console.log(response); // Aquí puedes ver la respuesta para verificar
       this.newReview = { rating: 5, comment: '' };
-      this.loadReviews();
+      this.loadReviews(); // refresca las reseñas
     });
   }
+  
 
   addToFavorites() {
     const token = localStorage.getItem('token');

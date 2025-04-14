@@ -12,7 +12,7 @@ Route::group(['middleware' => ['cors']], function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/logout', 'AuthController@logout');
         Route::post('/comments', 'CommentController@store');
-
+        Route::post('/reviews', 'ReviewController@store');
         Route::get('/favorites/{userId}', 'FavoriteController@index');
         Route::post('/favorites', 'FavoriteController@store');
         Route::delete('/favorites/{id}', 'FavoriteController@destroy');
@@ -28,6 +28,7 @@ Route::group(['middleware' => ['cors']], function () {
     Route::get('/movies/genre/{genreId}', 'MovieController@getMoviesByGenre');
     Route::get('/movies/search', 'MovieController@searchMovie');
     Route::get('/movies/{id}', 'MovieController@getMovieDetails');
+    Route::get('/movies/{id}/reviews', 'ReviewController@index');
     
     Route::get('/threads/{movieId}', 'ThreadController@showOrCreate');
 });
