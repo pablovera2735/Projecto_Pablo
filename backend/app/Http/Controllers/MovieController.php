@@ -54,6 +54,28 @@ class MovieController extends Controller
         ]);
     }
 
+    public function getMovieCast($id)
+    {
+        $apiKey = config('services.tmdb.api_key');
+        $baseUrl = config('services.tmdb.base_url');
+        $language = config('services.tmdb.language');
+
+        $url = "$baseUrl/movie/$id/credits?api_key=$apiKey&language=$language";
+
+        $response = Http::get($url);
+
+        if ($response->successful()) {
+            $cast = $response->json()['cast'];
+            return response()->json(['cast' => array_slice($cast, 0, 6)]);
+    }
+
+    return response()->json([
+        'status' => 'error',
+        'message' => 'No se pudo obtener el reparto'
+    ], 500);
+}
+
+
     // Obtener películas por género
     public function getMoviesByGenre(Request $request, $genreId)
     {

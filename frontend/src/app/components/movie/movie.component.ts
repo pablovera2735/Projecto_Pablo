@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router'; // ← Agregado
 import { AuthService } from '../../services/auth.service';
 
 interface Movie {
+  id: number; // ← Asegúrate de incluir el ID
   title: string;
   overview: string;
   release_date: string;
@@ -23,12 +25,16 @@ interface Genre {
 export class MovieComponent implements OnInit {
   userName: string = '';
   genres: Genre[] = [];
-  moviesByGenre: { [key: number]: Movie[] } = {};  // Películas por género
-  currentPageByGenre: { [key: number]: number } = {};  // Página actual por género
-  totalPagesByGenre: { [key: number]: number } = {};  // Total de páginas por género
-  moviesPerPage: number = 5;  // Limitar a 4 películas por página
+  moviesByGenre: { [key: number]: Movie[] } = {};
+  currentPageByGenre: { [key: number]: number } = {};
+  totalPagesByGenre: { [key: number]: number } = {};
+  moviesPerPage: number = 5;
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+    private router: Router // ← Agregado
+  ) {}
 
   ngOnInit(): void {
     this.getGenres();
@@ -40,22 +46,19 @@ export class MovieComponent implements OnInit {
     this.userName = user ? user.name : 'Invitado';
   }
 
-  // Obtener los géneros
   getGenres(): void {
     this.http.get<any>('http://127.0.0.1:8000/api/movies/genres')
       .subscribe(response => {
         if (response && response.genres) {
           this.genres = response.genres;
-          // Inicializar la página para cada género
           this.genres.forEach(genre => {
-            this.currentPageByGenre[genre.id] = 1;  // Comenzamos en la página 1
+            this.currentPageByGenre[genre.id] = 1;
             this.getMoviesByGenre(genre.id);
           });
         }
       });
   }
 
-  // Obtener las películas por género y página
   getMoviesByGenre(genreId: number): void {
     const currentPage = this.currentPageByGenre[genreId];
     this.http.get<any>(`http://127.0.0.1:8000/api/movies/genre/${genreId}?page=${currentPage}`)
@@ -63,7 +66,7 @@ export class MovieComponent implements OnInit {
         if (response && response.movies) {
           this.moviesByGenre[genreId] = response.movies;
           this.totalPagesByGenre[genreId] = response.total_pages;
-          // Mostrar solo las primeras 4 películas de la página actual
+
           const startIndex = (currentPage - 1) * this.moviesPerPage;
           const endIndex = startIndex + this.moviesPerPage;
           this.moviesByGenre[genreId] = response.movies.slice(startIndex, endIndex);
@@ -71,7 +74,10 @@ export class MovieComponent implements OnInit {
       });
   }
 
-  // Cambiar de página dentro de un género
+   goToDetails(movieId: number): void {
+  this.router.navigate(['/movies', movieId, 'detail']);
+}
+
   goToPage(genreId: number, page: number): void {
     if (page > 0 && page <= this.totalPagesByGenre[genreId]) {
       this.currentPageByGenre[genreId] = page;
@@ -79,12 +85,10 @@ export class MovieComponent implements OnInit {
     }
   }
 
-  // Verificar si el usuario está autenticado
   isAuthenticated(): boolean {
     return this.authService.isLoggedIn();
   }
 
-  // Cerrar sesión
   logout(): void {
     this.authService.logout().subscribe(() => {
       localStorage.removeItem('token');
@@ -93,4 +97,5 @@ export class MovieComponent implements OnInit {
       window.location.reload();
     });
   }
+
 }

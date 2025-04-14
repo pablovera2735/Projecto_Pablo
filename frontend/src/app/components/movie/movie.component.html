@@ -1,78 +1,97 @@
 <header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary w-100">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="#">Filmania</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-  
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a class="nav-link active" routerLink="/">Inicio</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/movies">Películas</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Series</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" routerLink="/foro">Foro</a>
-            </li>
-            <li *ngIf="isAuthenticated()" class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-person-circle"></i> {{ userName }}
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#">Ver perfil</a></li>
-                <li><a class="dropdown-item" href="#">Ajustes de usuario</a></li>
-                <li><a class="dropdown-item" href="#" (click)="logout()">Cerrar sesión</a></li>
-              </ul>
-            </li>
-            <li *ngIf="!isAuthenticated()" class="nav-item">
-              <a class="nav-link" routerLink="/login">Iniciar sesión</a>
-            </li>
-          </ul>
-  
-          <form class="d-flex ms-3">
-            <input class="form-control me-2" type="search" placeholder="Buscar..." aria-label="Search">
-          </form>
-        </div>
-      </div>
-    </nav>
-  </header>
-  
-  <main>
-    <div *ngFor="let genre of genres">
-      <h2>{{ genre.name }}</h2>
-      <div class="movie-grid">
-        <!-- Mostrar solo las 4 películas del género actual -->
-        <div *ngFor="let movie of moviesByGenre[genre.id]" class="movie-card">
-          <img [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path" alt="{{ movie.title }}" class="movie-img" />
-          <div class="movie-info">
-            <h3 class="movie-title">{{ movie.title }}</h3>
-            <span class="rating" [ngClass]="{
-                'green': movie.vote_average >= 7,
-                'orange': movie.vote_average >= 5 && movie.vote_average < 7,
-                'red': movie.vote_average < 5
-              }">
-              {{ movie.vote_average }}
-            </span>
-          </div>
-          <div class="movie-overview">
-            <h4>Sinopsis</h4>
-            <p>{{ movie.overview | slice:0:100 }}...</p>
-          </div>
-        </div>
-      </div>
-  
-      <!-- Controles de Paginación -->
-      <div class="pagination">
-        <button (click)="goToPage(genre.id, currentPageByGenre[genre.id] - 1)" [disabled]="currentPageByGenre[genre.id] === 1">Página Anterior</button>
-        <span>{{ currentPageByGenre[genre.id] }} de {{ totalPagesByGenre[genre.id] }}</span>
-        <button (click)="goToPage(genre.id, currentPageByGenre[genre.id] + 1)" [disabled]="currentPageByGenre[genre.id] === totalPagesByGenre[genre.id]">Página Siguiente</button>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary w-100">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Filmania</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link active" routerLink="/">Inicio</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/movies">Películas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Series</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/foro">Foro</a>
+          </li>
+          <li *ngIf="isAuthenticated()" class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle"></i> {{ userName }}
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="#">Ver perfil</a></li>
+              <li><a class="dropdown-item" href="#">Ajustes de usuario</a></li>
+              <li><a class="dropdown-item" href="#" (click)="logout()">Cerrar sesión</a></li>
+            </ul>
+          </li>
+          <li *ngIf="!isAuthenticated()" class="nav-item">
+            <a class="nav-link" routerLink="/login">Iniciar sesión</a>
+          </li>
+        </ul>
+
+        <form class="d-flex ms-3">
+          <input class="form-control me-2" type="search" placeholder="Buscar..." aria-label="Search">
+        </form>
       </div>
     </div>
-  </main>
-  
+  </nav>
+</header>
+<main>
+  <div *ngFor="let genre of genres">
+    <h2>{{ genre.name }}</h2>
+
+    <div class="movie-grid">
+      <!-- Tarjeta clickeable completa -->
+      <div 
+        *ngFor="let movie of moviesByGenre[genre.id]" 
+        class="movie-card" 
+        (click)="goToDetails(movie.id)" 
+        style="cursor: pointer;"
+      >
+        <img 
+          [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path" 
+          alt="{{ movie.title }}" 
+          class="movie-img" 
+          onerror="this.src='assets/img/no-image.png'" 
+        />
+
+        <div class="movie-info">
+          <h3 class="movie-title">{{ movie.title }}</h3>
+          <span class="rating" [ngClass]="{
+              'green': movie.vote_average >= 7,
+              'orange': movie.vote_average >= 5 && movie.vote_average < 7,
+              'red': movie.vote_average < 5
+            }">
+            {{ movie.vote_average }}
+          </span>
+        </div>
+
+        <div class="movie-overview">
+          <h4>Sinopsis</h4>
+          <p>{{ movie.overview | slice:0:100 }}...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controles de Paginación -->
+    <div class="pagination">
+      <button 
+        (click)="goToPage(genre.id, currentPageByGenre[genre.id] - 1)" 
+        [disabled]="currentPageByGenre[genre.id] === 1">
+        Página Anterior
+      </button>
+      <span>{{ currentPageByGenre[genre.id] }} de {{ totalPagesByGenre[genre.id] }}</span>
+      <button 
+        (click)="goToPage(genre.id, currentPageByGenre[genre.id] + 1)" 
+        [disabled]="currentPageByGenre[genre.id] === totalPagesByGenre[genre.id]">
+        Página Siguiente
+      </button>
+    </div>
+  </div>
+</main>

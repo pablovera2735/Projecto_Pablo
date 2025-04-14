@@ -12,6 +12,7 @@ import { MovieComponent } from './components/movie/movie.component';
 import { MovieForumComponent } from './components/movie-forum/movie-forum.component';
 import { MovieListComponent } from './components/movie-list/movie-list.component';
 import { FavoritesComponent } from './components/favorites/favorites.component';
+import { MovieDetailComponent } from './components/movie-detail/movie-detail.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'recover-password', component: ForgotPasswordComponent },
   { path: 'movies', component: MovieComponent },
+  { path: 'movies/:id/detail', component: MovieDetailComponent },
   { path: 'foro', component: MovieListComponent},
   { path: 'favorites', component: FavoritesComponent },
   { path: 'movies/:id/forum', component: MovieForumComponent },
@@ -35,6 +37,7 @@ const routes: Routes = [
     MovieForumComponent,
     MovieListComponent,
     FavoritesComponent,
+    MovieDetailComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,59 @@
+<div class="container mt-5 movie-detail" *ngIf="movie">
+    <div class="row align-items-center">
+      <div class="col-lg-4 text-center mb-4 mb-lg-0">
+        <img [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path" class="img-fluid shadow rounded" alt="{{ movie.title }}">
+      </div>
+      <div class="col-lg-8">
+        <h1 class="display-5 fw-bold">{{ movie.title }}</h1>
+        <p class="text-muted fst-italic">Fecha de estreno: {{ movie.release_date }}</p>
+        <p class="text-warning fw-semibold">⭐ {{ movie.vote_average }} / 10</p>
+        <p class="text-info fw-semibold mt-2">
+            📺 Disponible en: {{ movie.platform }}
+          </p>
+          <p class="lead mt-3">{{ movie.overview }}</p>
+  
+        <button class="btn btn-primary btn-lg mt-4 px-4 shadow" (click)="addToFavorites()">
+          <i class="bi bi-heart-fill me-2"></i> Agregar a Favoritos
+        </button>
+      </div>
+    </div>
+
+    <hr class="my-5">
+
+<div class="review-section">
+  <h3>Reseñas y Calificaciones</h3>
+
+  <!-- Formulario -->
+  <div class="mb-4">
+    <label for="rating" class="form-label">Tu calificación (1-10):</label>
+    <input type="number" id="rating" [(ngModel)]="newReview.rating" min="1" max="10" class="form-control w-25 mb-2">
+
+    <label for="comment" class="form-label">Tu reseña:</label>
+    <textarea id="comment" [(ngModel)]="newReview.comment" rows="3" class="form-control mb-2"></textarea>
+
+    <button class="btn btn-success" (click)="submitReview()">Enviar reseña</button>
+  </div>
+
+  <!-- Lista de reseñas -->
+  <div *ngIf="reviews.length === 0" class="text-muted">No hay reseñas aún.</div>
+  <div *ngFor="let review of reviews" class="border p-3 mb-3 rounded">
+    <strong>{{ review.user.name }}</strong>
+    <span class="text-warning">⭐ {{ review.rating }}/10</span>
+    <p>{{ review.comment }}</p>
+  </div>
+</div>
+
+  
+    <hr class="my-5">
+  
+    <div class="cast-section">
+      <h3 class="mb-4">Reparto Principal</h3>
+      <div class="row gy-4">
+        <div class="col-6 col-sm-4 col-md-3 col-lg-2 text-center" *ngFor="let actor of cast">
+          <img [src]="'https://image.tmdb.org/t/p/w185' + actor.profile_path" class="img-fluid rounded-circle shadow-sm mb-2" alt="{{ actor.name }}">
+          <p class="fw-medium">{{ actor.name }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  

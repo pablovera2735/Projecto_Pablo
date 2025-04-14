@@ -22,6 +22,7 @@ Route::group(['middleware' => ['cors']], function () {
         Route::post('/lists/{listId}/add-movie', 'ListController@addMovie');
     });
 
+    Route::get('/movies/{id}/cast', 'MovieController@getMovieCast');
     Route::get('/movies/popular', 'MovieController@getPopularMovies');
     Route::get('/movies/genres', 'MovieController@listGenres');
     Route::get('/movies/genre/{genreId}', 'MovieController@getMoviesByGenre');
