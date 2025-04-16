@@ -37,7 +37,15 @@ export class AuthService {
   }
 
   getUser() {
-    return JSON.parse(localStorage.getItem('user') || '{}');
+    const userData = localStorage.getItem('user');
+    if (!userData || userData === '{}') {
+      return null;
+    }
+    return JSON.parse(userData);
+  }
+
+  updateUser(data: any) {
+    localStorage.setItem('user', JSON.stringify(data));
   }
 
   recoverPassword(email: string): Observable<any> {

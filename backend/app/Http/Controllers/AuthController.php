@@ -35,7 +35,7 @@ class AuthController extends Controller
         //se devuelve respuesta con los datos del usuario logado 
         return response()->json(['data'=> [
             'accessToken' => $token,
-            'toke_type' => 'Bearer',
+            'token_type' => 'Bearer',
             'user' => $user]
         ]);
     }
@@ -47,14 +47,16 @@ public function register(Request $request)
     $request->validate([
         'name' => 'required|string|max:255',
         'email' => 'required|string|email|max:255|unique:users',
-        'password' => 'required|string|min:8|confirmed' // Confirmación integrada
+        'password' => 'required|string|min:8|confirmed'
     ]);
 
     // Crear el nuevo usuario en la base de datos
     $user = User::create([
         'name' => $request->name,
         'email' => $request->email,
-        'password' => Hash::make($request->password)
+        'password' => Hash::make($request->password),
+        'profile_photo' => 'Perfil_Inicial.jpg',
+        'default_photo' => true,
     ]);
 
     // Crear el token de acceso
@@ -67,6 +69,29 @@ public function register(Request $request)
         'user' => $user
     ]]);
 }
+
+public function uploadProfilePhoto(Request $request)
+{
+    $request->validate([
+        'photo' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
+
+    $user = auth()->user();
+
+    $file = $request->file('photo');
+    $filename = time() . '_' . $file->getClientOriginalName();
+    $file->move(public_path('uploads/avatars'), $filename);
+
+    $user->profile_photo = 'uploads/avatars/' . $filename;
+    $user->default_photo = false;
+    $user->save();
+
+    return response()->json([
+        'message' => 'Foto de perfil actualizada',
+        'profile_photo' => $user->profile_photo,
+    ]);
+}
+
 
 public function sendResetPassword(Request $request)
 {

@@ -65,3 +65,15 @@ Acabo de terminar la api de los foro y he hecho el postman y me funciona y solam
 tarea realizada:
 
 He terminado la api de cuando tu le da me gusta al catalogo de pelicula y se guaerde estos datos en el perfil
+
+
+## Día 8: [14 de abril]
+
+tarea realizada:
+
+He terminado los foro de angular y el perfil cuando tengas que iniciar sesion que salga el icono y con tu nombre
+
+
+## Día 9: [15 de abril]
+
+He hecho pruebas unitarias en laravel lo de authenticacion y he añadido en en el ver detalles de la pelicula una reseña para que tu puedas comentar la opinion de esta pelicula

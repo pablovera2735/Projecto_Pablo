@@ -1,47 +1,42 @@
-<header>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary w-100">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">Filmania</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+<header class="custom-navbar">
+  <nav class="navbar-content container">
+    <!-- Menú de navegación -->
+    <div class="nav-left">
+      <a routerLink="/" class="nav-icon"><i class="bi bi-house-door-fill"></i></a>
+      <a routerLink="/movies">inicio</a>
+      <a href="#">nuevo</a>
+      <a href="#">popular</a>
+      <a href="#">listas</a>
+      <a routerLink="/foro">foro</a>
+      <a href="#">nosotros</a>
+    </div>
 
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link active" routerLink="/">Inicio</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/movies">Películas</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Series</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/foro">Foro</a>
-          </li>
-          <li *ngIf="isAuthenticated()" class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <i class="bi bi-person-circle"></i> {{ userName }}
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <li><a class="dropdown-item" href="#">Ver perfil</a></li>
-              <li><a class="dropdown-item" href="#">Ajustes de usuario</a></li>
-              <li><a class="dropdown-item" href="#" (click)="logout()">Cerrar sesión</a></li>
-            </ul>
-          </li>
-          <li *ngIf="!isAuthenticated()" class="nav-item">
-            <a class="nav-link" routerLink="/login">Iniciar sesión</a>
-          </li>
-        </ul>
+    <!-- Buscador y perfil -->
+    <div class="nav-right">
+      <input type="text" class="search-input" placeholder="Buscar..." />
+      <i class="bi bi-calendar2-week"></i>
+      <i class="bi bi-bell-fill"></i>
 
-        <form class="d-flex ms-3">
-          <input class="form-control me-2" type="search" placeholder="Buscar..." aria-label="Search">
-        </form>
+      <div *ngIf="isAuthenticated()" class="user-box dropdown">
+        <button class="user-btn dropdown-toggle" data-bs-toggle="dropdown">
+          <img [src]="profilePhoto" class="rounded-circle me-2" width="30" height="30" alt="Perfil" />
+    <i class="bi bi-person-circle me-2"></i>
+    {{ userName }}
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><a class="dropdown-item" href="#">Ver perfil</a></li>
+    <li><a class="dropdown-item" href="#">Ajustes</a></li>
+    <li><a class="dropdown-item" (click)="logout()">Cerrar sesión</a></li>
+  </ul>
+</div>
+
+      <div *ngIf="!isAuthenticated()">
+        <a class="nav-link text-white" routerLink="/login">Iniciar sesión</a>
       </div>
     </div>
   </nav>
 </header>
+
 <main>
   <div *ngFor="let genre of genres">
     <h2>{{ genre.name }}</h2>

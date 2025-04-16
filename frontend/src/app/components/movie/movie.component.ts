@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router'; // ← Agregado
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 interface Movie {
-  id: number; // ← Asegúrate de incluir el ID
+  id: number;
   title: string;
   overview: string;
   release_date: string;
@@ -33,8 +33,11 @@ export class MovieComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private authService: AuthService,
-    private router: Router // ← Agregado
+    private router: Router
   ) {}
+
+  profilePhoto: string = 'assets/img/Perfil_Inicial.jpg';
+
 
   ngOnInit(): void {
     this.getGenres();
@@ -43,8 +46,16 @@ export class MovieComponent implements OnInit {
 
   setUserName(): void {
     const user = this.authService.getUser();
-    this.userName = user ? user.name : 'Invitado';
+    if (user) {
+      this.userName = user.name;
+      this.profilePhoto = user.profile_photo 
+        ? 'http://localhost:8000/' + user.profile_photo 
+        : 'assets/img/Perfil_Inicial.jpg';
+    } else {
+      this.userName = 'Invitado';
+    }
   }
+  
 
   getGenres(): void {
     this.http.get<any>('http://127.0.0.1:8000/api/movies/genres')

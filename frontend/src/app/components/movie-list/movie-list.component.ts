@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 interface Movie {
   id: number;
@@ -20,13 +21,37 @@ interface Genre {
   styleUrls: ['./movie-list.component.css']
 })
 export class MovieListComponent implements OnInit {
+  userName: string = '';
+  profilePhoto: string = 'assets/img/Perfil_Inicial.jpg';
   genres: Genre[] = [];
   moviesByGenre: { [key: number]: Movie[] } = {};
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
     this.loadGenres();
+    this.setUserName();
+  }
+
+  setUserName(): void {
+    const userString = localStorage.getItem('user');
+    if (userString) {
+      const user = JSON.parse(userString);
+      this.userName = user.name || 'Invitado';
+      this.profilePhoto = user.profile_photo 
+        ? `http://localhost:8000/${user.profile_photo}` 
+        : 'assets/img/Perfil_Inicial.jpg';
+    } else {
+      this.userName = 'Invitado';
+    }
+  }
+
+  isAuthenticated(): boolean {
+    return this.authService.isLoggedIn();
   }
 
   loadGenres(): void {
@@ -49,4 +74,12 @@ export class MovieListComponent implements OnInit {
   goToForum(movieId: number): void {
     this.router.navigate(['/movies', movieId, 'forum']);
   }
+
+  logout(): void {
+    this.authService.logout().subscribe(() => {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      this.router.navigate(['/login']);
+    });
+  }  
 }

@@ -20,14 +20,16 @@ export class LoginComponent {
   
     this.authService.login(this.email, this.password).subscribe({
       next: (response) => {
-        /*console.log(response);  // Verifica la respuesta */
-        if (response && response.data && response.data.accessToken) {
+        /*console.log(response);*/
+        if (response && response.data && response.data.accessToken && response.data.user) {
           localStorage.setItem('token', response.data.accessToken);
+          const user = response.data.user;
+          localStorage.setItem('user', JSON.stringify(user));
           alert('Inicio de sesión exitoso');
           this.router.navigate(['/movies']);
         } else {
-          console.error('Token no recibido');
-          this.errorMessage = 'Error al obtener el token';
+          console.error('Token o usuario no recibido');
+          this.errorMessage = 'Error al obtener los datos';
         }
         this.loading = false;
       },
@@ -38,5 +40,4 @@ export class LoginComponent {
       }
     });
   }
-  
 }
