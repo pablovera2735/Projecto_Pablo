@@ -3,11 +3,12 @@
     <!-- Menú de navegación -->
     <div class="nav-left">
       <a routerLink="/" class="nav-icon"><i class="bi bi-house-door-fill"></i></a>
-      <a routerLink="/movies">PELIS</a>
-      <a href="#">SERIES</a>
-      <a href="#">ANIMACIÓN</a>
-      <a href="#">LISTAS</a>
-      <a routerLink="/foro">REVIEWS</a>
+      <a routerLink="/movies">inicio</a>
+      <a href="#">nuevo</a>
+      <a href="#">popular</a>
+      <a href="#">listas</a>
+      <a routerLink="/foro">foro</a>
+      <a href="#">nosotros</a>
     </div>
 
     <!-- Buscador y perfil -->
@@ -19,14 +20,15 @@
       <div *ngIf="isAuthenticated()" class="user-box dropdown">
         <button class="user-btn dropdown-toggle" data-bs-toggle="dropdown">
           <img [src]="profilePhoto" class="rounded-circle me-2" width="30" height="30" alt="Perfil" />
-          {{ userName }}
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" routerLink="/perfil">Ver perfil</a></li>
-          <li><a class="dropdown-item" href="#">Ajustes</a></li>
-          <li><a class="dropdown-item" (click)="logout()">Cerrar sesión</a></li>
-        </ul>
-      </div>
+    <i class="bi bi-person-circle me-2"></i>
+    {{ userName }}
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><a class="dropdown-item" href="#">Ver perfil</a></li>
+    <li><a class="dropdown-item" href="#">Ajustes</a></li>
+    <li><a class="dropdown-item" (click)="logout()">Cerrar sesión</a></li>
+  </ul>
+</div>
 
       <div *ngIf="!isAuthenticated()">
         <a class="nav-link text-white" routerLink="/login">Iniciar sesión</a>
@@ -34,6 +36,7 @@
     </div>
   </nav>
 </header>
+
 
 <main class="container mt-5">
   <div *ngFor="let genre of genres">

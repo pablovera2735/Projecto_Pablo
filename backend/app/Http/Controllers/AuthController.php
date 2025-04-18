@@ -70,6 +70,24 @@ public function register(Request $request)
     ]]);
 }
 
+
+public function getUserProfile($id)
+{
+    $user = User::with('comments')->findOrFail($id);
+
+    return response()->json([
+        'name' => $user->name,
+        'profile_photo' => $user->profile_photo, // Asegúrate de que este campo exista
+        'comments' => $user->comments->map(function ($comment) {
+            return [
+                'id' => $comment->id,
+                'content' => $comment->content,
+                'created_at' => $comment->created_at->toDateTimeString(),
+            ];
+        }),
+    ]);
+}
+
 public function uploadProfilePhoto(Request $request)
 {
     $request->validate([
@@ -91,6 +109,27 @@ public function uploadProfilePhoto(Request $request)
         'profile_photo' => $user->profile_photo,
     ]);
 }
+
+public function deleteProfilePhoto(Request $request)
+{
+    $user = auth()->user();
+
+    // Eliminar archivo actual si no es el predeterminado
+    if (!$user->default_photo && $user->profile_photo && file_exists(public_path($user->profile_photo))) {
+        unlink(public_path($user->profile_photo));
+    }
+
+    // Restaurar valores por defecto
+    $user->profile_photo = 'Perfil_Inicial.jpg';
+    $user->default_photo = true;
+    $user->save();
+
+    return response()->json([
+        'message' => 'Foto de perfil eliminada',
+        'profile_photo' => $user->profile_photo
+    ]);
+}
+
 
 
 public function sendResetPassword(Request $request)

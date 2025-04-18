@@ -13,6 +13,7 @@ import { MovieForumComponent } from './components/movie-forum/movie-forum.compon
 import { MovieListComponent } from './components/movie-list/movie-list.component';
 import { FavoritesComponent } from './components/favorites/favorites.component';
 import { MovieDetailComponent } from './components/movie-detail/movie-detail.component';
+import { UserProfileComponent } from './components/user-profile/user-profile.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -24,6 +25,7 @@ const routes: Routes = [
   { path: 'foro', component: MovieListComponent},
   { path: 'favorites', component: FavoritesComponent },
   { path: 'movies/:id/forum', component: MovieForumComponent },
+  { path: 'perfil', component: UserProfileComponent },
   { path: '**', redirectTo: '/login' }
 ];
 
@@ -38,6 +40,7 @@ const routes: Routes = [
     MovieListComponent,
     FavoritesComponent,
     MovieDetailComponent,
+    UserProfileComponent,
   ],
   imports: [
     BrowserModule,

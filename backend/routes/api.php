@@ -11,10 +11,12 @@ Route::group(['middleware' => ['cors']], function () {
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/logout', 'AuthController@logout');
+        Route::get('/user/{id}/profile', 'AuthController@getUserProfile');
         Route::post('/comments', 'CommentController@store');
         Route::post('/reviews', 'ReviewController@store');
         
         Route::post('/profile/upload-photo', 'AuthController@uploadProfilePhoto');
+        Route::delete('/profile/delete-photo', 'AuthController@deleteProfilePhoto');
     
         Route::get('/favorites/{userId}', 'FavoriteController@index');
         Route::post('/favorites', 'FavoriteController@store');

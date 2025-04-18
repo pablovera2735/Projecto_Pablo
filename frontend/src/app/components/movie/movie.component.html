@@ -24,7 +24,7 @@
     {{ userName }}
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><a class="dropdown-item" href="#">Ver perfil</a></li>
+    <li><a class="dropdown-item" [routerLink]="'/perfil'">Ver perfil</a></li>
     <li><a class="dropdown-item" href="#">Ajustes</a></li>
     <li><a class="dropdown-item" (click)="logout()">Cerrar sesión</a></li>
   </ul>
@@ -36,6 +36,31 @@
     </div>
   </nav>
 </header>
+
+<div id="recommendedCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="4000">
+  <div class="carousel-inner">
+    <div *ngFor="let movie of recommendedMovies; let i = index" 
+     class="carousel-item"
+     [class.active]="i === 0">
+      <img [src]="'http://image.tmdb.org/t/p/original' + movie.backdrop_path" class="d-block w-100" alt="{{ movie.title }}">
+      <div class="carousel-caption d-none d-md-block">
+        <h5>{{ movie.title }}</h5>
+        <p>{{ movie.overview | slice: 0:100 }}...</p>
+      </div>
+    </div>
+  </div>
+
+  <button class="carousel-control-prev" type="button" data-bs-target="#recommendedCarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Anterior</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#recommendedCarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Siguiente</span>
+  </button>
+</div>
+
+
 
 <main>
   <div *ngFor="let genre of genres">

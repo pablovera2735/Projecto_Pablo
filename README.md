@@ -76,4 +76,13 @@ He terminado los foro de angular y el perfil cuando tengas que iniciar sesion qu
 
 ## Día 9: [15 de abril]
 
+tarea realizada:
+
 He hecho pruebas unitarias en laravel lo de authenticacion y he añadido en en el ver detalles de la pelicula una reseña para que tu puedas comentar la opinion de esta pelicula
+
+## Día 10: [18 de abril]
+
+tarea realizada:
+
+
+He creado un nuevo componente llamado "Ver Perfil", donde los usuarios pueden ver su historial de películas que les han gustado, así como la lista de amigos que tienen agregados. También añadí un carrusel al frontend, aunque aún me falta implementar el autoplay, lo cual haré más adelante. Además, he añadido nuevas rutas tanto en Laravel como en Angular, corrigiendo y organizando la estructura para mejorar la navegación y la integración entre el backend y el frontend.

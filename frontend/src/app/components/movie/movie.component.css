@@ -53,6 +53,39 @@
 }
 
 
+/* Indicadores personalizables */
+.carousel-indicators button {
+  background-color: rgba(255, 255, 255, 0.5); /* Color base de los indicadores */
+  border: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+}
+
+.carousel-indicators .active {
+  background-color: rgba(255, 255, 255, 1); /* Indicador activo */
+}
+
+/* Efecto de hover en indicadores */
+.carousel-indicators button:hover {
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Mejoras en los controles (prev/next) */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro para los controles */
+  border-radius: 50%;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+  width: 5%; /* Ajusta el tamaño de los controles */
+}
+
+
+
 body {
   background-color: var(--primary-color);
   font-family: 'Poppins', sans-serif;
