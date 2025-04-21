@@ -135,7 +135,7 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
     this.http.get<any>('http://127.0.0.1:8000/api/movies/popular')
       .subscribe(response => {
         this.recommendedMovies = response.movies
-          .filter((m: Movie) => m.vote_average >= 7.5 && m.backdrop_path)
+          .filter((m: Movie) => m.vote_average >= 6.5 && m.backdrop_path)
           .slice(0, 6);
         setTimeout(() => {
           this.updateActiveSlide(); // Activar el primer slide al renderizar
