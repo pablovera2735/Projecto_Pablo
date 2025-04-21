@@ -86,3 +86,10 @@ tarea realizada:
 
 
 He creado un nuevo componente llamado "Ver Perfil", donde los usuarios pueden ver su historial de películas que les han gustado, así como la lista de amigos que tienen agregados. También añadí un carrusel al frontend, aunque aún me falta implementar el autoplay, lo cual haré más adelante. Además, he añadido nuevas rutas tanto en Laravel como en Angular, corrigiendo y organizando la estructura para mejorar la navegación y la integración entre el backend y el frontend.
+
+
+## Día 11: [21 de abril]
+
+tarea realizada:
+
+Acabo de terminar la parte del carrusel en la sección principal de las películas. También he añadido Monolog en PHP y he implementado PHPUnit para las pruebas de autenticación. Me falta añadir más pruebas con PHPUnit. Más adelante, voy a implementar la funcionalidad para enviar solicitudes de amistad.

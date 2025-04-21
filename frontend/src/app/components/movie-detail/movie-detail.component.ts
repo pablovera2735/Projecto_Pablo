@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-movie-detail',
@@ -8,14 +10,21 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   styleUrls: ['./movie-detail.component.css']
 })
 export class MovieDetailComponent implements OnInit {
+  userName: string = '';
   movieId!: string;
   movie: any;
+  trailerUrl: SafeResourceUrl = ''; // Cambiar a SafeResourceUrl
   cast: any[] = [];
-
+  profilePhoto: string = 'assets/img/Perfil_Inicial.jpg';
   reviews: any[] = [];
-newReview = { rating: 5, comment: '' };
+  newReview = { rating: 5, comment: '' };
 
-  constructor(private route: ActivatedRoute, private http: HttpClient) {}
+  constructor(
+    private route: ActivatedRoute,
+    private http: HttpClient,
+    private authService: AuthService,
+    private sanitizer: DomSanitizer // Inyectar DomSanitizer
+  ) {}
 
   ngOnInit(): void {
     this.movieId = this.route.snapshot.paramMap.get('id')!;
@@ -27,8 +36,18 @@ newReview = { rating: 5, comment: '' };
   loadMovie() {
     this.http.get<any>(`http://localhost:8000/api/movies/${this.movieId}`).subscribe(res => {
       this.movie = res.movie_details;
+  
+      // Verificar si el campo trailer existe
+      if (this.movie.trailer) {
+        const trailerUrl = this.movie.trailer; // Usamos el campo trailer directamente
+        // Sanitizar la URL antes de asignarla
+        this.trailerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(trailerUrl); // Sanitizar la URL
+      } else {
+        console.log('No trailer found');
+      }
     });
   }
+  
 
   loadReviews() {
     this.http.get<any>(`http://localhost:8000/api/movies/${this.movieId}/reviews`)
@@ -36,7 +55,6 @@ newReview = { rating: 5, comment: '' };
         this.reviews = res.reviews;
       });
   }
-  
 
   loadCast() {
     this.http.get<any>(`http://localhost:8000/api/movies/${this.movieId}/cast`)
@@ -58,12 +76,10 @@ newReview = { rating: 5, comment: '' };
     };
     
     this.http.post('http://localhost:8000/api/reviews', data, { headers }).subscribe(response => {
-      console.log(response); // Aquí puedes ver la respuesta para verificar
       this.newReview = { rating: 5, comment: '' };
       this.loadReviews(); // refresca las reseñas
     });
   }
-  
 
   addToFavorites() {
     const token = localStorage.getItem('token');
@@ -77,5 +93,29 @@ newReview = { rating: 5, comment: '' };
 
     this.http.post('http://localhost:8000/api/favorites', data, { headers })
       .subscribe(() => alert('Película agregada a favoritos'));
+  }
+
+  isAuthenticated(): boolean {
+    return this.authService.isLoggedIn();
+  }
+
+  setUserName(): void {
+    const user = this.authService.getUser();
+    if (user && user.name) {
+      this.userName = user.name;
+      this.profilePhoto = user.profile_photo
+        ? 'http://localhost:8000/' + user.profile_photo
+        : 'assets/img/Perfil_Inicial.jpg';
+    } else {
+      this.userName = 'Invitado';
+    }
+  }
+
+  logout(): void {
+    this.authService.logout().subscribe(() => {
+      localStorage.clear();
+      alert('Has cerrado sesión');
+      window.location.reload();
+    });
   }
 }

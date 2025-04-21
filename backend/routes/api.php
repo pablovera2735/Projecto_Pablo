@@ -21,6 +21,10 @@ Route::group(['middleware' => ['cors']], function () {
         Route::get('/favorites/{userId}', 'FavoriteController@index');
         Route::post('/favorites', 'FavoriteController@store');
         Route::delete('/favorites/{id}', 'FavoriteController@destroy');
+
+        Route::get('/friends', 'FriendController@index');
+        Route::post('/friends', 'FriendController@store');
+        Route::delete('/friends/{friendId}', 'FriendController@destroy');
     
         Route::get('/lists/{userId}', 'ListController@index');
         Route::post('/lists', 'ListController@store');
@@ -32,7 +36,6 @@ Route::group(['middleware' => ['cors']], function () {
     Route::get('/movies/popular', 'MovieController@getPopularMovies');
     Route::get('/movies/genres', 'MovieController@listGenres');
     Route::get('/movies/genre/{genreId}', 'MovieController@getMoviesByGenre');
-    Route::get('/movies/search', 'MovieController@searchMovie');
     Route::get('/movies/{id}', 'MovieController@getMovieDetails');
     Route::get('/movies/{id}/reviews', 'ReviewController@index');
     

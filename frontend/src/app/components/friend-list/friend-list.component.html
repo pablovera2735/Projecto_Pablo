@@ -1,0 +1,18 @@
+<div class="container mt-4">
+    <h3>Tus Amigos</h3>
+  
+    <div *ngIf="message" class="alert alert-info">{{ message }}</div>
+  
+    <ul class="list-group mb-3">
+      <li *ngFor="let friend of friends" class="list-group-item d-flex justify-content-between align-items-center">
+        {{ friend.name }} ({{ friend.email }})
+        <button class="btn btn-danger btn-sm" (click)="removeFriend(friend.id)">Eliminar</button>
+      </li>
+    </ul>
+  
+    <div class="input-group">
+      <input type="number" [(ngModel)]="newFriendId" class="form-control" placeholder="ID de amigo">
+      <button class="btn btn-primary" (click)="addFriend()">Agregar amigo</button>
+    </div>
+  </div>
+  

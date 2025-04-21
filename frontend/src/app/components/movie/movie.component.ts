@@ -1,9 +1,9 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
-declare var bootstrap: any; // 👈 Importación necesaria para usar Bootstrap JS
+declare var bootstrap: any;
 
 interface Movie {
   id: number;
@@ -25,15 +25,19 @@ interface Genre {
   templateUrl: './movie.component.html',
   styleUrls: ['./movie.component.css']
 })
-export class MovieComponent implements OnInit, AfterViewInit {
+export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
   userName: string = '';
+  profilePhoto: string = 'assets/img/Perfil_Inicial.jpg';
+
   genres: Genre[] = [];
   recommendedMovies: Movie[] = [];
   moviesByGenre: { [key: number]: Movie[] } = {};
   currentPageByGenre: { [key: number]: number } = {};
   totalPagesByGenre: { [key: number]: number } = {};
   moviesPerPage: number = 5;
-  profilePhoto: string = 'assets/img/Perfil_Inicial.jpg';
+
+  currentSlide: number = 0;
+  slideInterval: any;
 
   constructor(
     private http: HttpClient,
@@ -48,42 +52,48 @@ export class MovieComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    const carouselElement = document.querySelector('#recommendedCarousel');
-    if (carouselElement) {
-      new bootstrap.Carousel(carouselElement, {
-        interval: 3000, // Esto establece el intervalo entre los deslizamientos (en milisegundos)
-        ride: 'carousel', // Esto asegura que el carrusel empiece a moverse automáticamente
-        wrap: true, // El carrusel volverá al principio una vez que llegue al final
-        pause: false // Esto asegura que el carrusel siga moviéndose incluso si el usuario pasa el mouse por encima
-      });
+    this.startAutoSlide();
+  }
+
+  ngOnDestroy(): void {
+    if (this.slideInterval) {
+      clearInterval(this.slideInterval);
     }
   }
-  
-  getRecommendedMovies(): void {
-    this.http.get<any>('http://127.0.0.1:8000/api/movies/popular')
-      .subscribe(response => {
-        this.recommendedMovies = response.movies
-          .filter((m: Movie) => m.vote_average >= 7.5 && m.backdrop_path)
-          .slice(0, 6);
-  
-        // Esperamos a que Angular actualice la vista
-        setTimeout(() => {
-          const carouselElement = document.querySelector('#recommendedCarousel');
-          if (carouselElement) {
-            const carousel = new bootstrap.Carousel(carouselElement, {
-              interval: 5000, // ⏱️ Cambia cada 5 segundos
-              ride: 'carousel',
-              wrap: true,
-              pause: false
-            });
-            console.log('✅ Carrusel inicializado con intervalo de 5s');
-          }
-        }, 0);
-      });
+
+  startAutoSlide(): void {
+    this.slideInterval = setInterval(() => {
+      this.nextSlide();
+    }, 5000);
   }
-  
-  
-  
+
+  nextSlide(): void {
+    this.currentSlide = (this.currentSlide + 1) % this.recommendedMovies.length;
+    this.updateActiveSlide();
+  }
+
+  prevSlide(): void {
+    this.currentSlide = (this.currentSlide - 1 + this.recommendedMovies.length) % this.recommendedMovies.length;
+    this.updateActiveSlide();
+  }
+
+  goToSlide(index: number): void {
+    this.currentSlide = index;
+    this.updateActiveSlide();
+  }
+
+  updateActiveSlide(): void {
+    const slides = document.querySelectorAll('.blog-slide');
+    const dots = document.querySelectorAll('.dot');
+
+    slides.forEach((slide, index) => {
+      slide.classList.toggle('active', index === this.currentSlide);
+    });
+
+    dots.forEach((dot, index) => {
+      dot.classList.toggle('active', index === this.currentSlide);
+    });
+  }
 
   setUserName(): void {
     const user = this.authService.getUser();
@@ -118,6 +128,18 @@ export class MovieComponent implements OnInit, AfterViewInit {
           this.moviesByGenre[genreId] = response.movies.slice(0, this.moviesPerPage);
           this.totalPagesByGenre[genreId] = response.total_pages;
         }
+      });
+  }
+
+  getRecommendedMovies(): void {
+    this.http.get<any>('http://127.0.0.1:8000/api/movies/popular')
+      .subscribe(response => {
+        this.recommendedMovies = response.movies
+          .filter((m: Movie) => m.vote_average >= 7.5 && m.backdrop_path)
+          .slice(0, 6);
+        setTimeout(() => {
+          this.updateActiveSlide(); // Activar el primer slide al renderizar
+        }, 0);
       });
   }
 

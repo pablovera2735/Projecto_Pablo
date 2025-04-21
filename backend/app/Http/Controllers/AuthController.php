@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Mail\CustomResetPassword;
 use Illuminate\Support\Facades\Hash;
@@ -41,34 +42,35 @@ class AuthController extends Controller
     }
 
 
-public function register(Request $request)
-{
-    // Validación de campos
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:users',
-        'password' => 'required|string|min:8|confirmed'
-    ]);
-
-    // Crear el nuevo usuario en la base de datos
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-        'profile_photo' => 'Perfil_Inicial.jpg',
-        'default_photo' => true,
-    ]);
-
-    // Crear el token de acceso
-    $token = $user->createToken('auth_token')->plainTextToken;
-
-    // Respuesta con los datos del nuevo usuario
-    return response()->json(['data' => [
-        'accessToken' => $token,
-        'token_type' => 'Bearer',
-        'user' => $user
-    ]]);
-}
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed'
+        ]);
+    
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'profile_photo' => 'Perfil_Inicial.jpg',
+            'default_photo' => true,
+        ]);
+    
+        Log::channel('daily')->info('Nuevo usuario registrado', [
+            'user_id' => $user->id,
+            'email' => $user->email
+        ]);
+    
+        $token = $user->createToken('auth_token')->plainTextToken;
+    
+        return response()->json(['data' => [
+            'accessToken' => $token,
+            'token_type' => 'Bearer',
+            'user' => $user
+        ]]);
+    }    
 
 
 public function getUserProfile($id)

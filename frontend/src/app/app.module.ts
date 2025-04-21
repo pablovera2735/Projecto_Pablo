@@ -14,6 +14,7 @@ import { MovieListComponent } from './components/movie-list/movie-list.component
 import { FavoritesComponent } from './components/favorites/favorites.component';
 import { MovieDetailComponent } from './components/movie-detail/movie-detail.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
+import { FriendListComponent } from './components/friend-list/friend-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -25,6 +26,7 @@ const routes: Routes = [
   { path: 'foro', component: MovieListComponent},
   { path: 'favorites', component: FavoritesComponent },
   { path: 'movies/:id/forum', component: MovieForumComponent },
+  { path: 'friend', component: FriendListComponent },
   { path: 'perfil', component: UserProfileComponent },
   { path: '**', redirectTo: '/login' }
 ];
@@ -41,6 +43,7 @@ const routes: Routes = [
     FavoritesComponent,
     MovieDetailComponent,
     UserProfileComponent,
+    FriendListComponent,
   ],
   imports: [
     BrowserModule,
