@@ -1,51 +1,59 @@
 <div class="profile-container">
-    <div class="profile-header">
-      <div class="profile-photo-wrapper" (click)="triggerPhotoUpload()">
-        <img [src]="profilePhoto" class="profile-photo" alt="Foto de perfil" />
+  <div class="profile-header">
+    <div class="profile-photo-wrapper" (click)="triggerPhotoUpload()">
+      <img [src]="profilePhoto" class="profile-photo" alt="Foto de perfil" />
 
-        <div class="photo-menu" *ngIf="showPhotoMenu">
-            <button (click)="triggerPhotoUpload()">Cambiar foto</button>
-            <button (click)="deletePhoto()">Eliminar foto</button>
-          </div>
+      <div class="photo-menu" *ngIf="showPhotoMenu">
+        <button (click)="triggerPhotoUpload()">Cambiar foto</button>
+        <button (click)="deletePhoto()">Eliminar foto</button>
+      </div>
 
-          
-        <input type="file" #photoInput (change)="uploadPhoto($event)" accept="image/*" hidden />
-      </div>
-      <h2>{{ userName }}</h2>
+      <input type="file" #photoInput (change)="uploadPhoto($event)" accept="image/*" hidden />
     </div>
-  
-    <!-- Pestañas -->
-    <div class="profile-tabs">
-      <button class="tab selected">Opiniones</button>
-      <button class="tab">Actividad</button>
-      <button class="tab">Películas</button>
-      <button class="tab">Animación</button>
-      <button class="tab">Listas</button>
-      <button class="tab">Comentarios</button>
-      <button class="tab">Amigos</button>
+    <h2>{{ userName }}</h2>
+  </div>
+
+  <!-- Pestañas -->
+  <div class="profile-tabs">
+    <button class="tab" (click)="selectTab('comments')" [class.selected]="selectedTab === 'comments'">Comentarios</button>
+    <button class="tab" (click)="selectTab('actividad')" [class.selected]="selectedTab === 'actividad'">Actividad</button>
+    <button class="tab" (click)="selectTab('actividad')" [class.selected]="selectedTab === 'actividad'">Pedientes</button>
+    <button class="tab" (click)="selectTab('listas')" [class.selected]="selectedTab === 'Favoritas'">Favoritas</button>
+    <button class="tab" (click)="selectTab('animacion')" [class.selected]="selectedTab === 'Vistas'">Vistas</button>
+    <button class="tab" (click)="selectTab('friends')" [class.selected]="selectedTab === 'friends'">Amigos</button>
+  </div>
+
+  <!-- Comentarios -->
+  <div *ngIf="selectedTab === 'comments'" class="comment-section">
+    <textarea class="comment-input" placeholder="Escribe tu comentario..."></textarea>
+    <button class="submit-btn">Enviar comentario</button>
+    <div class="comment-counter">0 / 1000</div>
+
+    <div class="comment-filters">
+      <button class="filter">Más recientes</button>
+      <button class="filter">Más antiguos</button>
+      <button class="filter">Más votados</button>
     </div>
-  
-    <!-- Comentarios -->
-    <div class="comment-section">
-      <textarea class="comment-input" placeholder="Escribe tu comentario..."></textarea>
-      <button class="submit-btn">Enviar comentario</button>
-      <div class="comment-counter">0 / 1000</div>
-  
-      <div class="comment-filters">
-        <button class="filter">Más recientes</button>
-        <button class="filter">Más antiguos</button>
-        <button class="filter">Más votados</button>
+
+    <div class="comments">
+      <div *ngIf="comments.length === 0" class="no-comments">
+        NO HAY COMENTARIOS QUE MOSTRAR.
       </div>
-  
-      <div class="comments">
-        <div *ngIf="comments.length === 0" class="no-comments">
-          NO HAY COMENTARIOS QUE MOSTRAR.
-        </div>
-        <div *ngFor="let comment of comments" class="comment">
-          <p>{{ comment.content }}</p>
-          <small>{{ comment.created_at | date:'short' }}</small>
-        </div>
+      <div *ngFor="let comment of comments" class="comment">
+        <p>{{ comment.content }}</p>
+        <small>{{ comment.created_at | date:'short' }}</small>
       </div>
     </div>
   </div>
-  
+
+  <!-- Amigos -->
+  <div *ngIf="selectedTab === 'friends'" class="friends-section">
+    <div *ngIf="friends.length === 0" class="no-comments">
+      NO TIENES AMIGOS AÚN.
+    </div>
+    <div *ngFor="let friend of friends" class="friend-card">
+      <img [src]="getFriendPhoto(friend)" alt="Foto amigo" class="friend-photo" />
+      <div class="friend-name">{{ friend.name }}</div>
+    </div>
+  </div>
+</div>
