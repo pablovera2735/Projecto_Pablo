@@ -137,19 +137,19 @@ class MovieController extends Controller
 }
 
 
-    // Búsqueda de películas por nombre
-    public function searchMovie(Request $request)
+public function searchMovie(Request $request)
 {
-    $request->validate([
-        'query' => 'required|string'
-    ]);
+    $query = $request->input('q'); // <- clave: debe ser 'q' para que coincida con Angular
+
+    if (!$query) {
+        return response()->json(['status' => 'error', 'message' => 'Falta el parámetro de búsqueda'], 400);
+    }
 
     $apiKey = config('services.tmdb.api_key');
     $baseUrl = config('services.tmdb.base_url');
     $language = config('services.tmdb.language');
-    $query = $request->input('query');
 
-    $url = "$baseUrl/search/movie?query=$query&language=$language&api_key=$apiKey";
+    $url = "$baseUrl/search/movie?query=" . urlencode($query) . "&language=$language&api_key=$apiKey";
 
     Log::channel('peliculas')->info("🔍 Búsqueda de película: '$query' -> URL: $url");
 
@@ -164,7 +164,7 @@ class MovieController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'movies' => $movies
+            'results' => $movies
         ]);
     }
 
@@ -178,6 +178,7 @@ class MovieController extends Controller
         'message' => 'No se pudieron obtener los resultados de la búsqueda'
     ], 500);
 }
+
 
     // Obtener detalles de una película
     public function getMovieDetails($id)
@@ -225,6 +226,5 @@ class MovieController extends Controller
         'message' => 'No se pudieron obtener los detalles de la película'
     ], 500);
 }
-
 
 }

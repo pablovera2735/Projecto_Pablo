@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -12,21 +13,24 @@ export class ForgotPasswordComponent {
   successMessage: string = '';
   loading: boolean = false;
 
-  constructor(private authService: AuthService) {}
-
+  constructor(
+    private authService: AuthService,
+    private router: Router // <-- AÑADIDO AQUÍ
+  ) {}
   recoverPassword() {
     this.errorMessage = '';
     this.successMessage = '';
     this.loading = true;
-
+  
     this.authService.recoverPassword(this.email).subscribe({
       next: (response) => {
         this.loading = false;
-        if (response && response.message) {
-          this.successMessage = response.message;
-        } else {
-          this.successMessage = 'Correo de recuperación enviado';
-        }
+        this.successMessage = response.message || 'Correo de recuperación enviado';
+        
+        // Redirige tras 2 segundos con el email
+        setTimeout(() => {
+          this.router.navigate(['/reset-password'], { queryParams: { email: this.email } });
+        }, 2000);
       },
       error: (error) => {
         this.loading = false;

@@ -51,4 +51,14 @@ export class AuthService {
   recoverPassword(email: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/send-reset-password`, { email });
   }  
+
+  resetPasswordWithCode(data: {
+    email: string;
+    code: string;
+    new_password: string;
+    new_password_confirmation: string;
+  }): Observable<any> {
+    return this.http.post(`${this.apiUrl}/reset-password`, data);
+  }
+  
 }

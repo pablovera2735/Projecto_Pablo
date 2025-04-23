@@ -8,6 +8,7 @@ Route::group(['middleware' => ['cors']], function () {
     Route::post('/login', 'AuthController@login');
     Route::post('/register', 'AuthController@register');
     Route::post('/send-reset-password', 'AuthController@sendResetPassword');
+    Route::post('/reset-password', 'AuthController@resetPasswordWithCode');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/logout', 'AuthController@logout');

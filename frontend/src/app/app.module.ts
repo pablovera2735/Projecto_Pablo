@@ -15,12 +15,14 @@ import { FavoritesComponent } from './components/favorites/favorites.component';
 import { MovieDetailComponent } from './components/movie-detail/movie-detail.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { FriendListComponent } from './components/friend-list/friend-list.component';
+import { ResetPasswordComponent } from './reset-password/reset-password.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'recover-password', component: ForgotPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'movies', component: MovieComponent },
   { path: 'movies/:id/detail', component: MovieDetailComponent },
   { path: 'foro', component: MovieListComponent},
@@ -44,6 +46,7 @@ const routes: Routes = [
     MovieDetailComponent,
     UserProfileComponent,
     FriendListComponent,
+    ResetPasswordComponent,
   ],
   imports: [
     BrowserModule,

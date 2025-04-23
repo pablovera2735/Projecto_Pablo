@@ -28,6 +28,9 @@ interface Genre {
 export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
   userName: string = '';
   profilePhoto: string = 'assets/img/Perfil_Inicial.jpg';
+  searchTerm: string = '';
+  suggestions: any[] = [];
+
 
   genres: Genre[] = [];
   recommendedMovies: Movie[] = [];
@@ -105,6 +108,32 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.userName = 'Invitado';
     }
+  }
+
+  onSearchChange(): void {
+    if (this.searchTerm.length < 2) {
+      this.suggestions = [];
+      return;
+    }
+  
+    this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
+  .subscribe(response => {
+    this.suggestions = response.results.slice(0, 8); // solo los primeros 8
+  });
+
+  }
+
+  getItemImage(item: any): string {
+    if (item.poster_path || item.profile_path) {
+      const path = item.poster_path || item.profile_path;
+      return `https://image.tmdb.org/t/p/w92${path}`;
+    }
+    return 'assets/img/no-image.png';
+  }
+
+
+  goToSearchResults(): void {
+    this.router.navigate(['/busqueda'], { queryParams: { q: this.searchTerm } });
   }
 
   getGenres(): void {

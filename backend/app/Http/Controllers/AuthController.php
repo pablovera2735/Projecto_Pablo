@@ -138,16 +138,11 @@ public function sendResetPassword(Request $request)
 {
     $request->validate(['email' => 'required|email|exists:users']);
 
-    // Generar un código aleatorio de 4 dígitos como nueva contraseña
+    // Generar un código aleatorio de 4 dígitos
     $codigo = rand(1000, 9999);
 
     // Eliminar registros anteriores asociados al email en la tabla password_resets
     DB::table('password_resets')->where(['email' => $request->email])->delete();
-
-    // Actualizar la contraseña del usuario en la tabla users
-    DB::table('users')->where('email', $request->email)->update([
-        'password' => Hash::make($codigo)  // Guardar la nueva contraseña hasheada
-    ]);
 
     // Insertar el nuevo código en la tabla password_resets
     DB::table('password_resets')->insert([
@@ -156,11 +151,43 @@ public function sendResetPassword(Request $request)
         'created_at' => Carbon::now()
     ]);
 
-
+    // Enviar el código por correo al usuario
     Mail::to($request->email)->send(new CustomResetPassword($codigo));
 
     return response()->json(['message' => 'Correo de recuperación enviado.']);
 }
+
+
+public function resetPasswordWithCode(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email',
+        'code' => 'required|string',
+        'new_password' => 'required|string|min:8|confirmed',
+    ]);
+
+    // Buscar el código en la tabla de password_resets
+    $record = DB::table('password_resets')
+        ->where('email', $request->email)
+        ->where('token', $request->code)
+        ->first();
+
+    // Verificar si el código es válido
+    if (!$record) {
+        return response()->json(['message' => 'Código inválido o expirado'], 400);
+    }
+
+    // Actualizar la contraseña del usuario en la tabla users
+    User::where('email', $request->email)->update([
+        'password' => Hash::make($request->new_password)
+    ]);
+
+    // Eliminar el código usado
+    DB::table('password_resets')->where('email', $request->email)->delete();
+
+    return response()->json(['message' => 'Contraseña actualizada correctamente']);
+}
+
 
     public function logout()
     {
