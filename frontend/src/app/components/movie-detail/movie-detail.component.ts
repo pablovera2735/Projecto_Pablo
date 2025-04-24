@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AuthService } from '../../services/auth.service';
 
@@ -18,12 +19,15 @@ export class MovieDetailComponent implements OnInit {
   profilePhoto: string = 'assets/img/Perfil_Inicial.jpg';
   reviews: any[] = [];
   newReview = { rating: 5, comment: '' };
+  searchTerm: string = '';
+  suggestions: any[] = [];
 
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
     private authService: AuthService,
-    private sanitizer: DomSanitizer // Inyectar DomSanitizer
+    private sanitizer: DomSanitizer,
+    private router: Router // Asegurarse de importar Router
   ) {}
 
   ngOnInit(): void {
@@ -31,6 +35,7 @@ export class MovieDetailComponent implements OnInit {
     this.loadMovie();
     this.loadCast();
     this.loadReviews();
+    this.setUserName(); // Asegurarse de establecer el nombre de usuario en ngOnInit
   }
 
   loadMovie() {
@@ -47,7 +52,6 @@ export class MovieDetailComponent implements OnInit {
       }
     });
   }
-  
 
   loadReviews() {
     this.http.get<any>(`http://localhost:8000/api/movies/${this.movieId}/reviews`)
@@ -109,6 +113,30 @@ export class MovieDetailComponent implements OnInit {
     } else {
       this.userName = 'Invitado';
     }
+  }
+
+  onSearchChange(): void {
+    if (this.searchTerm.length < 2) {
+      this.suggestions = [];
+      return;
+    }
+  
+    this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
+      .subscribe(response => {
+        this.suggestions = response.results.slice(0, 8); // solo los primeros 8
+      });
+  }
+
+  getItemImage(item: any): string {
+    if (item.poster_path || item.profile_path) {
+      const path = item.poster_path || item.profile_path;
+      return `https://image.tmdb.org/t/p/w92${path}`;
+    }
+    return 'assets/img/no-image.png';
+  }
+
+  goToSearchResults(): void {
+    this.router.navigate(['/busqueda'], { queryParams: { q: this.searchTerm } });
   }
 
   logout(): void {

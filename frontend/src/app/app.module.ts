@@ -16,6 +16,7 @@ import { MovieDetailComponent } from './components/movie-detail/movie-detail.com
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { FriendListComponent } from './components/friend-list/friend-list.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { PopularAuthorsComponent } from './components/popular-authors/popular-authors.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -25,6 +26,7 @@ const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'movies', component: MovieComponent },
   { path: 'movies/:id/detail', component: MovieDetailComponent },
+  { path: 'autores', component: PopularAuthorsComponent },
   { path: 'foro', component: MovieListComponent},
   { path: 'favorites', component: FavoritesComponent },
   { path: 'movies/:id/forum', component: MovieForumComponent },
@@ -47,6 +49,7 @@ const routes: Routes = [
     UserProfileComponent,
     FriendListComponent,
     ResetPasswordComponent,
+    PopularAuthorsComponent,
   ],
   imports: [
     BrowserModule,

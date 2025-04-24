@@ -3,32 +3,43 @@
     <!-- Menú de navegación -->
     <div class="nav-left">
       <a routerLink="/" class="nav-icon"><i class="bi bi-house-door-fill"></i></a>
-      <a routerLink="/movies">inicio</a>
-      <a href="#">nuevo</a>
-      <a href="#">popular</a>
-      <a href="#">listas</a>
-      <a routerLink="/foro">foro</a>
-      <a href="#">nosotros</a>
+      <a routerLink="/movies">Inicio</a>
+      <a href="#">Estrenos</a>
+      <a href="#">Top</a>
+      <a href="#">Listas</a>
+      <a routerLink="/foro">Foro</a>
+      <a href="#">Nosotros</a>
     </div>
 
     <!-- Buscador y perfil -->
     <div class="nav-right">
-      <input type="text" class="search-input" placeholder="Buscar..." />
-      <i class="bi bi-calendar2-week"></i>
-      <i class="bi bi-bell-fill"></i>
+      <input
+      type="text"
+      class="search-input"
+      placeholder="Buscar..."
+      [(ngModel)]="searchTerm"
+      (keyup)="onSearchChange()"
+    />
+    <div class="search-dropdown" *ngIf="suggestions.length > 0">
+      <div *ngFor="let item of suggestions" class="search-item">
+        <img [src]="getItemImage(item)" alt="icono" />
+        <span>{{ item.title || item.name }}</span>
+      </div>
+      <div class="search-footer" (click)="goToSearchResults()">Ver todos los resultados</div>
+    </div>
 
       <div *ngIf="isAuthenticated()" class="user-box dropdown">
         <button class="user-btn dropdown-toggle" data-bs-toggle="dropdown">
           <img [src]="profilePhoto" class="rounded-circle me-2" width="30" height="30" alt="Perfil" />
-          <i class="bi bi-person-circle me-2"></i>
-          {{ userName }}
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li><a class="dropdown-item" [routerLink]="'/perfil'">Ver perfil</a></li>
-          <li><a class="dropdown-item" href="#">Ajustes</a></li>
-          <li><a class="dropdown-item" (click)="logout()">Cerrar sesión</a></li>
-        </ul>
-      </div>
+    <i class="bi bi-person-circle me-2"></i>
+    {{ userName }}
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><a class="dropdown-item" [routerLink]="'/perfil'">Ver perfil</a></li>
+    <li><a class="dropdown-item" href="#">Ajustes</a></li>
+    <li><a class="dropdown-item" (click)="logout()">Cerrar sesión</a></li>
+  </ul>
+</div>
 
       <div *ngIf="!isAuthenticated()">
         <a class="nav-link text-white" routerLink="/login">Iniciar sesión</a>

@@ -8,15 +8,19 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./reset-password.component.css']
 })
 export class ResetPasswordComponent implements OnInit {
-  email: string = '';
-  code: string = '';
-  newPassword: string = '';
-  newPasswordConfirmation: string = '';
-  successMessage: string = '';
-  errorMessage: string = '';
-  loading: boolean = false;
+  email = '';
+  code = '';
+  newPassword = '';
+  newPasswordConfirmation = '';
+  successMessage = '';
+  errorMessage = '';
+  loading = false;
 
-  constructor(private authService: AuthService, private route: ActivatedRoute, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
@@ -24,9 +28,8 @@ export class ResetPasswordComponent implements OnInit {
     });
   }
 
-  resetPassword() {
-    this.successMessage = '';
-    this.errorMessage = '';
+  resetPassword(): void {
+    this.clearMessages();
     this.loading = true;
 
     const data = {
@@ -47,5 +50,15 @@ export class ResetPasswordComponent implements OnInit {
         this.errorMessage = err.error?.message || 'Error al actualizar la contraseña';
       }
     });
+  }
+
+  clearMessages(): void {
+    this.successMessage = '';
+    this.errorMessage = '';
+  }
+
+  clearMessage(type: 'success' | 'error'): void {
+    if (type === 'success') this.successMessage = '';
+    if (type === 'error') this.errorMessage = '';
   }
 }

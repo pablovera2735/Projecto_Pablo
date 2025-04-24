@@ -6,7 +6,7 @@
       <a routerLink="/movies">Inicio</a>
       <a href="#">Estrenos</a>
       <a href="#">Top</a>
-      <a href="#">Listas</a>
+      <a routerLink="/autores">Autores</a>
       <a routerLink="/foro">Foro</a>
       <a href="#">Nosotros</a>
     </div>
@@ -87,34 +87,30 @@
     <div class="movie-grid">
       <!-- Tarjeta clickeable completa -->
       <div 
-        *ngFor="let movie of moviesByGenre[genre.id]" 
-        class="movie-card" 
-        (click)="goToDetails(movie.id)" 
-        style="cursor: pointer;"
-      >
-        <img 
-          [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path" 
-          alt="{{ movie.title }}" 
-          class="movie-img" 
-          onerror="this.src='assets/img/no-image.png'" 
-        />
-
-        <div class="movie-info">
-          <h3 class="movie-title">{{ movie.title }}</h3>
-          <span class="rating" [ngClass]="{
-              'green': movie.vote_average >= 7,
-              'orange': movie.vote_average >= 5 && movie.vote_average < 7,
-              'red': movie.vote_average < 5
-            }">
-            {{ movie.vote_average }}
-          </span>
-        </div>
-
-        <div class="movie-overview">
-          <h4>Sinopsis</h4>
-          <p>{{ movie.overview | slice:0:100 }}...</p>
-        </div>
-      </div>
+  *ngFor="let movie of moviesByGenre[genre.id]" 
+  class="movie-card-new" 
+  (click)="goToDetails(movie.id)"
+>
+  <div class="poster-wrapper">
+    <img 
+      [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path" 
+      [alt]="movie.title" 
+      class="movie-poster" 
+      onerror="this.src='assets/img/no-image.png'" 
+    />
+    <div class="rating-badge" [ngClass]="{
+      'green': movie.vote_average >= 7,
+      'orange': movie.vote_average >= 5 && movie.vote_average < 7,
+      'red': movie.vote_average < 5
+    }">
+      {{ (movie.vote_average * 10) | number: '1.0-0' }}<sup>%</sup>
+    </div>
+  </div>
+  <div class="movie-info-new">
+    <h5 class="movie-title-new">{{ movie.title }}</h5>
+    <p class="movie-date">{{ movie.release_date | date:'d MMM y' }}</p>
+  </div>
+</div>
     </div>
 
     <!-- Controles de Paginación -->
