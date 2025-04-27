@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Mail\CustomResetPassword;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -130,6 +131,48 @@ public function deleteProfilePhoto(Request $request)
         'message' => 'Foto de perfil eliminada',
         'profile_photo' => $user->profile_photo
     ]);
+}
+
+
+public function updateEmail(Request $request)
+{
+    $user = $request->user();
+
+    $validator = Validator::make($request->all(), [
+        'email' => 'required|email|unique:users,email,' . $user->id,
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
+    }
+
+    $user->email = $request->email;
+    $user->save();
+
+    return response()->json(['message' => 'Correo actualizado exitosamente']);
+}
+
+public function updatePassword(Request $request)
+{
+    $user = $request->user();
+
+    $validator = Validator::make($request->all(), [
+        'current_password' => 'required',
+        'password' => 'required|string|min:8|confirmed',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
+    }
+
+    if (!Hash::check($request->current_password, $user->password)) {
+        return response()->json(['message' => 'La contraseña actual no es correcta'], 400);
+    }
+
+    $user->password = Hash::make($request->password);
+    $user->save();
+
+    return response()->json(['message' => 'Contraseña actualizada exitosamente']);
 }
 
 

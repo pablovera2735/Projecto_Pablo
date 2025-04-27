@@ -17,17 +17,26 @@ class UsersTableSeeder extends Seeder
     public function run()
     {
         DB::table('users')->delete();
+        
         DB::table('users')->insert([
             [
                 'name' => 'admin',
                 'email' => 'admin@mail.com',
                 'password' => Hash::make('admin'),
+                'profile_photo' => 'Perfil_Inicial.jpg',
+                'default_photo' => true,
+                'created_at' => now(),
+                'updated_at' => now()
             ],
             [
                 'name' => 'usuario2',
                 'email' => 'usuario2@mail.com',
                 'password' => Hash::make('usuario2'),
+                'profile_photo' => 'Perfil_Inicial.jpg',
+                'default_photo' => true,
+                'created_at' => now(),
+                'updated_at' => now()
             ]
-        ]);    
+        ]);
     }
 }

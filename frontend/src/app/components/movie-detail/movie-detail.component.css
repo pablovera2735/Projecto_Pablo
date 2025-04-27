@@ -83,6 +83,12 @@ body {
     padding: 0;
     color: #333;
   }
+
+  .container{
+    max-width: 1200px;
+  }
+
+
   /* Movie Detail */
   .movie-detail {
     background-color: #1e1e2f;

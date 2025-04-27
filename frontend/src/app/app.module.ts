@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { AuthGuard } from './guards/auth.guard';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
@@ -17,21 +18,23 @@ import { UserProfileComponent } from './components/user-profile/user-profile.com
 import { FriendListComponent } from './components/friend-list/friend-list.component';
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { PopularAuthorsComponent } from './components/popular-authors/popular-authors.component';
+import { UserSettingsComponent } from './components/user-settings/user-settings.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent },
+  { path: 'login', component: LoginComponent, canActivate: [AuthGuard] },
   { path: 'register', component: RegisterComponent },
   { path: 'recover-password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'movies', component: MovieComponent },
   { path: 'movies/:id/detail', component: MovieDetailComponent },
-  { path: 'autores', component: PopularAuthorsComponent },
+  { path: 'personas', component: PopularAuthorsComponent },
   { path: 'foro', component: MovieListComponent},
   { path: 'favorites', component: FavoritesComponent },
   { path: 'movies/:id/forum', component: MovieForumComponent },
   { path: 'friend', component: FriendListComponent },
   { path: 'perfil', component: UserProfileComponent },
+  { path: 'ajustes', component: UserSettingsComponent },
   { path: '**', redirectTo: '/login' }
 ];
 
@@ -50,6 +53,7 @@ const routes: Routes = [
     FriendListComponent,
     ResetPasswordComponent,
     PopularAuthorsComponent,
+    UserSettingsComponent,
   ],
   imports: [
     BrowserModule,

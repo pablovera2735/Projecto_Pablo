@@ -1,0 +1,31 @@
+<div class="settings-wrapper">
+  <div class="settings-card">
+    <h2>Ajustes de cuenta</h2>
+
+    <!-- Cambiar email -->
+    <div class="settings-section">
+      <h3>Actualizar correo electrónico</h3>
+      <label for="email">Nuevo correo</label>
+      <input id="email" [(ngModel)]="newEmail" type="email" placeholder="Introduce tu nuevo correo" />
+      <button (click)="updateEmail()">Actualizar correo</button>
+    </div>
+
+    <hr class="separator">
+
+    <!-- Cambiar contraseña -->
+    <div class="settings-section">
+      <h3>Actualizar contraseña</h3>
+      
+      <label for="currentPassword">Contraseña actual</label>
+      <input id="currentPassword" [(ngModel)]="currentPassword" type="password" placeholder="Introduce tu contraseña actual" />
+
+      <label for="newPassword">Nueva contraseña</label>
+      <input id="newPassword" [(ngModel)]="newPassword" type="password" placeholder="Introduce nueva contraseña" />
+
+      <label for="confirmPassword">Confirmar nueva contraseña</label>
+      <input id="confirmPassword" [(ngModel)]="confirmPassword" type="password" placeholder="Confirma nueva contraseña" />
+
+      <button (click)="updatePassword()">Actualizar contraseña</button>
+    </div>
+  </div>
+</div>

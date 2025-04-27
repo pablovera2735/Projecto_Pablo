@@ -140,10 +140,25 @@ export class MovieDetailComponent implements OnInit {
   }
 
   logout(): void {
-    this.authService.logout().subscribe(() => {
-      localStorage.clear();
-      alert('Has cerrado sesión');
-      window.location.reload();
-    });
+    this.clearLocalSession();
+    this.router.navigate(['/movies']);
+
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.authService.logout().subscribe({
+        next: () => {
+          console.log('Logout exitoso en servidor');
+        },
+        error: (err) => {
+          console.warn('Error en logout del servidor, pero no pasa nada:', err);
+        }
+      });
+    }
+  }
+  
+  private clearLocalSession(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
   }
 }

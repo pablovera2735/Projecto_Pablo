@@ -76,10 +76,25 @@ export class MovieListComponent implements OnInit {
   }
 
   logout(): void {
-    this.authService.logout().subscribe(() => {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      this.router.navigate(['/login']);
-    });
-  }  
+    this.clearLocalSession();
+    this.router.navigate(['/foro']);
+
+
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.authService.logout().subscribe({
+        next: () => {
+          console.log('Logout exitoso en servidor');
+        },
+        error: (err) => {
+          console.warn('Error en logout del servidor, pero no pasa nada:', err);
+        }
+      });
+    }
+  }
+  
+  private clearLocalSession(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+  } 
 }
