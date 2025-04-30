@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
+  logoPath = 'assets/img/logo.png';
   email: string = '';
   password: string = '';
   errorMessage: string = '';

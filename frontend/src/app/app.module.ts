@@ -27,7 +27,7 @@ const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent, canActivate: [AuthGuard] },
   { path: 'register', component: RegisterComponent },
-  { path: 'recover-password', component: ForgotPasswordComponent },
+  { path: 'forgot_password', component: ForgotPasswordComponent },
   { path: 'reset-password', component: ResetPasswordComponent },
   { path: 'movies', component: MovieComponent },
   { path: 'movies/:id/detail', component: MovieDetailComponent },
