@@ -15,7 +15,7 @@ export class ForgotPasswordComponent {
 
   constructor(
     private authService: AuthService,
-    private router: Router // <-- AÑADIDO AQUÍ
+    private router: Router
   ) {}
   recoverPassword() {
     this.errorMessage = '';

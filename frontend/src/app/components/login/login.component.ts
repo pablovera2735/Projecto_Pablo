@@ -26,7 +26,6 @@ export class LoginComponent {
           localStorage.setItem('token', response.data.accessToken);
           const user = response.data.user;
           localStorage.setItem('user', JSON.stringify(user));
-          alert('Inicio de sesión exitoso');
           this.router.navigate(['/movies']);
         } else {
           console.error('Token o usuario no recibido');

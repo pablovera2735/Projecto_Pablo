@@ -35,8 +35,6 @@ export class RegisterComponent {
     this.authService.register(this.name, this.email, this.password, this.confirmPassword).subscribe({
       next: (response) => {
         this.loading = false;
-        this.successMessage = 'Cuenta creada exitosamente';
-        alert(this.successMessage);
         this.router.navigate(['/login']);
       },
       error: (error) => {
