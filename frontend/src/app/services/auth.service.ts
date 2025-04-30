@@ -31,6 +31,11 @@ export class AuthService {
     return !!localStorage.getItem('token');
   }
 
+  isAdmin(): boolean {
+    const user = this.getUser();
+    return user && user.email === 'admin@mail.com';
+  }  
+
   storeUserData(token: string, user: any) {
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(user));

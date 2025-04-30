@@ -1,0 +1,11 @@
+.admin-container {
+    background-color: #1e1e1e;
+    color: white;
+    padding: 2rem;
+    min-height: 100vh;
+  }
+  
+  .admin-actions {
+    margin-top: 2rem;
+  }
+  

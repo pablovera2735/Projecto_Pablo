@@ -1,0 +1,377 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --primary-color: #22254b;
+  --secondary-color: #6a329f;
+  --accent-color: #ff6f61;
+}
+
+.user-box .dropdown-menu {
+  background-color: #333 !important;
+  border: 1px solid #555;
+}
+
+.user-box .dropdown-item {
+  color: white !important;
+}
+
+.user-box .dropdown-item:hover {
+  background-color: #6a329f !important;
+  color: white !important;
+}
+
+body {
+  background-color: var(--primary-color);
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  color: white;
+}
+
+.custom-navbar {
+  background-color: #1a1a1a;
+  padding: 10px 20px;
+  color: white;
+}
+
+.navbar-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-left a {
+  color: white;
+  margin-right: 20px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.nav-left a:last-child {
+  margin-right: 0;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-left: 480px;
+  position: relative;
+}
+
+.search-dropdown {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  width: 250px;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.search-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  gap: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.search-item:hover {
+  background-color: #f1f1f1;
+}
+
+.search-item img {
+  width: 40px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.search-footer {
+  text-align: center;
+  padding: 10px;
+  background-color: var(--secondary-color);
+  color: white;
+  font-weight: bold;
+  border-top: 1px solid #ccc;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.search-footer:hover {
+  background-color: var(--accent-color);
+}
+
+header {
+  background-color: var(--secondary-color);
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 30px;
+  align-items: center;
+}
+
+header .logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+header nav a {
+  color: white;
+  margin: 0 15px;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+header .search-form input {
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  border: 2px solid var(--primary-color);
+  font-size: 16px;
+  background-color: var(--primary-color);
+  color: white;
+  outline: none;
+}
+
+header .search-form input:focus {
+  background-color: var(--secondary-color);
+}
+
+/* Contenedor Principal */
+.search-container {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 0 20px;
+  position: relative;
+}
+
+.filters {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 15px;
+}
+
+.filters select {
+  padding: 10px 15px;
+  font-size: 14px;
+  border-radius: 30px;
+  border: 2px solid #444;
+  background-color: #222;
+  color: white;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.filters select:hover {
+  border-color: #555;
+}
+
+.filters select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+}
+
+/* Estrenos */
+.estrenos-container {
+  padding: 3rem 0;
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+h2 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: white;
+  position: relative;
+  display: inline-block;
+}
+
+h2:after {
+  content: '';
+  position: absolute;
+  width: 60%;
+  height: 3px;
+  bottom: -10px;
+  left: 20%;
+  background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
+  border-radius: 3px;
+}
+
+.movie-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 25px;
+  padding: 0 20px;
+}
+
+.movie-card-new {
+  background: #fff;
+  color: #000;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+  width: 200px;
+}
+
+.movie-card-new:hover {
+  transform: scale(1.03);
+}
+
+.poster-wrapper {
+  position: relative;
+  height: 300px;
+  overflow: hidden;
+}
+
+.movie-poster {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.rating-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: #000;
+  color: #fff;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid #fff;
+}
+
+.rating-badge.green {
+  background-color: #21d07a;
+}
+
+.rating-badge.orange {
+  background-color: #d2d531;
+}
+
+.rating-badge.red {
+  background-color: #db2360;
+}
+
+.movie-info-new {
+  padding: 10px 12px;
+}
+
+.movie-title-new {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.movie-date {
+  margin: 2px 0 0;
+  color: #555;
+  font-size: 14px;
+}
+
+/* Efectos de carga */
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+.loading {
+  animation: pulse 1.5s infinite ease-in-out;
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  margin: 50px 0;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .nav-right {
+    margin-left: 0;
+  }
+  
+  .search-input {
+    width: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-content.container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .nav-left {
+    margin-bottom: 15px;
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .nav-right {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  
+  .movie-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+  }
+  
+  .movie-card img {
+    height: 220px;
+  }
+  
+  h2 {
+    font-size: 1.8rem;
+  }
+  
+  .nav-left a {
+    margin-right: 15px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 576px) {
+  .filters {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .search-input {
+    width: 100%;
+  }
+  
+  .movie-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .nav-left {
+    flex-wrap: wrap;
+  }
+  
+  .nav-left a {
+    margin-bottom: 10px;
+  }
+}

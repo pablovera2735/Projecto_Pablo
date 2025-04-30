@@ -20,6 +20,10 @@ Route::group(['middleware' => ['cors']], function () {
         Route::delete('/profile/delete-photo', 'AuthController@deleteProfilePhoto');
         Route::put('/profile/update-email', 'AuthController@updateEmail');
         Route::put('/profile/update-password', 'AuthController@updatePassword');
+        
+        Route::get('/admin/users', 'AdminController@getAllUsers');
+        Route::delete('/admin/users/{id}', 'AdminController@deleteUser');
+        Route::put('/admin/users/{id}/make-admin', 'AdminController@makeAdmin');
     
         Route::get('/favorites/{userId}', 'FavoriteController@index');
         Route::post('/favorites', 'FavoriteController@store');

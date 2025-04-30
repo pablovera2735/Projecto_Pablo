@@ -19,6 +19,9 @@ import { FriendListComponent } from './components/friend-list/friend-list.compon
 import { ResetPasswordComponent } from './reset-password/reset-password.component';
 import { PopularAuthorsComponent } from './components/popular-authors/popular-authors.component';
 import { UserSettingsComponent } from './components/user-settings/user-settings.component';
+import { AdminPanelComponent } from './components/admin-panel/admin-panel.component';
+import { ReleaseComponent } from './components/release/release.component';
+import { AboutComponent } from './components/about/about.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -29,6 +32,9 @@ const routes: Routes = [
   { path: 'movies', component: MovieComponent },
   { path: 'movies/:id/detail', component: MovieDetailComponent },
   { path: 'personas', component: PopularAuthorsComponent },
+  { path: 'estrenos', component: ReleaseComponent},
+  { path: 'nosotros', component: AboutComponent },
+  { path: 'admin', component: AdminPanelComponent },
   { path: 'foro', component: MovieListComponent},
   { path: 'favorites', component: FavoritesComponent },
   { path: 'movies/:id/forum', component: MovieForumComponent },
@@ -54,6 +60,9 @@ const routes: Routes = [
     ResetPasswordComponent,
     PopularAuthorsComponent,
     UserSettingsComponent,
+    AdminPanelComponent,
+    ReleaseComponent,
+    AboutComponent,
   ],
   imports: [
     BrowserModule,

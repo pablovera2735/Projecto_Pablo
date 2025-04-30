@@ -1,0 +1,111 @@
+<header class="custom-navbar">
+  <nav class="navbar-content container">
+    <!-- Menú de navegación -->
+    <div class="nav-left">
+      <a routerLink="/" class="nav-icon"><i class="bi bi-house-door-fill"></i></a>
+      <a routerLink="/movies">Inicio</a>
+      <a routerLink="/estrenos">Estrenos</a>
+      <a href="#">Top</a>
+      <a routerLink="/personas">Personas</a>
+      <a routerLink="/foro">Foro</a>
+      <a href="#">Nosotros</a>
+    </div>
+
+    <!-- Buscador y perfil -->
+    <div class="nav-right">
+      <input
+        type="text"
+        class="search-input"
+        placeholder="Buscar..."
+        [(ngModel)]="searchTerm"
+        (keyup)="onSearchChange()"
+      />
+      <div class="search-dropdown" *ngIf="suggestions.length > 0">
+        <div *ngFor="let item of suggestions" class="search-item">
+          <img [src]="getItemImage(item)" alt="icono" />
+          <span>{{ item.title || item.name }}</span>
+        </div>
+        <div class="search-footer" (click)="goToSearchResults()">Ver todos los resultados</div>
+      </div>
+
+      <div *ngIf="isAuthenticated()" class="user-box dropdown">
+        <button class="user-btn dropdown-toggle" data-bs-toggle="dropdown">
+          <img [src]="profilePhoto" class="rounded-circle me-2" width="30" height="30" alt="Perfil" />
+          <i class="bi bi-person-circle me-2"></i>
+          {{ userName }}
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" [routerLink]="'/perfil'">Ver perfil</a></li>
+          <li><a class="dropdown-item" [routerLink]="'/ajustes'">Ajustes</a></li>
+          <li><a class="dropdown-item" (click)="logout()">Cerrar sesión</a></li>
+        </ul>
+      </div>
+
+      <div *ngIf="!isAuthenticated()">
+        <a class="nav-link text-white" routerLink="/login">Iniciar sesión</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="filters">
+  <select [(ngModel)]="selectedYear" (change)="onFiltersChange()">
+    <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+  </select>
+
+  <select [(ngModel)]="selectedMonth" (change)="onFiltersChange()">
+    <option value="0">Mes</option>
+    <option value="1">Enero</option>
+    <option value="2">Febrero</option>
+    <option value="3">Marzo</option>
+    <option value="4">Abril</option>
+    <option value="5">Mayo</option>
+    <option value="6">Junio</option>
+    <option value="7">Julio</option>
+    <option value="8">Agosto</option>
+    <option value="9">Septiembre</option>
+    <option value="10">Octubre</option>
+    <option value="11">Noviembre</option>
+    <option value="12">Diciembre</option>
+  </select>
+</div>
+
+<div class="estrenos-container">
+  <h2>Películas Recientes Recomendadas</h2>
+
+  <div *ngIf="loading">Cargando estrenos...</div>
+  <div *ngIf="!loading && recommendedReleases.length === 0">
+    <p>No se encontraron estrenos para el mes y año seleccionados.</p>
+  </div>
+
+  <div class="movie-grid">
+    <div
+      *ngFor="let movie of recommendedReleases"
+      class="movie-card-new"
+      (click)="goToDetails(movie.id)"
+    >
+      <div class="poster-wrapper">
+        <img
+          [src]="getImage(movie.poster_path)"
+          [alt]="movie.title"
+          class="movie-poster"
+          onerror="this.src='assets/img/no-image.png'"
+        />
+        <div
+          class="rating-badge"
+          [ngClass]="{
+            green: movie.vote_average >= 7,
+            orange: movie.vote_average >= 5 && movie.vote_average < 7,
+            red: movie.vote_average < 5
+          }"
+        >
+          {{ (movie.vote_average * 10) | number: '1.0-0' }}<sup>%</sup>
+        </div>
+      </div>
+      <div class="movie-info-new">
+        <h5 class="movie-title-new">{{ movie.title }}</h5>
+        <p class="movie-date">{{ movie.release_date | date: 'd MMM y' }}</p>
+      </div>
+    </div>
+  </div>
+</div>
