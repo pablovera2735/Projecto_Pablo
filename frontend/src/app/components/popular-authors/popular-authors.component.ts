@@ -50,9 +50,9 @@ export class PopularAuthorsComponent implements OnInit {
     this.errorMessage = null;
     this.currentPage = page;
 
-    this.actorService.getPopularActors(page).subscribe({
+    this.actorService.getPopularPeople(page).subscribe({
       next: (response) => {
-        this.popularAuthors = response.results;
+        this.popularAuthors = response.people;
         this.totalPages = response.total_pages;
         this.isLoading = false;
       },
@@ -68,15 +68,30 @@ export class PopularAuthorsComponent implements OnInit {
     return path ? `https://image.tmdb.org/t/p/w300${path}` : 'assets/img/no-image.png';
   }
 
-  getKnownForTitles(knownFor: Actor['known_for']): string {
-    if (!knownFor || knownFor.length === 0) return 'Actor/Actriz';
-
-    const titles = knownFor.map(item => {
-      return item.media_type === 'movie' ? item.title : item.name;
-    }).filter(Boolean);
-
-    return titles.slice(0, 2).join(', ') + (titles.length > 2 ? '...' : '');
+  getKnownDepartment(person: any): string {
+    const dept = person.known_for_department?.toLowerCase();
+    switch (dept) {
+      case 'acting':
+        return 'Actor/Actriz';
+      case 'directing':
+        return 'Director/a';
+      case 'writing':
+        return 'Guionista';
+      case 'production':
+        return 'Productor/a';
+      case 'camera':
+        return 'Camarógrafo/a';
+      case 'editing':
+        return 'Editor/a';
+      case 'art':
+        return 'Director/a de arte';
+      case 'sound':
+        return 'Diseñador/a de sonido';
+      default:
+        return 'Desconocido';
+    }
   }
+  
 
   onSearchChange(): void {
     if (this.searchTerm.length < 2) {
@@ -135,7 +150,7 @@ export class PopularAuthorsComponent implements OnInit {
     event.preventDefault();
     if (page < 1 || page > this.totalPages || page === this.currentPage) return;
     this.loadPopularAuthors(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // opcional para hacer scroll hacia arriba
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   getLimitedPagesArray(): number[] {
