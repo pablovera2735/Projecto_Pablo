@@ -11,9 +11,10 @@ export class ActorService {
   constructor(private http: HttpClient) {}
 
   // Obtener actores populares
-  getPopularActors(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/actors/popular`);
+  getPopularActors(page: number = 1): Observable<any> {
+    return this.http.get<any>(`http://localhost:8000/api/actors/popular?page=${page}`);
   }
+  
 
   // Obtener detalles de un actor específico
   getActorById(id: number): Observable<any> {

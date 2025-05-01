@@ -30,6 +30,9 @@ export class PopularAuthorsComponent implements OnInit {
   isLoading: boolean = true;
   errorMessage: string | null = null;
 
+  currentPage: number = 1;
+  totalPages: number = 1;
+
   constructor(
     private actorService: ActorService,
     private authService: AuthService,
@@ -42,13 +45,15 @@ export class PopularAuthorsComponent implements OnInit {
     this.loadPopularAuthors();
   }
 
-  loadPopularAuthors(): void {
+  loadPopularAuthors(page: number = 1): void {
     this.isLoading = true;
     this.errorMessage = null;
+    this.currentPage = page;
 
-    this.actorService.getPopularActors().subscribe({
-      next: (data: Actor[]) => {
-        this.popularAuthors = data;
+    this.actorService.getPopularActors(page).subscribe({
+      next: (response) => {
+        this.popularAuthors = response.results;
+        this.totalPages = response.total_pages;
         this.isLoading = false;
       },
       error: (err) => {
@@ -65,7 +70,7 @@ export class PopularAuthorsComponent implements OnInit {
 
   getKnownForTitles(knownFor: Actor['known_for']): string {
     if (!knownFor || knownFor.length === 0) return 'Actor/Actriz';
-    
+
     const titles = knownFor.map(item => {
       return item.media_type === 'movie' ? item.title : item.name;
     }).filter(Boolean);
@@ -78,7 +83,7 @@ export class PopularAuthorsComponent implements OnInit {
       this.suggestions = [];
       return;
     }
-  
+
     this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`).subscribe({
       next: (response) => {
         this.suggestions = response.results.slice(0, 8);
@@ -124,5 +129,30 @@ export class PopularAuthorsComponent implements OnInit {
       alert('Has cerrado sesión');
       window.location.reload();
     });
+  }
+
+  goToPage(page: number, event: Event): void {
+    event.preventDefault();
+    if (page < 1 || page > this.totalPages || page === this.currentPage) return;
+    this.loadPopularAuthors(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' }); // opcional para hacer scroll hacia arriba
+  }
+
+  getLimitedPagesArray(): number[] {
+    const maxVisible = 5;
+    const half = Math.floor(maxVisible / 2);
+    let start = Math.max(this.currentPage - half, 1);
+    let end = start + maxVisible - 1;
+
+    if (end > this.totalPages) {
+      end = this.totalPages;
+      start = Math.max(end - maxVisible + 1, 1);
+    }
+
+    const pages = [];
+    for (let i = start; i <= end; i++) {
+      pages.push(i);
+    }
+    return pages;
   }
 }
