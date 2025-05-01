@@ -35,11 +35,13 @@ body {
   background-color: #1a1a1a;
   padding: 10px 20px;
   color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
 }
 
 .navbar-content {
-  max-width: 1200px;
-  margin-left: 250px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -61,7 +63,7 @@ body {
   display: flex;
   align-items: center;
   gap: 15px;
-  margin-left: 480px;
+  margin-left: 640px;
   position: relative;
 }
 
