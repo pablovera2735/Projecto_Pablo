@@ -1,15 +1,18 @@
 <div class="profile-container">
   <div class="profile-header">
-    <div class="profile-photo-wrapper" (click)="triggerPhotoUpload()">
+    <div class="profile-photo-wrapper" (click)="togglePhotoMenu()">
       <img [src]="profilePhoto" class="profile-photo" alt="Foto de perfil" />
 
+      <!-- Menú de opciones de la foto -->
       <div class="photo-menu" *ngIf="showPhotoMenu">
         <button (click)="triggerPhotoUpload()">Cambiar foto</button>
         <button (click)="deletePhoto()">Eliminar foto</button>
       </div>
 
+      <!-- Input de archivo oculto -->
       <input type="file" #photoInput (change)="uploadPhoto($event)" accept="image/*" hidden />
     </div>
+
     <h2>{{ userName }}</h2>
   </div>
 
@@ -17,9 +20,9 @@
   <div class="profile-tabs">
     <button class="tab" (click)="selectTab('comments')" [class.selected]="selectedTab === 'comments'">Comentarios</button>
     <button class="tab" (click)="selectTab('actividad')" [class.selected]="selectedTab === 'actividad'">Actividad</button>
-    <button class="tab" (click)="selectTab('actividad')" [class.selected]="selectedTab === 'actividad'">Pedientes</button>
-    <button class="tab" (click)="selectTab('listas')" [class.selected]="selectedTab === 'Favoritas'">Favoritas</button>
-    <button class="tab" (click)="selectTab('animacion')" [class.selected]="selectedTab === 'Vistas'">Vistas</button>
+    <button class="tab" (click)="selectTab('pendientes')" [class.selected]="selectedTab === 'pendientes'">Pendientes</button>
+    <button class="tab" (click)="selectTab('listas')" [class.selected]="selectedTab === 'listas'">Favoritas</button>
+    <button class="tab" (click)="selectTab('animacion')" [class.selected]="selectedTab === 'animacion'">Vistas</button>
     <button class="tab" (click)="selectTab('friends')" [class.selected]="selectedTab === 'friends'">Amigos</button>
   </div>
 
