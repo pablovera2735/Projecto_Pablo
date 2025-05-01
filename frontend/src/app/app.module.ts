@@ -16,7 +16,7 @@ import { FavoritesComponent } from './components/favorites/favorites.component';
 import { MovieDetailComponent } from './components/movie-detail/movie-detail.component';
 import { UserProfileComponent } from './components/user-profile/user-profile.component';
 import { FriendListComponent } from './components/friend-list/friend-list.component';
-import { ResetPasswordComponent } from './reset-password/reset-password.component';
+import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
 import { PopularAuthorsComponent } from './components/popular-authors/popular-authors.component';
 import { UserSettingsComponent } from './components/user-settings/user-settings.component';
 import { AdminPanelComponent } from './components/admin-panel/admin-panel.component';
