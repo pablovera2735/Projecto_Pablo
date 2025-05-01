@@ -58,7 +58,7 @@
       <p class="text-info fw-semibold mt-2">
         📺 Disponible en: {{ movie.platform }}
       </p>
-      <p class="lead mt-3">{{ movie.overview }}</p>
+      <p id="lead" class="lead mt-3">{{ movie.overview }}</p>
 
       <button class="btn btn-primary btn-lg mt-4 px-4 shadow" (click)="addToFavorites()">
         <i class="bi bi-heart-fill me-2"></i> Agregar a Favoritos
@@ -96,11 +96,13 @@
     <!-- Lista de reseñas -->
     <div *ngIf="reviews.length === 0" class="text-muted">No hay reseñas aún.</div>
     <div *ngFor="let review of reviews" class="border p-3 mb-3 rounded">
-      <strong>{{ review.user.name }}</strong>
+      <!-- Enlace al perfil del usuario -->
+      <a [routerLink]="['/perfil', review.user.id]" class="text-decoration-none">
+        <strong>{{ review.user.name }}</strong>
+      </a>
       <span class="text-warning">⭐ {{ review.rating }}/10</span>
       <p>{{ review.comment }}</p>
     </div>
-  </div>
 
   <hr class="my-5">
 

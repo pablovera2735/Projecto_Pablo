@@ -85,6 +85,32 @@ export class MovieDetailComponent implements OnInit {
     });
   }
 
+  sendFriendRequest(userId: number) {
+    if (!this.isAuthenticated()) {
+      alert('Debes iniciar sesión para enviar solicitudes de amistad');
+      this.router.navigate(['/login']);
+      return;
+    }
+  
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    
+    this.http.post('http://localhost:8000/api/friend-requests', { 
+      receiver_id: userId 
+    }, { headers }).subscribe({
+      next: (response) => {
+        alert('Solicitud de amistad enviada con éxito');
+      },
+      error: (error) => {
+        if (error.status === 409) {
+          alert(error.error.message || 'Ya has enviado una solicitud a este usuario');
+        } else {
+          alert('Error al enviar la solicitud de amistad');
+        }
+      }
+    });
+  }
+
   addToFavorites() {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);

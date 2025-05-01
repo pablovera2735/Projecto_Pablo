@@ -63,7 +63,7 @@ body {
   display: flex;
   align-items: center;
   gap: 15px;
-  margin-left: 640px;
+  margin-left: 600px;
   position: relative;
 }
 
@@ -168,7 +168,6 @@ body {
   /* Movie Detail */
   .movie-detail {
     background-color: #1e1e2f;
-    color: white;
     padding: 40px;
     border-radius: 15px;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
@@ -221,10 +220,14 @@ body {
   }
   
   .cast-section p {
-    color: #eee;
+    color: #131313;
     font-size: 0.95rem;
     margin-top: 10px;
     font-weight: 600;
+  }
+
+  #lead{
+    color: white;
   }
   
   .btn-primary {
