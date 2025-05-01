@@ -110,8 +110,8 @@ export class UserProfileComponent implements OnInit {
   // Eliminar foto actual
   deletePhoto(): void {
     this.showPhotoMenu = false;
-    const confirmDelete = confirm('¿Quieres quitar tu foto de perfil y volver a la predeterminada?');
-    if (!confirmDelete) return;
+    /*const confirmDelete = confirm('¿Quieres quitar tu foto de perfil y volver a la predeterminada?');
+    if (!confirmDelete) return;*/
 
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({

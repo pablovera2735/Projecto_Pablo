@@ -1,35 +1,34 @@
-header {
-  background-color: var(--secondary-color);
-  display: flex;
-  justify-content: space-between;
-  padding: 15px 30px;
-  align-items: center;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;700&display=swap');
+
+* {
+  box-sizing: border-box;
 }
 
-header .logo {
-  font-size: 24px;
-  font-weight: bold;
+:root {
+  --primary-color: #22254b;
+  --secondary-color: #6a329f;
+  --accent-color: #ff6f61;
 }
 
-header nav a {
-  color: white;
-  margin: 0 15px;
-  text-decoration: none;
-  font-size: 18px;
+.user-box .dropdown-menu {
+  background-color: #333 !important;
+  border: 1px solid #555;
 }
 
-header .search-form input {
-  padding: 0.5rem 1rem;
-  border-radius: 50px;
-  border: 2px solid var(--primary-color);
-  font-size: 16px;
+.user-box .dropdown-item {
+  color: white !important;
+}
+
+.user-box .dropdown-item:hover {
+  background-color: #6a329f !important;
+  color: white !important;
+}
+
+body {
   background-color: var(--primary-color);
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
   color: white;
-  outline: none;
-}
-
-header .search-form input:focus {
-  background-color: var(--secondary-color);
 }
 
 .custom-navbar {
@@ -40,7 +39,7 @@ header .search-form input:focus {
 
 .navbar-content {
   max-width: 1200px;
-  margin: 0 auto;
+  margin-left: 250px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -62,16 +61,91 @@ header .search-form input:focus {
   display: flex;
   align-items: center;
   gap: 15px;
-  margin-left: 500px;
+  margin-left: 480px;
+  position: relative;
 }
 
-.search-input {
-  background-color: #ccc;
-  border: none;
+.search-dropdown {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  width: 250px;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
   border-radius: 8px;
-  padding: 5px 10px;
-  font-size: 14px;
-  color: #333;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.search-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  gap: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.search-item:hover {
+  background-color: #f1f1f1;
+}
+
+.search-item img {
+  width: 40px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.search-footer {
+  text-align: center;
+  padding: 10px;
+  background-color: var(--secondary-color);
+  color: white;
+  font-weight: bold;
+  border-top: 1px solid #ccc;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.search-footer:hover {
+  background-color: var(--accent-color);
+}
+
+header {
+  background-color: var(--secondary-color);
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 30px;
+  align-items: center;
+}
+
+header .logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+header nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+header .search-form input {
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  border: 2px solid var(--primary-color);
+  font-size: 16px;
+  background-color: var(--primary-color);
+  color: white;
+  outline: none;
+}
+
+header .search-form input:focus {
+  background-color: var(--secondary-color);
 }
 
 
