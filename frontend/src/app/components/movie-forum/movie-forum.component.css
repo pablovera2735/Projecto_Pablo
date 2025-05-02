@@ -1,0 +1,354 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #1a1a2e;  /* Fondo principal más oscuro */
+    --secondary-color: #6a329f; /* Morado principal */
+    --accent-color: #9f5f80;   /* Color de acento rosado/morado */
+    --text-color: #e6e6e6;     /* Texto principal */
+    --text-muted: #aaaaaa;     /* Texto secundario */
+    --card-bg: #16213e;        /* Fondo de tarjetas */
+    --header-bg: #0f3460;      /* Fondo de encabezados */
+    --reply-bg: #1a2a4a;       /* Fondo de respuestas */
+  }
+  
+
+.user-box .dropdown-menu {
+  background-color: #333 !important;
+  border: 1px solid #555;
+}
+
+.user-box .dropdown-item {
+  color: white !important;
+}
+
+.user-box .dropdown-item:hover {
+  background-color: #6a329f !important;
+  color: white !important;
+}
+
+body {
+  background-color: var(--primary-color);
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  color: white;
+}
+
+.custom-navbar {
+  background-color: #1a1a1a;
+  padding: 10px 20px;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.navbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.nav-left a {
+  color: white;
+  margin-right: 20px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.nav-left a:last-child {
+  margin-right: 0;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-left: 640px;
+  position: relative;
+}
+
+.search-dropdown {
+  position: absolute;
+  top: 45px;
+  left: 0;
+  width: 250px;
+  background-color: #fff;
+  color: #000;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.search-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  gap: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.search-item:hover {
+  background-color: #f1f1f1;
+}
+
+.search-item img {
+  width: 40px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.search-footer {
+  text-align: center;
+  padding: 10px;
+  background-color: var(--secondary-color);
+  color: white;
+  font-weight: bold;
+  border-top: 1px solid #ccc;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.search-footer:hover {
+  background-color: var(--accent-color);
+}
+
+header {
+  background-color: var(--secondary-color);
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 30px;
+  align-items: center;
+}
+
+header .logo {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+header nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+header .search-form input {
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  border: 2px solid var(--primary-color);
+  font-size: 16px;
+  background-color: var(--primary-color);
+  color: white;
+  outline: none;
+}
+
+header .search-form input:focus {
+  background-color: var(--secondary-color);
+}
+
+
+
+.forum-title {
+    color: var(--text-color);
+    font-weight: 600;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    border-bottom: 2px solid var(--secondary-color);
+    padding-bottom: 8px;
+    display: inline-block;
+  }
+  
+  .forum-card {
+    background-color: var(--card-bg);
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    border-left: 4px solid var(--secondary-color);
+  }
+  
+  .comment-textarea {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(106, 50, 159, 0.3);
+    color: var(--text-color);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  
+  .comment-textarea:focus {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: var(--text-color);
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.25rem rgba(106, 50, 159, 0.25);
+  }
+  
+  .comment-btn {
+    background-color: var(--secondary-color);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 20px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .comment-btn:hover {
+    background-color: #5a2a8a;
+    transform: translateY(-1px);
+  }
+  
+  .comment-btn:disabled {
+    background-color: #4a4a4a;
+    opacity: 0.7;
+  }
+  
+  /* Estilos de comentarios */
+  .comment-card {
+    background-color: var(--card-bg);
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease;
+  }
+  
+  .comment-card:hover {
+    transform: translateY(-2px);
+  }
+  
+  .comment-header {
+    background-color: var(--header-bg);
+    border-bottom: 1px solid rgba(106, 50, 159, 0.3);
+    border-radius: 10px 10px 0 0 !important;
+  }
+  
+  .comment-body {
+    padding: 1rem 1.5rem;
+    background-color: var(--card-bg);
+    border-radius: 0 0 10px 10px;
+  }
+  
+  .user-avatar {
+    object-fit: cover;
+    border: 2px solid var(--secondary-color);
+    transition: transform 0.3s ease;
+  }
+  
+  .user-avatar:hover {
+    transform: scale(1.1);
+  }
+  
+  .comment-date, .reply-date {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+  
+  .comment-content, .reply-content {
+    color: var(--text-color);
+    line-height: 1.6;
+  }
+  
+  .reply-btn {
+    background-color: transparent;
+    color: var(--text-muted);
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+  }
+  
+  .reply-btn:hover {
+    color: var(--secondary-color);
+    background-color: rgba(106, 50, 159, 0.1);
+  }
+  
+  /* Estilos de respuestas */
+  .reply-card {
+    background-color: var(--reply-bg);
+    border-left: 3px solid var(--accent-color) !important;
+    border-radius: 0 8px 8px 0;
+  }
+  
+  .reply-header {
+    background-color: var(--reply-bg);
+    padding: 0.75rem 1rem;
+    border: none;
+  }
+  
+  .reply-body {
+    padding: 0.75rem 1rem;
+    background-color: var(--reply-bg);
+  }
+  
+  /* Formulario de respuesta */
+  .reply-form {
+    background-color: var(--reply-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    border-left: 3px solid var(--secondary-color);
+    margin-top: 1rem;
+  }
+  
+  .reply-preview {
+    color: var(--text-muted);
+    padding: 0.5rem 0.75rem;
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 6px;
+    font-style: italic;
+  }
+  
+  .reply-textarea {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(106, 50, 159, 0.3);
+    color: var(--text-color);
+    border-radius: 8px;
+  }
+  
+  .send-reply-btn {
+    background-color: var(--accent-color);
+    border: none;
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+  }
+  
+  .send-reply-btn:hover {
+    background-color: #8e4d6b;
+  }
+  
+  .cancel-reply-btn {
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    border: 1px solid var(--text-muted);
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+  }
+  
+  .cancel-reply-btn:hover {
+    border-color: var(--text-color);
+    color: var(--text-color);
+  }
+  
+  .no-comments {
+    background-color: var(--card-bg);
+    border: 1px dashed var(--secondary-color);
+    color: var(--text-muted);
+    border-radius: 8px;
+    text-align: center;
+    padding: 1.5rem;
+  }
+  
+  /* Efectos de transición */
+  .comment-card, .reply-card, .forum-card {
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }

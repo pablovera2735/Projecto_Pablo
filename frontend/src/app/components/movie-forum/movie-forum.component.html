@@ -1,23 +1,161 @@
-<div class="container mt-4" *ngIf="thread">
-  <h4>Foro de discusión sobre "{{ movie?.title }}"</h4>
+<header class="custom-navbar">
+  <nav class="navbar-content container">
+    <!-- Menú de navegación -->
+    <div class="nav-left">
+      <a routerLink="/" class="nav-icon"><i class="bi bi-house-door-fill"></i></a>
+      <a routerLink="/movies">Inicio</a>
+      <a routerLink="/estrenos">Estrenos</a>
+      <a routerLink="/personas">Personas</a>
+      <a routerLink="/foro">Foro</a>
+      <a routerLink="/nosotros">Nosotros</a>
+    </div>
 
-  <textarea class="form-control mb-2" [(ngModel)]="newComment" placeholder="Escribe un comentario..."></textarea>
-  <button class="btn btn-primary mb-4" (click)="postComment()" [disabled]="loading">
-    {{ loading ? 'Enviando...' : 'Comentar' }}
+    <!-- Ícono de campana -->
+    <div class="notification-wrapper position-relative">
+      <i class="bi bi-bell-fill fs-4" (click)="toggleDropdown()" style="cursor: pointer;"></i>
+    
+      <div class="dropdown-menu dropdown-menu-end show p-2 shadow"
+           *ngIf="showDropdown"
+           style="position: absolute; right: 0; top: 30px; min-width: 300px;">
+        <h6 class="dropdown-header">Últimas notificaciones</h6>
+        <div *ngIf="notifications.length === 0" class="dropdown-item text-muted">No hay notificaciones</div>
+        <div *ngFor="let noti of notifications" class="dropdown-item">
+          <strong>{{ noti.title }}</strong>
+          <p class="mb-0 small">{{ noti.message }}</p>
+        </div>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item text-center text-primary" (click)="markAllAsRead()">Marcar como leídas</button>
+      </div>
+    </div>
+    
+
+
+    <!-- Buscador y perfil -->
+    <div class="nav-right">
+      <input
+      type="text"
+      class="search-input"
+      placeholder="Buscar..."
+      [(ngModel)]="searchTerm"
+      (keyup)="onSearchChange()"
+    />
+    <div class="search-dropdown" *ngIf="suggestions.length > 0">
+      <div *ngFor="let item of suggestions" class="search-item">
+        <img [src]="getItemImage(item)" alt="icono" />
+        <span>{{ item.title || item.name }}</span>
+      </div>
+      <div class="search-footer" (click)="goToSearchResults()">Ver todos los resultados</div>
+    </div>
+
+      <div *ngIf="isAuthenticated()" class="user-box dropdown">
+        <button class="user-btn dropdown-toggle" data-bs-toggle="dropdown">
+          <img [src]="profilePhoto" class="rounded-circle me-2" width="30" height="30" alt="Perfil" />
+    <i class="bi bi-person-circle me-2"></i>
+    {{ userName }}
   </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><a class="dropdown-item" [routerLink]="'/perfil'">Ver perfil</a></li>
+    <li><a class="dropdown-item" [routerLink]="'/ajustes'">Ajustes</a></li>
+    <li><a class="dropdown-item" (click)="logout()">Cerrar sesión</a></li>
+  </ul>
+</div>
 
-  <div *ngIf="thread?.comments?.length === 0">Sé el primero en comentar.</div>
+      <div *ngIf="!isAuthenticated()">
+        <a class="nav-link text-white" routerLink="/login">Iniciar sesión</a>
+      </div>
+    </div>
+  </nav>
+</header>
 
-  <div *ngFor="let comment of thread.comments" class="mb-3 p-3 border rounded">
-    <strong>{{ comment.user.name }}</strong>
-    <p>{{ comment.content }}</p>
+<div class="container mt-4" *ngIf="thread">
+  <h2 class="forum-title mb-4">Foro de discusión sobre "{{ movie?.title }}"</h2>
 
-    <input type="text" [(ngModel)]="comment.replyText" class="form-control form-control-sm" placeholder="Responder..." />
-    <button class="btn btn-link btn-sm" (click)="replyTo(comment.id, comment.replyText)">Responder</button>
+  <!-- Formulario para nuevo comentario -->
+  <div class="card mb-4 forum-card">
+    <div class="card-body">
+      <textarea class="form-control mb-3 comment-textarea" 
+                [(ngModel)]="newComment" 
+                placeholder="Escribe un comentario..." 
+                rows="3"></textarea>
+      <button class="btn btn-primary comment-btn" 
+              (click)="postComment()" 
+              [disabled]="loading || !newComment.trim()">
+        {{ loading ? 'Enviando...' : 'Comentar' }}
+      </button>
+    </div>
+  </div>
 
-    <div *ngFor="let reply of comment.replies" class="ms-4 border-start ps-2 mt-2">
-      <strong>{{ reply.user.name }}</strong>
-      <p>{{ reply.content }}</p>
+  <!-- Mensaje cuando no hay comentarios -->
+  <div *ngIf="thread?.comments?.length === 0" class="alert alert-info no-comments">
+    Sé el primero en comentar.
+  </div>
+
+  <!-- Lista de comentarios -->
+  <div class="comments-list">
+    <div *ngFor="let comment of thread.comments" class="comment mb-4">
+      <div class="card comment-card">
+        <div class="card-header comment-header d-flex justify-content-between align-items-center">
+          <div class="user-info">
+            <img [src]="comment.user.profile_photo || 'assets/img/Perfil_Inicial.jpg'" 
+                 class="user-avatar rounded-circle me-2" 
+                 width="32" height="32" 
+                 alt="{{ comment.user.name }}">
+            <strong>{{ comment.user.name }}</strong>
+          </div>
+          <span class="comment-date">{{ comment.created_at | date:'medium' }}</span>
+        </div>
+        <div class="card-body comment-body">
+          <p class="card-text comment-content">{{ comment.content }}</p>
+          
+          <button class="btn btn-sm reply-btn" (click)="toggleReply(comment)">
+            <i class="bi bi-reply-fill me-1"></i> Responder
+          </button>
+          
+          <!-- Formulario de respuesta -->
+          <div class="reply-form mt-3" *ngIf="comment.showReply">
+            <div class="reply-preview mb-2">
+              <small>Respondiendo a <strong>{{comment.user.name}}</strong></small>
+            </div>
+            <textarea class="form-control mb-2 reply-textarea" 
+                      [(ngModel)]="comment.replyText" 
+                      placeholder="Escribe tu respuesta..." 
+                      rows="2"></textarea>
+            <div class="d-flex">
+              <button class="btn btn-sm btn-primary me-2 send-reply-btn" 
+                      (click)="replyTo(comment.id, comment.replyText)"
+                      [disabled]="!comment.replyText?.trim()">
+                <i class="bi bi-send-fill me-1"></i> Enviar
+              </button>
+              <button class="btn btn-sm btn-outline-secondary cancel-reply-btn" 
+                      (click)="cancelReply(comment)">
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Respuestas al comentario -->
+      <div class="replies ms-4 mt-2" *ngIf="comment.replies?.length > 0">
+        <div *ngFor="let reply of comment.replies" class="reply mb-3">
+          <div class="card reply-card">
+            <div class="card-header reply-header d-flex justify-content-between align-items-center">
+              <div class="user-info">
+                <img [src]="reply.user.profile_photo || 'assets/img/Perfil_Inicial.jpg'" 
+                     class="user-avatar rounded-circle me-2" 
+                     width="28" height="28" 
+                     alt="{{ reply.user.name }}">
+                <strong>{{ reply.user.name }}</strong>
+                <small class="text-muted ms-2">respondiendo a {{comment.user.name}}</small>
+              </div>
+              <span class="reply-date">{{ reply.created_at | date:'short' }}</span>
+            </div>
+            <div class="card-body reply-body">
+              <p class="card-text reply-content">{{ reply.content }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

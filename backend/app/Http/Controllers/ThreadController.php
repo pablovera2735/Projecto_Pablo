@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use App\Models\Thread;
 
 class ThreadController extends Controller
@@ -15,6 +14,12 @@ class ThreadController extends Controller
             ['title' => 'Discusión de Película']
         );
 
-        return response()->json($thread->load(['comments.replies', 'comments.user']));
+        // Cargar comentarios principales y sus respuestas con usuarios
+        $thread->load(['comments' => function($query) {
+            $query->whereNull('parent_id')
+                  ->with(['replies.user', 'user']);
+        }]);
+
+        return response()->json($thread);
     }
 }
