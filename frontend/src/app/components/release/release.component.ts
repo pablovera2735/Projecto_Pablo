@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-release',
@@ -14,6 +15,7 @@ export class ReleaseComponent implements OnInit {
   searchTerm: string = '';
   suggestions: any[] = [];
   notifications: any[] = [];
+  showDropdown: boolean = false;
 
   recommendedReleases: any[] = [];
   loading: boolean = true;
@@ -24,7 +26,8 @@ export class ReleaseComponent implements OnInit {
   constructor(
     private http: HttpClient,
     public authService: AuthService,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -55,6 +58,28 @@ export class ReleaseComponent implements OnInit {
       .subscribe(response => {
         this.suggestions = response.results.slice(0, 8);
       });
+  }
+
+
+  loadNotifications(): void {
+    this.notificationService.getNotifications().subscribe({
+      next: (data) => {
+        this.notifications = data;
+      },
+      error: (err) => {
+        console.error('Error al cargar notificaciones:', err);
+      }
+    });
+  }
+
+  toggleDropdown(): void {
+    this.showDropdown = !this.showDropdown;
+  }
+
+  markAllAsRead(): void {
+    this.notificationService.markAllAsRead().subscribe(() => {
+      this.notifications.forEach(n => n.read = true);
+    });
   }
 
   getItemImage(item: any): string {

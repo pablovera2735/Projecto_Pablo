@@ -2,32 +2,12 @@
   <nav class="navbar-content container">
     <!-- Menú de navegación -->
     <div class="nav-left">
-      <a routerLink="/" class="nav-icon"><i class="bi bi-house-door-fill"></i></a>
       <a routerLink="/movies">Inicio</a>
       <a routerLink="/estrenos">Estrenos</a>
       <a routerLink="/personas">Personas</a>
       <a routerLink="/foro">Foro</a>
       <a routerLink="/nosotros">Nosotros</a>
     </div>
-
-    <!-- Ícono de campana -->
-    <div class="notification-wrapper position-relative">
-      <i class="bi bi-bell-fill fs-4" (click)="toggleDropdown()" style="cursor: pointer;"></i>
-    
-      <div class="dropdown-menu dropdown-menu-end show p-2 shadow"
-           *ngIf="showDropdown"
-           style="position: absolute; right: 0; top: 30px; min-width: 300px;">
-        <h6 class="dropdown-header">Últimas notificaciones</h6>
-        <div *ngIf="notifications.length === 0" class="dropdown-item text-muted">No hay notificaciones</div>
-        <div *ngFor="let noti of notifications" class="dropdown-item">
-          <strong>{{ noti.title }}</strong>
-          <p class="mb-0 small">{{ noti.message }}</p>
-        </div>
-        <div class="dropdown-divider"></div>
-        <button class="dropdown-item text-center text-primary" (click)="markAllAsRead()">Marcar como leídas</button>
-      </div>
-    </div>
-    
 
 
     <!-- Buscador y perfil -->
@@ -47,10 +27,27 @@
       <div class="search-footer" (click)="goToSearchResults()">Ver todos los resultados</div>
     </div>
 
+
+    <div class="notification-wrapper" (click)="toggleDropdown()">
+      <i class="bi bi-bell-fill notification-icon"></i>
+    
+      <div *ngIf="showDropdown" class="dropdown-menu show shadow">
+        <h6 class="dropdown-header">Últimas notificaciones</h6>
+        <div *ngIf="notifications.length === 0" class="dropdown-item text-muted">No hay notificaciones</div>
+        <div *ngFor="let noti of notifications" class="dropdown-item">
+          <strong>{{ noti.title }}</strong>
+          <p class="mb-0 small">{{ noti.message }}</p>
+        </div>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item text-center text-primary" (click)="markAllAsRead()">Marcar como leídas</button>
+      </div>
+    </div>
+
+
+
       <div *ngIf="isAuthenticated()" class="user-box dropdown">
         <button class="user-btn dropdown-toggle" data-bs-toggle="dropdown">
           <img [src]="profilePhoto" class="rounded-circle me-2" width="30" height="30" alt="Perfil" />
-    <i class="bi bi-person-circle me-2"></i>
     {{ userName }}
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
@@ -66,7 +63,6 @@
     </div>
   </nav>
 </header>
-
 
 <main class="container mt-5">
   <div *ngFor="let genre of genres">

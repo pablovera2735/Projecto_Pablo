@@ -3,6 +3,7 @@ import { ActorService } from '../../services/actor.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
+import { NotificationService } from '../../services/notification.service';
 
 interface Actor {
   id: number;
@@ -25,6 +26,8 @@ export class PopularAuthorsComponent implements OnInit {
   profilePhoto: string = 'assets/img/Perfil_Inicial.jpg';
   searchTerm: string = '';
   suggestions: any[] = [];
+  notifications: any[] = [];
+  showDropdown: boolean = false;
 
   popularAuthors: Actor[] = [];
   isLoading: boolean = true;
@@ -37,7 +40,8 @@ export class PopularAuthorsComponent implements OnInit {
     private actorService: ActorService,
     private authService: AuthService,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
@@ -61,6 +65,27 @@ export class PopularAuthorsComponent implements OnInit {
         this.errorMessage = 'No se pudieron cargar los actores. Por favor, inténtalo más tarde.';
         this.isLoading = false;
       }
+    });
+  }
+
+  loadNotifications(): void {
+    this.notificationService.getNotifications().subscribe({
+      next: (data) => {
+        this.notifications = data;
+      },
+      error: (err) => {
+        console.error('Error al cargar notificaciones:', err);
+      }
+    });
+  }
+
+  toggleDropdown(): void {
+    this.showDropdown = !this.showDropdown;
+  }
+
+  markAllAsRead(): void {
+    this.notificationService.markAllAsRead().subscribe(() => {
+      this.notifications.forEach(n => n.read = true);
     });
   }
 
