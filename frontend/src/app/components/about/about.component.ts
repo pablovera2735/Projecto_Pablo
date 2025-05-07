@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-about',
@@ -14,6 +15,7 @@ userName: string = '';
   searchTerm: string = '';
   suggestions: any[] = [];
   notifications: any[] = [];
+  showDropdown: boolean = false;
 
   recommendedReleases: any[] = [];
   loading: boolean = true;
@@ -24,11 +26,13 @@ userName: string = '';
   constructor(
     private http: HttpClient,
     public authService: AuthService,
-    private router: Router
+    private router: Router,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
     this.setUserName();
+    this.loadNotifications();
   }
 
   setUserName(): void {
@@ -70,6 +74,28 @@ userName: string = '';
     });
   }
 
+
+  loadNotifications(): void {
+    this.notificationService.getNotifications().subscribe({
+      next: (data) => {
+        this.notifications = data;
+      },
+      error: (err) => {
+        console.error('Error al cargar notificaciones:', err);
+      }
+    });
+  }
+
+  toggleDropdown(): void {
+    this.showDropdown = !this.showDropdown;
+  }
+
+  markAllAsRead(): void {
+    this.notificationService.markAllAsRead().subscribe(() => {
+      this.notifications.forEach(n => n.read = true);
+    });
+  }
+
   isAuthenticated(): boolean {
     return this.authService.isLoggedIn();
   }
@@ -95,7 +121,4 @@ userName: string = '';
     localStorage.removeItem('token');
     localStorage.removeItem('user');
   }
-
-
-
 }
