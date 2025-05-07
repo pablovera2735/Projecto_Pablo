@@ -33,16 +33,23 @@ class FavoriteController extends Controller
         return response()->json($favorite);
     }
     
-    public function destroy($id)
-    {
-        $favorite = Favorite::findOrFail($id);
-    
-        if ($favorite->user_id != auth()->id()) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-    
-        $favorite->delete();
-    
-        return response()->json(['message' => 'Eliminado']);
+    public function destroy($movieId)
+{
+    $userId = auth()->id(); // 🔐 Usa el usuario autenticado
+
+    $favorite = Favorite::where('user_id', $userId)
+        ->where('movie_id', $movieId)
+        ->first();
+
+    if (!$favorite) {
+        return response()->json(['message' => 'Favorite not found'], 404);
     }
+
+    $favorite->delete();
+
+    return response()->json(['message' => 'Eliminado']);
+}
+
+
+
 }

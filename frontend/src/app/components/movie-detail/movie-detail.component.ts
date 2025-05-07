@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { AuthService } from '../../services/auth.service';
+import { NotificationService } from '../../services/notification.service';
 
 @Component({
   selector: 'app-movie-detail',
@@ -14,42 +15,49 @@ export class MovieDetailComponent implements OnInit {
   userName: string = '';
   movieId!: string;
   movie: any;
-  trailerUrl: SafeResourceUrl = ''; // Cambiar a SafeResourceUrl
+  trailerUrl: SafeResourceUrl = '';
   cast: any[] = [];
   profilePhoto: string = 'assets/img/Perfil_Inicial.jpg';
   reviews: any[] = [];
   newReview = { rating: 5, comment: '' };
   searchTerm: string = '';
   suggestions: any[] = [];
+  notifications: any[] = [];
+  isFavorite: boolean = false;
+  showDropdown: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
     private authService: AuthService,
     private sanitizer: DomSanitizer,
-    private router: Router // Asegurarse de importar Router
+    private router: Router,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit(): void {
-    this.movieId = this.route.snapshot.paramMap.get('id')!;
-    this.loadMovie();
-    this.loadCast();
-    this.loadReviews();
-    this.setUserName(); // Asegurarse de establecer el nombre de usuario en ngOnInit
+    this.route.paramMap.subscribe(params => {
+      this.movieId = params.get('id')!;
+      this.loadMovie();
+      this.loadCast();
+      this.loadReviews();
+      this.setUserName();
+      this.checkIfFavorite();
+      this.loadNotifications();
+    });
   }
 
   loadMovie() {
     this.http.get<any>(`http://localhost:8000/api/movies/${this.movieId}`).subscribe(res => {
       this.movie = res.movie_details;
   
-      // Verificar si el campo trailer existe
       if (this.movie.trailer) {
-        const trailerUrl = this.movie.trailer; // Usamos el campo trailer directamente
-        // Sanitizar la URL antes de asignarla
-        this.trailerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(trailerUrl); // Sanitizar la URL
-      } else {
-        console.log('No trailer found');
+        const trailerUrl = this.movie.trailer;
+        this.trailerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(trailerUrl);
       }
+  
+      // Verificar si la película está en favoritos cada vez que se cargan los detalles
+      this.checkIfFavorite();
     });
   }
 
@@ -58,6 +66,27 @@ export class MovieDetailComponent implements OnInit {
       .subscribe(res => {
         this.reviews = res.reviews;
       });
+  }
+
+  loadNotifications(): void {
+    this.notificationService.getNotifications().subscribe({
+      next: (data) => {
+        this.notifications = data;
+      },
+      error: (err) => {
+        console.error('Error al cargar notificaciones:', err);
+      }
+    });
+  }
+
+  toggleDropdown(): void {
+    this.showDropdown = !this.showDropdown;
+  }
+
+  markAllAsRead(): void {
+    this.notificationService.markAllAsRead().subscribe(() => {
+      this.notifications.forEach(n => n.read = true);
+    });
   }
 
   loadCast() {
@@ -85,45 +114,70 @@ export class MovieDetailComponent implements OnInit {
     });
   }
 
-  sendFriendRequest(userId: number) {
-    if (!this.isAuthenticated()) {
-      alert('Debes iniciar sesión para enviar solicitudes de amistad');
-      this.router.navigate(['/login']);
-      return;
-    }
-  
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    
-    this.http.post('http://localhost:8000/api/friend-requests', { 
-      receiver_id: userId 
-    }, { headers }).subscribe({
-      next: (response) => {
-        alert('Solicitud de amistad enviada con éxito');
-      },
-      error: (error) => {
-        if (error.status === 409) {
-          alert(error.error.message || 'Ya has enviado una solicitud a este usuario');
-        } else {
-          alert('Error al enviar la solicitud de amistad');
-        }
-      }
-    });
-  }
-
   addToFavorites() {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-
+    
+    // Hacer la petición a la API para agregar la película a favoritos
     const data = {
       movie_id: this.movie.id,
       title: this.movie.title,
-      poster_path: this.movie.poster_path
+      poster_path: this.movie.poster_path,
     };
-
+  
     this.http.post('http://localhost:8000/api/favorites', data, { headers })
-      .subscribe(() => alert('Película agregada a favoritos'));
+      .subscribe(response => {
+        const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        const alreadyExists = storedFavorites.some((movie: any) => movie.id === this.movie.id);
+  
+        if (!alreadyExists) {
+          // Si no está en favoritos, agregarla al localStorage
+          storedFavorites.push(this.movie);
+          localStorage.setItem('favorites', JSON.stringify(storedFavorites));
+          this.isFavorite = true;
+        }
+  
+        alert('Película agregada a favoritos');
+      }, (error) => {
+        console.error('Error al agregar a favoritos:', error);
+        alert('Hubo un error al agregar la película a favoritos');
+      });
   }
+
+  checkIfFavorite() {
+    const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    this.isFavorite = storedFavorites.some((movie: any) => movie.id === this.movie.id);
+  }
+
+  removeFromFavorites() {
+    const token = localStorage.getItem('token');
+  
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  
+    // Hacer la solicitud HTTP con ambos IDs (userId y movieId)
+    this.http.delete(`http://localhost:8000/api/favorites/${this.movie.id}`, { headers })
+      .subscribe(response => {
+        const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        
+        // Filtrar la película eliminada del localStorage
+        const updatedFavorites = storedFavorites.filter((movie: any) => movie.id !== this.movie.id);
+        localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+  
+        // Verificar si el array de favoritos está vacío
+        if (updatedFavorites.length === 0) {
+          console.log('Favoritos vacíos. Eliminando favoritos del localStorage...');
+          localStorage.removeItem('favorites');  // Eliminar solo los favoritos si está vacío
+        }
+  
+        this.isFavorite = false;
+        alert('Película eliminada de favoritos');
+      }, (error) => {
+        console.error('Error al eliminar de favoritos:', error);
+        alert('Hubo un error al eliminar la película de favoritos');
+      });
+  }  
+  
+  
 
   isAuthenticated(): boolean {
     return this.authService.isLoggedIn();
@@ -169,7 +223,6 @@ export class MovieDetailComponent implements OnInit {
     this.clearLocalSession();
     this.router.navigate(['/movies']);
 
-
     const token = localStorage.getItem('token');
     if (token) {
       this.authService.logout().subscribe({
@@ -182,7 +235,7 @@ export class MovieDetailComponent implements OnInit {
       });
     }
   }
-  
+
   private clearLocalSession(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('user');

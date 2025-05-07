@@ -63,8 +63,33 @@ body {
   display: flex;
   align-items: center;
   gap: 15px;
-  margin-left: 640px;
+  margin-left: auto;
   position: relative;
+}
+
+.notification-wrapper {
+  position: relative;
+  cursor: pointer;
+
+  .notification-icon {
+    font-size: 1.5rem;
+    color: white;
+    transition: color 0.3s ease;
+  }
+
+  .notification-icon:hover {
+    color: #0d6efd;
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 35px;
+    right: 0;
+    min-width: 280px;
+    background-color: #fff;
+    border-radius: 0.5rem;
+    z-index: 1000;
+  }
 }
 
 .search-dropdown {
@@ -237,10 +262,9 @@ header .search-form input:focus {
 
 .movie-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 20px;
-  position: relative;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 65px;
+  padding: 25px;
 }
 
 .genre-section {

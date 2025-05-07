@@ -27,7 +27,7 @@ Route::group(['middleware' => ['cors']], function () {
     
         Route::get('/favorites/{userId}', 'FavoriteController@index');
         Route::post('/favorites', 'FavoriteController@store');
-        Route::delete('/favorites/{id}', 'FavoriteController@destroy');
+        Route::delete('/favorites/{movieId}', 'FavoriteController@destroy');
 
         Route::get('/friends', 'FriendController@index');
         Route::post('/friends', 'FriendController@store');
