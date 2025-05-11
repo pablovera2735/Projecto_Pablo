@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
+use App\Models\ProfileComment;
 use App\Mail\CustomResetPassword;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -71,25 +72,39 @@ class AuthController extends Controller
             'token_type' => 'Bearer',
             'user' => $user
         ]]);
-    }    
+    }
+    
+    
+    public function getProfileComments($userId)
+    {
+        $comments = ProfileComment::where('profile_user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($comments);
+    }
 
 
-public function getUserProfile($id)
-{
-    $user = User::with('comments')->findOrFail($id);
 
-    return response()->json([
-        'name' => $user->name,
-        'profile_photo' => $user->profile_photo, // Asegúrate de que este campo exista
-        'comments' => $user->comments->map(function ($comment) {
-            return [
-                'id' => $comment->id,
-                'content' => $comment->content,
-                'created_at' => $comment->created_at->toDateTimeString(),
-            ];
-        }),
-    ]);
-}
+
+    public function storeProfileComment(Request $request)
+    {
+        $request->validate([
+            'profile_user_id' => 'required|exists:users,id',
+            'content' => 'required|string|max:1000'
+        ]);
+    
+        $comment = ProfileComment::create([
+            'profile_user_id' => $request->profile_user_id,
+            'author_id' => auth()->id(),
+            'content' => $request->content
+        ]);
+    
+        return response()->json([
+            'message' => 'Comentario enviado correctamente',
+            'comment' => $comment
+        ], 201);
+    }
 
 public function uploadProfilePhoto(Request $request)
 {

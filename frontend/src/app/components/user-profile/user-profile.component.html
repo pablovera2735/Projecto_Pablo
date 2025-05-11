@@ -28,9 +28,15 @@
 
   <!-- Comentarios -->
   <div *ngIf="selectedTab === 'comments'" class="comment-section">
-    <textarea class="comment-input" placeholder="Escribe tu comentario..."></textarea>
-    <button class="submit-btn">Enviar comentario</button>
-    <div class="comment-counter">0 / 1000</div>
+    <textarea
+      class="comment-input"
+      placeholder="Escribe tu comentario..."
+      [(ngModel)]="commentContent"
+      maxlength="1000"
+    ></textarea>
+
+    <button class="submit-btn" (click)="submitComment()">Enviar comentario</button>
+    <div class="comment-counter">{{ commentContent.length }} / 1000</div>
 
     <div class="comment-filters">
       <button class="filter">Más recientes</button>
@@ -58,5 +64,10 @@
       <img [src]="getFriendPhoto(friend)" alt="Foto amigo" class="friend-photo" />
       <div class="friend-name">{{ friend.name }}</div>
     </div>
+  </div>
+
+  <!-- Botón de regreso al final -->
+  <div class="back-button-wrapper">
+    <button class="back-button" (click)="goBack()">← Volver al menú</button>
   </div>
 </div>

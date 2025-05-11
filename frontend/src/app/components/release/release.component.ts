@@ -104,7 +104,7 @@ export class ReleaseComponent implements OnInit {
     this.clearLocalSession();
     this.router.navigate(['/movies']);
 
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       this.authService.logout().subscribe({
         next: () => {
@@ -118,8 +118,8 @@ export class ReleaseComponent implements OnInit {
   }
 
   private clearLocalSession(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
   }
 
   getRecommendedReleases(): void {

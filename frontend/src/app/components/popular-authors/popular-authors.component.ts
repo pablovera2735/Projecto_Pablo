@@ -36,6 +36,9 @@ export class PopularAuthorsComponent implements OnInit {
   currentPage: number = 1;
   totalPages: number = 1;
 
+  // Add showBackToTop property
+  showBackToTop: boolean = false;
+
   constructor(
     private actorService: ActorService,
     private authService: AuthService,
@@ -47,6 +50,17 @@ export class PopularAuthorsComponent implements OnInit {
   ngOnInit(): void {
     this.setUserName();
     this.loadPopularAuthors();
+    window.addEventListener('scroll', this.onScroll);
+  }
+
+  // Scroll listener to toggle the back-to-top button visibility
+  onScroll = (): void => {
+    this.showBackToTop = window.scrollY > 300; // Show button when scrolled more than 300px
+  };
+
+  // Scroll to top method
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   loadPopularAuthors(page: number = 1): void {
@@ -165,8 +179,7 @@ export class PopularAuthorsComponent implements OnInit {
 
   logout(): void {
     this.authService.logout().subscribe(() => {
-      localStorage.clear();
-      alert('Has cerrado sesión');
+      sessionStorage.clear();
       window.location.reload();
     });
   }

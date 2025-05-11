@@ -24,6 +24,7 @@ export class MovieDetailComponent implements OnInit {
   suggestions: any[] = [];
   notifications: any[] = [];
   isFavorite: boolean = false;
+  isWatched: boolean = false;  // Nueva variable para manejar "Has visto esto"
   showDropdown: boolean = false;
 
   constructor(
@@ -56,8 +57,8 @@ export class MovieDetailComponent implements OnInit {
         this.trailerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(trailerUrl);
       }
   
-      // Verificar si la película está en favoritos cada vez que se cargan los detalles
-      this.checkIfFavorite();
+      this.checkIfFavorite();  // Verificar si la película está en favoritos
+      this.checkIfWatched();   // Verificar si la película está marcada como vista
     });
   }
 
@@ -99,7 +100,7 @@ export class MovieDetailComponent implements OnInit {
   submitReview() {
     if (!this.newReview.comment.trim()) return alert('Por favor, escribe un comentario.');
   
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     
     const data = {
@@ -115,10 +116,9 @@ export class MovieDetailComponent implements OnInit {
   }
 
   addToFavorites() {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     
-    // Hacer la petición a la API para agregar la película a favoritos
     const data = {
       movie_id: this.movie.id,
       title: this.movie.title,
@@ -131,9 +131,8 @@ export class MovieDetailComponent implements OnInit {
         const alreadyExists = storedFavorites.some((movie: any) => movie.id === this.movie.id);
   
         if (!alreadyExists) {
-          // Si no está en favoritos, agregarla al localStorage
           storedFavorites.push(this.movie);
-          localStorage.setItem('favorites', JSON.stringify(storedFavorites));
+          sessionStorage.setItem('favorites', JSON.stringify(storedFavorites));
           this.isFavorite = true;
         }
   
@@ -145,28 +144,24 @@ export class MovieDetailComponent implements OnInit {
   }
 
   checkIfFavorite() {
-    const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+    const storedFavorites = JSON.parse(sessionStorage.getItem('favorites') || '[]');
     this.isFavorite = storedFavorites.some((movie: any) => movie.id === this.movie.id);
   }
 
   removeFromFavorites() {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
   
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
   
-    // Hacer la solicitud HTTP con ambos IDs (userId y movieId)
     this.http.delete(`http://localhost:8000/api/favorites/${this.movie.id}`, { headers })
       .subscribe(response => {
-        const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+        const storedFavorites = JSON.parse(sessionStorage.getItem('favorites') || '[]');
         
-        // Filtrar la película eliminada del localStorage
         const updatedFavorites = storedFavorites.filter((movie: any) => movie.id !== this.movie.id);
-        localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+        sessionStorage.setItem('favorites', JSON.stringify(updatedFavorites));
   
-        // Verificar si el array de favoritos está vacío
         if (updatedFavorites.length === 0) {
-          console.log('Favoritos vacíos. Eliminando favoritos del localStorage...');
-          localStorage.removeItem('favorites');  // Eliminar solo los favoritos si está vacío
+          sessionStorage.removeItem('favorites'); 
         }
   
         this.isFavorite = false;
@@ -175,9 +170,104 @@ export class MovieDetailComponent implements OnInit {
         console.error('Error al eliminar de favoritos:', error);
         alert('Hubo un error al eliminar la película de favoritos');
       });
-  }  
+  }
   
-  
+  markAsWatched(): void {
+  const user = this.authService.getUser();
+  const token = sessionStorage.getItem('token');
+
+  if (!user || !token) return;
+
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  const data = {
+    user_id: user.id,
+    movie_id: this.movie.id
+  };
+
+  this.http.post('http://localhost:8000/api/watched', data, { headers })
+    .subscribe({
+      next: () => {
+        this.isWatched = true;
+
+
+        const watchedMovies = JSON.parse(sessionStorage.getItem('watchedMovies') || '[]');
+        if (!watchedMovies.includes(this.movie.id)) {
+          watchedMovies.push(this.movie.id);
+          sessionStorage.setItem('watchedMovies', JSON.stringify(watchedMovies));
+        }
+      },
+      error: err => {
+        console.error('Error al marcar como vista:', err);
+        alert('Hubo un error al marcar la película como vista');
+      }
+    });
+}
+
+
+removeFromWatched(): void {
+  const user = this.authService.getUser();
+  const token = sessionStorage.getItem('token');
+
+  if (!user || !token) return;
+
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  const data = {
+    user_id: user.id,
+    movie_id: this.movie.id
+  };
+
+  this.http.post('http://localhost:8000/api/watched/remove', data, { headers })
+    .subscribe({
+      next: () => {
+        this.isWatched = false;
+
+        // Eliminar de localStorage
+        let watchedMovies = JSON.parse(sessionStorage.getItem('watchedMovies') || '[]');
+        watchedMovies = watchedMovies.filter((movieId: number) => movieId !== this.movie.id);
+
+        // Si el array está vacío, eliminar la clave de localStorage
+        if (watchedMovies.length === 0) {
+          sessionStorage.removeItem('watchedMovies');
+        } else {
+          sessionStorage.setItem('watchedMovies', JSON.stringify(watchedMovies));
+        }
+      },
+      error: err => {
+        console.error('Error al eliminar de vistos:', err);
+        alert('Hubo un error al eliminar la película de los vistos');
+      }
+    });
+}
+  checkIfWatched(): void {
+  const user = this.authService.getUser();
+  const token = sessionStorage.getItem('token');
+
+  if (!user || !token) return;
+
+  // Verificar primero si ya está en localStorage
+  const watchedMovies = JSON.parse(sessionStorage.getItem('watchedMovies') || '[]');
+  if (watchedMovies.includes(this.movie.id)) {
+    this.isWatched = true;
+    return; // Si ya está marcado como visto, no es necesario llamar al API
+  }
+
+
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
+
+  this.http.get<any>(`http://localhost:8000/api/is-movie-watched/${user.id}/${this.movie.id}`, { headers })
+    .subscribe(response => {
+      this.isWatched = response.isWatched;
+    });
+}
+
 
   isAuthenticated(): boolean {
     return this.authService.isLoggedIn();
@@ -200,7 +290,7 @@ export class MovieDetailComponent implements OnInit {
       this.suggestions = [];
       return;
     }
-  
+
     this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
       .subscribe(response => {
         this.suggestions = response.results.slice(0, 8); // solo los primeros 8
@@ -223,7 +313,7 @@ export class MovieDetailComponent implements OnInit {
     this.clearLocalSession();
     this.router.navigate(['/movies']);
 
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       this.authService.logout().subscribe({
         next: () => {
@@ -237,7 +327,7 @@ export class MovieDetailComponent implements OnInit {
   }
 
   private clearLocalSession(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
   }
 }

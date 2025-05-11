@@ -175,6 +175,36 @@ header .search-form input:focus {
   background-color: var(--secondary-color);
 }
 
+.back-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 50px;
+  text-align: center;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  opacity: 0.9;
+  transition: all 0.3s ease;
+  width: 40px;
+  height: 40px;
+
+  /* Flexbox para centrar contenido */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.back-to-top:hover {
+  background-color: #0056b3;
+  opacity: 1;
+}
+
+
 .blog-carousel-section {
   position: relative;
   margin: 0;
@@ -182,6 +212,7 @@ header .search-form input:focus {
   max-width: 100vw;
   overflow: hidden;
   border-radius: 0;
+  width: calc(100vw - 17px);
 }
 
 .blog-carousel {
@@ -196,11 +227,7 @@ header .search-form input:focus {
   transition: all 0.30s ease-in-out;
 }
 
-.blog-slide img {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
-}
+
 
 .blog-slide.active {
   display: block;
@@ -263,7 +290,6 @@ header .search-form input:focus {
 .movie-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 65px;
   padding: 25px;
 }
 
@@ -576,6 +602,11 @@ header .search-form input:focus {
 }
 
 @media (max-width: 768px) {
+
+  .blog-slide img {
+    width: 220%;
+  }
+
   .footer-container {
     grid-template-columns: 1fr;
   }

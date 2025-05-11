@@ -15,7 +15,7 @@ export class UserSettingsComponent {
   constructor(private http: HttpClient) {}
 
   updateEmail(): void {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
     this.http.put('http://localhost:8000/api/profile/update-email', { email: this.newEmail }, { headers })
@@ -31,7 +31,7 @@ export class UserSettingsComponent {
       return;
     }
 
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
     const passwordData = {

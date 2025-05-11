@@ -23,12 +23,12 @@ export class AuthService {
   }
 
   logout(): Observable<any> {
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${localStorage.getItem('token')}`);
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${sessionStorage.getItem('token')}`);
     return this.http.post(`${this.apiUrl}/logout`, {}, { headers, withCredentials: true });
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return !!sessionStorage.getItem('token');
   }
 
   isAdmin(): boolean {
@@ -37,12 +37,12 @@ export class AuthService {
   }  
 
   storeUserData(token: string, user: any) {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
+    sessionStorage.setItem('token', token);
+    sessionStorage.setItem('user', JSON.stringify(user));
   }
 
   getUser() {
-    const userData = localStorage.getItem('user');
+    const userData = sessionStorage.getItem('user');
     if (!userData || userData === '{}') {
       return null;
     }
@@ -50,7 +50,7 @@ export class AuthService {
   }
 
   updateUser(data: any) {
-    localStorage.setItem('user', JSON.stringify(data));
+    sessionStorage.setItem('user', JSON.stringify(data));
   }
 
   recoverPassword(email: string): Observable<any> {

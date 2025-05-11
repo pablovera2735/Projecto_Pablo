@@ -64,6 +64,15 @@
   </nav>
 </header>
 
+
+<div 
+  class="back-to-top" 
+  *ngIf="showBackToTop" 
+  (click)="scrollToTop()" 
+  title="Volver arriba">
+  <i class="bi bi-arrow-up"></i>
+</div>
+
 <section class="blog-carousel-section">
   <div class="blog-carousel">
     <div *ngFor="let movie of recommendedMovies; let i = index" class="blog-slide" [class.active]="i === 0">

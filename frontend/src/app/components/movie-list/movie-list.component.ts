@@ -138,7 +138,7 @@ export class MovieListComponent implements OnInit {
     this.router.navigate(['/foro']);
 
 
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       this.authService.logout().subscribe({
         next: () => {
@@ -152,7 +152,7 @@ export class MovieListComponent implements OnInit {
   }
   
   private clearLocalSession(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
   } 
 }

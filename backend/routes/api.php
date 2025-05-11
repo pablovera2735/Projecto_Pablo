@@ -17,6 +17,8 @@ Route::group(['middleware' => ['cors']], function () {
         Route::post('/reviews', 'ReviewController@store');
         
         Route::post('/profile/upload-photo', 'AuthController@uploadProfilePhoto');
+        Route::get('/profile-comments/{userId}', 'AuthController@getProfileComments');
+        Route::post('/profile-comments', 'AuthController@storeProfileComment');
         Route::delete('/profile/delete-photo', 'AuthController@deleteProfilePhoto');
         Route::put('/profile/update-email', 'AuthController@updateEmail');
         Route::put('/profile/update-password', 'AuthController@updatePassword');
@@ -28,6 +30,11 @@ Route::group(['middleware' => ['cors']], function () {
         Route::get('/favorites/{userId}', 'FavoriteController@index');
         Route::post('/favorites', 'FavoriteController@store');
         Route::delete('/favorites/{movieId}', 'FavoriteController@destroy');
+
+        Route::post('/watched', 'WatchedMovieController@markAsWatched');
+        Route::post('/watched/remove', 'WatchedMovieController@removeFromWatched');
+        Route::get('/watched/{userId}/{movieId}', 'WatchedMovieController@isMovieWatched');
+
 
         Route::get('/friends', 'FriendController@index');
         Route::post('/friends', 'FriendController@store');

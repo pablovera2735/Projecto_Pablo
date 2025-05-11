@@ -245,7 +245,6 @@ body {
   }
   
   .cast-section p {
-    color: #131313;
     font-size: 0.95rem;
     margin-top: 10px;
     font-weight: 600;
@@ -256,10 +255,104 @@ body {
   }
   
   .btn-primary {
-    background: linear-gradient(135deg, #00c3ff, #007adf);
-    border: none;
-    font-weight: 600;
-  }
+  background: linear-gradient(135deg, #00c3ff, #007adf);
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  color: white;
+  padding: 12px 25px;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-primary i {
+  font-size: 1.2rem;
+  margin-right: 8px;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #007adf, #00c3ff);
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary:focus {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+/* Botón Has visto esto */
+.btn-secondary {
+  background-color: #6c757d;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  color: white;
+  padding: 12px 25px;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 20px;
+}
+
+.btn-secondary i {
+  font-size: 1.2rem;
+  margin-right: 8px;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary:focus {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+/* Botón Eliminar de Vistos */
+.btn-warning {
+  background-color: #f39c12;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  color: white;
+  padding: 12px 25px;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-warning i {
+  font-size: 1.2rem;
+  margin-right: 8px;
+}
+
+.btn-warning:hover {
+  background-color: #e67e22;
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn-warning:focus {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  outline: none;
+}
+
+/* Asegurar que ambos botones estén alineados de manera uniforme */
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
   
   /* Cast Section */
  
@@ -345,6 +438,15 @@ body {
     font-size: 1rem;
     color: #7f8c8d;
     margin-top: 10px;
+  }
+
+
+  .cast-section{
+    color: white;
+    margin-top: 40px;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   
   /* Movie Poster Image */

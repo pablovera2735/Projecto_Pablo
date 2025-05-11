@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, AfterViewInit, OnDestroy, HostListener } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -33,7 +33,6 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
   suggestions: any[] = [];
   notifications: any[] = [];
 
-
   genres: Genre[] = [];
   recommendedMovies: Movie[] = [];
   moviesByGenre: { [key: number]: Movie[] } = {};
@@ -44,6 +43,7 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
   currentSlide: number = 0;
   slideInterval: any;
   showDropdown: boolean = false;
+  showBackToTop: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -59,6 +59,24 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
     this.loadNotifications();
   }
 
+  ngAfterViewInit(): void {
+    this.startAutoSlide();
+  }
+
+  ngOnDestroy(): void {
+    if (this.slideInterval) {
+      clearInterval(this.slideInterval);
+    }
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll(): void {
+    this.showBackToTop = window.pageYOffset > 300;
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   loadNotifications(): void {
     this.notificationService.getNotifications().subscribe({
@@ -79,16 +97,6 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
     this.notificationService.markAllAsRead().subscribe(() => {
       this.notifications.forEach(n => n.read = true);
     });
-  }
-
-  ngAfterViewInit(): void {
-    this.startAutoSlide();
-  }
-
-  ngOnDestroy(): void {
-    if (this.slideInterval) {
-      clearInterval(this.slideInterval);
-    }
   }
 
   startAutoSlide(): void {
@@ -142,12 +150,11 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
       this.suggestions = [];
       return;
     }
-  
-    this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
-  .subscribe(response => {
-    this.suggestions = response.results.slice(0, 8); // solo los primeros 8
-  });
 
+    this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
+      .subscribe(response => {
+        this.suggestions = response.results.slice(0, 8);
+      });
   }
 
   getItemImage(item: any): string {
@@ -157,7 +164,6 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     return 'assets/img/no-image.png';
   }
-
 
   goToSearchResults(): void {
     this.router.navigate(['/busqueda'], { queryParams: { q: this.searchTerm } });
@@ -194,7 +200,7 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
           .filter((m: Movie) => m.vote_average >= 6.5 && m.backdrop_path)
           .slice(0, 6);
         setTimeout(() => {
-          this.updateActiveSlide(); // Activar el primer slide al renderizar
+          this.updateActiveSlide();
         }, 0);
       });
   }
@@ -205,18 +211,17 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
 
   goToPage(genreId: number, page: number, event?: Event): void {
     if (event) {
-      event.preventDefault(); // No recargar
+      event.preventDefault();
     }
     if (page > 0 && page <= this.totalPagesByGenre[genreId]) {
       this.currentPageByGenre[genreId] = page;
       this.getMoviesByGenre(genreId);
     }
   }
-  
-  // Función para generar las páginas limitadas a máximo 5 visibles
+
   getLimitedPagesArray(currentPage: number, totalPages: number): number[] {
     const pages: number[] = [];
-  
+
     if (totalPages <= 5) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
@@ -232,7 +237,7 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
         pages.push(currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2);
       }
     }
-    
+
     return pages;
   }
 
@@ -241,11 +246,10 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   logout(): void {
-    this.clearLocalSession();
+    this.clearSession();
     this.router.navigate(['/movies']);
 
-
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
       this.authService.logout().subscribe({
         next: () => {
@@ -257,9 +261,9 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
       });
     }
   }
-  
-  private clearLocalSession(): void {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+
+  private clearSession(): void {
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
   }
 }

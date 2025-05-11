@@ -11,6 +11,7 @@ export class UserProfileComponent implements OnInit {
   userName: string = '';
   profilePhoto: string = 'assets/img/Perfil_Inicial.jpg';
   comments: any[] = [];
+  commentContent: string = '';
   friends: any[] = [];
   selectedTab: string = 'comments';
   showPhotoMenu: boolean = false;
@@ -21,13 +22,14 @@ export class UserProfileComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUserProfile();
+    this.loadComments();
     this.loadFriends();
   }
 
   // Cargar perfil y comentarios del usuario
   loadUserProfile(): void {
     const user = this.authService.getUser();
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
 
     if (user && token) {
       this.userName = user.name;
@@ -44,9 +46,58 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
-  // Cargar amigos
+  loadComments(): void {
+    const user = this.authService.getUser();
+    const token = sessionStorage.getItem('token');
+  
+    if (!user || !token) return;
+  
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+  
+    this.http.get<any[]>(`http://localhost:8000/api/profile-comments/${user.id}`, { headers })
+      .subscribe(response => {
+        this.comments = response;
+      });
+  }
+
+  submitComment(): void {
+    const user = this.authService.getUser();
+    const token = sessionStorage.getItem('token');
+  
+    if (!user || !token) return;
+  
+    if (!this.commentContent.trim()) {
+      alert('El comentario no puede estar vacío');
+      return;
+    }
+  
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`
+    });
+  
+    const body = {
+      profile_user_id: user.id,
+      content: this.commentContent
+    };
+  
+    this.http.post('http://localhost:8000/api/profile-comments', body, { headers })
+      .subscribe({
+        next: (res: any) => {
+          this.comments.unshift({
+            content: this.commentContent,
+            created_at: new Date().toISOString()
+          });
+          this.commentContent = '';
+        },
+        error: err => {
+          console.error('Error al enviar comentario:', err);
+          alert('Error al enviar el comentario');
+        }
+      });
+  }
+
   loadFriends(): void {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const user = this.authService.getUser();
 
     if (user && token) {
@@ -59,30 +110,25 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
-  // Obtener imagen del amigo
   getFriendPhoto(friend: any): string {
     return friend.profile_photo
       ? `http://localhost:8000/${friend.profile_photo}`
       : 'assets/img/Perfil_Inicial.jpg';
   }
 
-  // Cambiar de pestaña
   selectTab(tab: string): void {
     this.selectedTab = tab;
   }
 
-  // Mostrar/ocultar opciones de la foto
   togglePhotoMenu(): void {
     this.showPhotoMenu = !this.showPhotoMenu;
   }
 
-  // Abrir input para subir nueva foto
   triggerPhotoUpload(): void {
     this.showPhotoMenu = false;
     this.photoInput.nativeElement.click();
   }
 
-  // Subir nueva foto
   uploadPhoto(event: any): void {
     const file = event.target.files[0];
     if (!file) return;
@@ -90,7 +136,7 @@ export class UserProfileComponent implements OnInit {
     const formData = new FormData();
     formData.append('photo', file);
 
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
@@ -102,18 +148,15 @@ export class UserProfileComponent implements OnInit {
 
           const user = this.authService.getUser();
           user.profile_photo = response.profile_photo;
-          localStorage.setItem('user', JSON.stringify(user));
+          sessionStorage.setItem('user', JSON.stringify(user));
         }
       });
   }
 
-  // Eliminar foto actual
   deletePhoto(): void {
     this.showPhotoMenu = false;
-    /*const confirmDelete = confirm('¿Quieres quitar tu foto de perfil y volver a la predeterminada?');
-    if (!confirmDelete) return;*/
 
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`
     });
@@ -125,8 +168,13 @@ export class UserProfileComponent implements OnInit {
 
           const user = this.authService.getUser();
           user.profile_photo = response.profile_photo;
-          localStorage.setItem('user', JSON.stringify(user));
+          sessionStorage.setItem('user', JSON.stringify(user));
         }
       });
+  }
+
+  // Botón para volver atrás
+  goBack(): void {
+    window.history.back();
   }
 }

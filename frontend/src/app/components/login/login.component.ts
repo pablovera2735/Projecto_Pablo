@@ -23,9 +23,9 @@ export class LoginComponent {
       next: (response) => {
         /*console.log(response);*/
         if (response && response.data && response.data.accessToken && response.data.user) {
-          localStorage.setItem('token', response.data.accessToken);
+          sessionStorage.setItem('token', response.data.accessToken); // Cambiado a sessionStorage
           const user = response.data.user;
-          localStorage.setItem('user', JSON.stringify(user));
+          sessionStorage.setItem('user', JSON.stringify(user)); // Cambiado a sessionStorage
           this.router.navigate(['/movies']);
         } else {
           console.error('Token o usuario no recibido');
