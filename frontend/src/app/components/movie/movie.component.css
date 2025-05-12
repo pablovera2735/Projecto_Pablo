@@ -611,6 +611,10 @@ header .search-form input:focus {
     align-items: center;
   }
 
+  .search-input {
+    display: none;
+  }
+
   .movie-grid {
     grid-template-columns: 1fr 1fr;
   }

@@ -24,8 +24,9 @@ export class MovieDetailComponent implements OnInit {
   suggestions: any[] = [];
   notifications: any[] = [];
   isFavorite: boolean = false;
-  isWatched: boolean = false;  // Nueva variable para manejar "Has visto esto"
+  isWatched: boolean = false;
   showDropdown: boolean = false;
+  mobileMenuOpen: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -82,6 +83,15 @@ export class MovieDetailComponent implements OnInit {
 
   toggleDropdown(): void {
     this.showDropdown = !this.showDropdown;
+  }
+
+
+  toggleMobileMenu(): void {
+  this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+  this.mobileMenuOpen = false;
   }
 
   markAllAsRead(): void {
@@ -293,8 +303,10 @@ removeFromWatched(): void {
 
     this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
       .subscribe(response => {
-        this.suggestions = response.results.slice(0, 8); // solo los primeros 8
+        this.suggestions = response.results.slice(0, 8);
       });
+
+      this.closeMobileMenu();
   }
 
   getItemImage(item: any): string {

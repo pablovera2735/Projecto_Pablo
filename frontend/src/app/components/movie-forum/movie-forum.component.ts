@@ -20,6 +20,7 @@ export class MovieForumComponent implements OnInit {
   currentSlide: number = 0;
   slideInterval: any;
   showDropdown: boolean = false;
+  mobileMenuOpen: boolean = false;
   
   movieId!: string;
   movie: any;
@@ -59,6 +60,16 @@ export class MovieForumComponent implements OnInit {
   toggleDropdown(): void {
     this.showDropdown = !this.showDropdown;
   }
+
+
+  toggleMobileMenu(): void {
+  this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+  this.mobileMenuOpen = false;
+  }
+
 
   markAllAsRead(): void {
     this.notificationService.markAllAsRead().subscribe(() => {
@@ -160,12 +171,13 @@ export class MovieForumComponent implements OnInit {
       this.suggestions = [];
       return;
     }
-  
-    this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
-  .subscribe(response => {
-    this.suggestions = response.results.slice(0, 8); // solo los primeros 8
-  });
 
+    this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
+      .subscribe(response => {
+        this.suggestions = response.results.slice(0, 8);
+      });
+
+      this.closeMobileMenu();
   }
 
   getItemImage(item: any): string {

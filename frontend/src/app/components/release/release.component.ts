@@ -16,6 +16,7 @@ export class ReleaseComponent implements OnInit {
   suggestions: any[] = [];
   notifications: any[] = [];
   showDropdown: boolean = false;
+  mobileMenuOpen: boolean = false;
 
   recommendedReleases: any[] = [];
   loading: boolean = true;
@@ -53,13 +54,13 @@ export class ReleaseComponent implements OnInit {
       return;
     }
 
-    this.http
-      .get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
+    this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
       .subscribe(response => {
         this.suggestions = response.results.slice(0, 8);
       });
-  }
 
+      this.closeMobileMenu();
+  }
 
   loadNotifications(): void {
     this.notificationService.getNotifications().subscribe({
@@ -74,6 +75,14 @@ export class ReleaseComponent implements OnInit {
 
   toggleDropdown(): void {
     this.showDropdown = !this.showDropdown;
+  }
+
+  toggleMobileMenu(): void {
+  this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+  this.mobileMenuOpen = false;
   }
 
   markAllAsRead(): void {

@@ -376,6 +376,131 @@ header .search-form input:focus {
 }
 
 @media (max-width: 768px) {
+
+   header {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .search-input {
+    display: none;
+  }
+
+  .movie-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .custom-navbar {
+    padding: 10px 15px;
+  }
+
+  .navbar-content {
+    flex-wrap: wrap;
+  }
+
+  .nav-left {
+    display: none; /* Ocultamos el menú principal inicialmente */
+    width: 100%;
+    order: 2;
+    margin-top: 15px;
+    flex-direction: column;
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    padding: 10px 0;
+    transition: all 0.3s ease;
+  }
+
+  .nav-left.active {
+    display: flex; /* Mostramos el menú cuando tiene la clase active */
+  }
+
+  .nav-left a {
+    padding: 12px 20px;
+    margin: 0;
+    border-bottom: 1px solid #444;
+  }
+
+  .nav-left a:last-child {
+    border-bottom: none;
+  }
+
+  .nav-right {
+    margin-left: 0;
+    order: 1;
+  }
+
+  /* Botón hamburguesa */
+  .mobile-menu-btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-right: 15px;
+  }
+
+  .mobile-menu-btn span {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: white;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+  }
+
+  /* Animación cuando está activo */
+  .mobile-menu-btn.active span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+  }
+
+  .mobile-menu-btn.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .mobile-menu-btn.active span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+  }
+
+  /* Ajustes para el buscador en móvil */
+  .search-input {
+    width: 150px;
+  }
+
+  .search-dropdown {
+    width: 200px;
+    left: -50px;
+  }
+
+  /* Ajustes para el carrusel en móvil */
+  .blog-caption {
+    max-width: 80%;
+    bottom: 15px;
+    left: 15px;
+    padding: 10px;
+  }
+
+  /* Ajustes para las tarjetas de película */
+  .movie-grid {
+    grid-template-columns: 1fr 1fr;
+    padding: 15px;
+    gap: 15px;
+  }
+
+  .movie-card-new {
+    width: 100%;
+  }
+
+  .poster-wrapper {
+    height: 200px;
+  }
+
+  .blog-slide img {
+    width: 220%;
+  }
+
   .footer-container {
     grid-template-columns: 1fr;
   }

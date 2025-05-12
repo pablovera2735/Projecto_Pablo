@@ -16,6 +16,7 @@ userName: string = '';
   suggestions: any[] = [];
   notifications: any[] = [];
   showDropdown: boolean = false;
+  mobileMenuOpen: boolean = false;
 
   recommendedReleases: any[] = [];
   loading: boolean = true;
@@ -53,11 +54,12 @@ userName: string = '';
       return;
     }
 
-    this.http
-      .get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
+    this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
       .subscribe(response => {
         this.suggestions = response.results.slice(0, 8);
       });
+
+      this.closeMobileMenu();
   }
 
   getItemImage(item: any): string {
@@ -88,6 +90,14 @@ userName: string = '';
 
   toggleDropdown(): void {
     this.showDropdown = !this.showDropdown;
+  }
+
+  toggleMobileMenu(): void {
+  this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+  this.mobileMenuOpen = false;
   }
 
   markAllAsRead(): void {

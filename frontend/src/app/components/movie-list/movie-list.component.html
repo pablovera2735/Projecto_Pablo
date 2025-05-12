@@ -1,7 +1,14 @@
 <header class="custom-navbar">
   <nav class="navbar-content container">
+
+    <button class="mobile-menu-btn" (click)="toggleMobileMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
     <!-- Menú de navegación -->
-    <div class="nav-left">
+    <div class="nav-left" [class.active]="mobileMenuOpen">
       <a routerLink="/movies">Inicio</a>
       <a routerLink="/estrenos">Estrenos</a>
       <a routerLink="/personas">Personas</a>
