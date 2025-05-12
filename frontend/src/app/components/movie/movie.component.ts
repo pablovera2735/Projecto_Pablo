@@ -44,6 +44,7 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
   slideInterval: any;
   showDropdown: boolean = false;
   showBackToTop: boolean = false;
+  mobileMenuOpen: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -91,6 +92,14 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
 
   toggleDropdown(): void {
     this.showDropdown = !this.showDropdown;
+  }
+
+  toggleMobileMenu(): void {
+  this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+  this.mobileMenuOpen = false;
   }
 
   markAllAsRead(): void {
@@ -155,6 +164,8 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
       .subscribe(response => {
         this.suggestions = response.results.slice(0, 8);
       });
+
+      this.closeMobileMenu();
   }
 
   getItemImage(item: any): string {

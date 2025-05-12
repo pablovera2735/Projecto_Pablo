@@ -100,7 +100,7 @@ export class MovieForumComponent implements OnInit {
     if (!this.newComment.trim()) return;
     this.loading = true;
 
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     this.http.post(
@@ -136,7 +136,7 @@ export class MovieForumComponent implements OnInit {
   replyTo(parentId: number, text: string) {
     if (!text.trim()) return;
 
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     this.http.post(

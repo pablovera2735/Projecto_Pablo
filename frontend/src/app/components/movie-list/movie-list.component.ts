@@ -68,12 +68,11 @@ export class MovieListComponent implements OnInit {
   }
 
   setUserName(): void {
-    const userString = localStorage.getItem('user');
-    if (userString) {
-      const user = JSON.parse(userString);
-      this.userName = user.name || 'Invitado';
-      this.profilePhoto = user.profile_photo 
-        ? `http://localhost:8000/${user.profile_photo}` 
+    const user = this.authService.getUser();
+    if (user && user.name) {
+      this.userName = user.name;
+      this.profilePhoto = user.profile_photo
+        ? 'http://localhost:8000/' + user.profile_photo
         : 'assets/img/Perfil_Inicial.jpg';
     } else {
       this.userName = 'Invitado';

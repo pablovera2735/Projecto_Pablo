@@ -12,6 +12,8 @@ export class UserProfileComponent implements OnInit {
   profilePhoto: string = 'assets/img/Perfil_Inicial.jpg';
   comments: any[] = [];
   commentContent: string = '';
+  watchedMovies: any[] = [];
+  favoriteMovies: any[] = [];
   friends: any[] = [];
   selectedTab: string = 'comments';
   showPhotoMenu: boolean = false;
@@ -23,6 +25,8 @@ export class UserProfileComponent implements OnInit {
   ngOnInit(): void {
     this.loadUserProfile();
     this.loadComments();
+    this.loadFavoriteMovies();
+    this.loadWatchedMovies();
     this.loadFriends();
   }
 
@@ -96,6 +100,31 @@ export class UserProfileComponent implements OnInit {
       });
   }
 
+
+loadWatchedMovies(): void {
+  const user = this.authService.getUser();
+  const token = sessionStorage.getItem('token');
+
+  if (!user || !token) {
+    console.error('Usuario no autenticado o token faltante');
+    return;
+  }
+
+  const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+  this.http.get<any>(`http://localhost:8000/api/watched/${user.id}`, { headers })
+    .subscribe({
+      next: (response) => {
+        console.log('Respuesta completa:', response);
+        this.watchedMovies = response.watchedMovies || [];
+        console.log('Películas vistas asignadas:', this.watchedMovies);
+      },
+      error: (err) => {
+        console.error('Error al cargar películas vistas:', err);
+        this.watchedMovies = [];
+      }
+    });
+}
   loadFriends(): void {
     const token = sessionStorage.getItem('token');
     const user = this.authService.getUser();
@@ -110,6 +139,22 @@ export class UserProfileComponent implements OnInit {
     }
   }
 
+  loadFavoriteMovies(): void {
+  const user = this.authService.getUser();
+  const token = sessionStorage.getItem('token');
+
+  if (!user || !token) return;
+
+  const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+  this.http.get<any>(`http://localhost:8000/api/favorites/${user.id}`, { headers })
+    .subscribe(response => {
+      console.log('Favoritos:', response);
+      // Accedemos a la propiedad favorites del objeto response
+      this.favoriteMovies = response.favorites || [];
+    });
+}
+
   getFriendPhoto(friend: any): string {
     return friend.profile_photo
       ? `http://localhost:8000/${friend.profile_photo}`
@@ -117,8 +162,14 @@ export class UserProfileComponent implements OnInit {
   }
 
   selectTab(tab: string): void {
-    this.selectedTab = tab;
+  this.selectedTab = tab;
+
+  if (tab === 'vistas') {
+    this.loadWatchedMovies();
+  } else if (tab === 'favoritas') {
+    this.loadFavoriteMovies();
   }
+}
 
   togglePhotoMenu(): void {
     this.showPhotoMenu = !this.showPhotoMenu;

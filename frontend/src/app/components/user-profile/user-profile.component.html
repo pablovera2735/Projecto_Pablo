@@ -1,4 +1,5 @@
 <div class="profile-container">
+  <!-- Sección de encabezado del perfil -->
   <div class="profile-header">
     <div class="profile-photo-wrapper" (click)="togglePhotoMenu()">
       <img [src]="profilePhoto" class="profile-photo" alt="Foto de perfil" />
@@ -16,17 +17,17 @@
     <h2>{{ userName }}</h2>
   </div>
 
-  <!-- Pestañas -->
+  <!-- Pestañas del perfil -->
   <div class="profile-tabs">
     <button class="tab" (click)="selectTab('comments')" [class.selected]="selectedTab === 'comments'">Comentarios</button>
     <button class="tab" (click)="selectTab('actividad')" [class.selected]="selectedTab === 'actividad'">Actividad</button>
     <button class="tab" (click)="selectTab('pendientes')" [class.selected]="selectedTab === 'pendientes'">Pendientes</button>
-    <button class="tab" (click)="selectTab('listas')" [class.selected]="selectedTab === 'listas'">Favoritas</button>
-    <button class="tab" (click)="selectTab('animacion')" [class.selected]="selectedTab === 'animacion'">Vistas</button>
+    <button class="tab" (click)="selectTab('favoritas')" [class.selected]="selectedTab === 'favoritas'">Favoritas</button>
+    <button class="tab" (click)="selectTab('vistas')" [class.selected]="selectedTab === 'vistas'">Vistas</button>
     <button class="tab" (click)="selectTab('friends')" [class.selected]="selectedTab === 'friends'">Amigos</button>
   </div>
 
-  <!-- Comentarios -->
+  <!-- Sección de comentarios -->
   <div *ngIf="selectedTab === 'comments'" class="comment-section">
     <textarea
       class="comment-input"
@@ -55,7 +56,37 @@
     </div>
   </div>
 
-  <!-- Amigos -->
+
+<!-- Sección de películas vistas -->
+<div *ngIf="selectedTab === 'vistas'" class="watched-section">
+  <div *ngIf="watchedMovies.length > 0; else noWatched" class="watched-grid">
+    <div *ngFor="let movie of watchedMovies" class="movie-item">
+      <a [routerLink]="['/movies', movie.id, 'detail']">
+        <img [src]="movie.poster_path" class="img-fluid shadow rounded" alt="{{ movie.title }}" title="{{ movie.title }}">
+      </a>
+    </div>
+  </div>
+  <ng-template #noWatched>
+    <p>No has marcado ninguna película como vista.</p>
+  </ng-template>
+</div>
+
+  <!-- Sección de películas favoritas -->
+<div *ngIf="selectedTab === 'favoritas'">
+  <div *ngIf="favoriteMovies.length > 0; else noFavorites" class="favorites-grid">
+    <div *ngFor="let movie of favoriteMovies" class="movie-item">
+      <a [routerLink]="['/movies', movie.id, 'detail']">
+        <img [src]="movie.poster_path" class="img-fluid shadow rounded" alt="{{ movie.title }}" title="{{ movie.title }}">
+      </a>
+    </div>
+  </div>
+  <ng-template #noFavorites>
+    <p>No tienes películas favoritas aún.</p>
+  </ng-template>
+</div>
+
+
+  <!-- Sección de amigos -->
   <div *ngIf="selectedTab === 'friends'" class="friends-section">
     <div *ngIf="friends.length === 0" class="no-comments">
       NO TIENES AMIGOS AÚN.
@@ -66,7 +97,7 @@
     </div>
   </div>
 
-  <!-- Botón de regreso al final -->
+  <!-- Botón de regreso -->
   <div class="back-button-wrapper">
     <button class="back-button" (click)="goBack()">← Volver al menú</button>
   </div>

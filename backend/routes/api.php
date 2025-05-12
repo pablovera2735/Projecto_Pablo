@@ -34,6 +34,8 @@ Route::group(['middleware' => ['cors']], function () {
         Route::post('/watched', 'WatchedMovieController@markAsWatched');
         Route::post('/watched/remove', 'WatchedMovieController@removeFromWatched');
         Route::get('/watched/{userId}/{movieId}', 'WatchedMovieController@isMovieWatched');
+        Route::get('/watched/{userId}', 'WatchedMovieController@index');
+
 
 
         Route::get('/friends', 'FriendController@index');
