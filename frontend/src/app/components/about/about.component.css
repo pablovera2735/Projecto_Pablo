@@ -67,6 +67,10 @@ body {
   position: relative;
 }
 
+.mobile-menu-btn{
+  display: none;
+}
+
 .search-dropdown {
   position: absolute;
   top: 45px;

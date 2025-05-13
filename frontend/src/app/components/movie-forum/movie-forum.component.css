@@ -67,6 +67,10 @@ body {
   position: relative;
 }
 
+.mobile-menu-btn{
+  display: none;
+}
+
 .notification-wrapper {
   position: relative;
   cursor: pointer;
