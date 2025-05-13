@@ -22,6 +22,7 @@ import { UserSettingsComponent } from './components/user-settings/user-settings.
 import { AdminPanelComponent } from './components/admin-panel/admin-panel.component';
 import { ReleaseComponent } from './components/release/release.component';
 import { AboutComponent } from './components/about/about.component';
+import { PersonDetailComponent } from './components/person-detail/person-detail.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -32,6 +33,7 @@ const routes: Routes = [
   { path: 'movies', component: MovieComponent },
   { path: 'movies/:id/detail', component: MovieDetailComponent },
   { path: 'personas', component: PopularAuthorsComponent },
+  { path: 'persona/:id', component: PersonDetailComponent },
   { path: 'estrenos', component: ReleaseComponent},
   { path: 'nosotros', component: AboutComponent },
   { path: 'admin', component: AdminPanelComponent },
@@ -63,6 +65,7 @@ const routes: Routes = [
     AdminPanelComponent,
     ReleaseComponent,
     AboutComponent,
+    PersonDetailComponent,
   ],
   imports: [
     BrowserModule,

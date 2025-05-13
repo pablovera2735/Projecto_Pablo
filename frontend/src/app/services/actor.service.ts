@@ -20,4 +20,13 @@ export class ActorService {
   getActorById(id: number): Observable<any> {
     return this.http.get(`${this.apiUrl}/actors/${id}`);
   }
+
+   getPersonDetail(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/people/${id}`);
+  }
+
+  // Obtener créditos (películas o series) de una persona por ID
+  getPersonCredits(id: number): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/people/${id}/credits`);
+  }
 }

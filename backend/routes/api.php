@@ -51,6 +51,8 @@ Route::group(['middleware' => ['cors']], function () {
     Route::get('/movies/{id}/cast', 'MovieController@getMovieCast');
     Route::get('/movies/popular', 'MovieController@getPopularMovies');
     Route::get('/people/popular', 'PeopleController@getAllPeople');
+    Route::get('/people/{id}', 'PeopleController@getPersonDetail');
+    Route::get('/people/{id}/credits', 'PeopleController@getPersonCredits');
     Route::get('/movies/genres', 'MovieController@listGenres');
     Route::get('/movies/genre/{genreId}', 'MovieController@getMoviesByGenre');
     Route::get('/movies/{id}', 'MovieController@getMovieDetails');
