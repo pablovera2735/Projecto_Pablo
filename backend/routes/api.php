@@ -22,6 +22,8 @@ Route::group(['middleware' => ['cors']], function () {
         Route::delete('/profile/delete-photo', 'AuthController@deleteProfilePhoto');
         Route::put('/profile/update-email', 'AuthController@updateEmail');
         Route::put('/profile/update-password', 'AuthController@updatePassword');
+
+        Route::get('/user/{id}/public-profile', 'AuthController@getPublicUserProfile');
         
         Route::get('/admin/users', 'AdminController@getAllUsers');
         Route::delete('/admin/users/{id}', 'AdminController@deleteUser');

@@ -132,7 +132,7 @@
     <div *ngIf="reviews.length === 0" class="text-muted">No hay reseñas aún.</div>
     <div *ngFor="let review of reviews" class="border p-3 mb-3 rounded">
       <!-- Enlace al perfil del usuario -->
-      <a [routerLink]="['/perfil', review.user.id]" class="text-decoration-none">
+      <a [routerLink]="['/usuario', review.user.id]" class="text-decoration-none">
         <strong>{{ review.user.name }}</strong>
       </a>
       <span class="text-warning">⭐ {{ review.rating }}/10</span>

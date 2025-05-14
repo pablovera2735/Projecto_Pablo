@@ -1,0 +1,87 @@
+<div class="profile-container">
+  <!-- Sección de encabezado del perfil -->
+  <div class="profile-header">
+    <div class="profile-photo-wrapper">
+      <img [src]="profilePhoto" class="profile-photo" alt="Foto de perfil" />
+    </div>
+    <h2>{{ userName }}</h2>
+    <div *ngIf="!isOwnProfile && !isFriend" class="ms-4">
+      <button class="submit-btn" (click)="sendFriendRequest()">Enviar solicitud de amistad</button>
+    </div>
+    <div *ngIf="isFriend" class="ms-4">
+      <span class="text-success">Amigos</span>
+    </div>
+  </div>
+
+  <!-- Pestañas del perfil -->
+  <div class="profile-tabs">
+    <button class="tab" (click)="selectTab('comments')" [class.selected]="selectedTab === 'comments'">Comentarios</button>
+    <button class="tab" (click)="selectTab('actividad')" [class.selected]="selectedTab === 'actividad'">Actividad</button>
+    <button class="tab" (click)="selectTab('pendientes')" [class.selected]="selectedTab === 'pendientes'">Pendientes</button>
+    <button class="tab" (click)="selectTab('favoritas')" [class.selected]="selectedTab === 'favoritas'">Favoritas</button>
+    <button class="tab" (click)="selectTab('vistas')" [class.selected]="selectedTab === 'vistas'">Vistas</button>
+    <button class="tab" (click)="selectTab('friends')" [class.selected]="selectedTab === 'friends'">Amigos</button>
+  </div>
+
+  <!-- Comentarios -->
+  <div *ngIf="selectedTab === 'comments'" class="comment-section">
+    <div class="comment-filters">
+      <button class="filter">Más recientes</button>
+      <button class="filter">Más antiguos</button>
+      <button class="filter">Más votados</button>
+    </div>
+    <div class="comments">
+      <div *ngIf="comments.length === 0" class="no-comments">
+        NO HAY COMENTARIOS QUE MOSTRAR.
+      </div>
+      <div *ngFor="let comment of comments" class="comment">
+        <p>{{ comment.content }}</p>
+        <small>{{ comment.created_at | date:'short' }}</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Favoritas -->
+  <div *ngIf="selectedTab === 'favoritas'">
+    <div *ngIf="favoriteMovies.length > 0; else noFavorites" class="favorites-grid">
+      <div *ngFor="let movie of favoriteMovies" class="movie-item">
+        <a [routerLink]="['/movies', movie.id, 'detail']">
+          <img [src]="movie.poster_path" class="img-fluid shadow rounded" alt="{{ movie.title }}" title="{{ movie.title }}">
+        </a>
+      </div>
+    </div>
+    <ng-template #noFavorites>
+      <p>No tienes películas favoritas aún.</p>
+    </ng-template>
+  </div>
+
+  <!-- Vistas -->
+  <div *ngIf="selectedTab === 'vistas'" class="watched-section">
+    <div *ngIf="watchedMovies.length > 0; else noWatched" class="watched-grid">
+      <div *ngFor="let movie of watchedMovies" class="movie-item">
+        <a [routerLink]="['/movies', movie.id, 'detail']">
+          <img [src]="movie.poster_path" class="img-fluid shadow rounded" alt="{{ movie.title }}" title="{{ movie.title }}">
+        </a>
+      </div>
+    </div>
+    <ng-template #noWatched>
+      <p>No has marcado ninguna película como vista.</p>
+    </ng-template>
+  </div>
+
+  <!-- Amigos -->
+  <div *ngIf="selectedTab === 'friends'" class="friends-section">
+    <div *ngIf="friends.length === 0" class="no-comments">
+      NO TIENES AMIGOS AÚN.
+    </div>
+    <div *ngFor="let friend of friends" class="friend-card">
+      <img [src]="getFriendPhoto(friend)" alt="Foto amigo" class="friend-photo" />
+      <div class="friend-name">{{ friend.name }}</div>
+    </div>
+  </div>
+
+  <!-- Botón de regreso -->
+  <div class="back-button-wrapper">
+    <button class="back-button" (click)="goBack()">← Volver al menú</button>
+  </div>
+</div>

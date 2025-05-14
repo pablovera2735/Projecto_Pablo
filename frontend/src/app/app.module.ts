@@ -23,6 +23,7 @@ import { AdminPanelComponent } from './components/admin-panel/admin-panel.compon
 import { ReleaseComponent } from './components/release/release.component';
 import { AboutComponent } from './components/about/about.component';
 import { PersonDetailComponent } from './components/person-detail/person-detail.component';
+import { UserPublicProfileComponent } from './components/user-public-profile/user-public-profile.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -42,6 +43,7 @@ const routes: Routes = [
   { path: 'movies/:id/forum', component: MovieForumComponent },
   { path: 'friend', component: FriendListComponent },
   { path: 'perfil', component: UserProfileComponent },
+  { path: 'usuario/:id', component: UserPublicProfileComponent },
   { path: 'ajustes', component: UserSettingsComponent },
   { path: '**', redirectTo: '/login' }
 ];
@@ -66,6 +68,7 @@ const routes: Routes = [
     ReleaseComponent,
     AboutComponent,
     PersonDetailComponent,
+    UserPublicProfileComponent,
   ],
   imports: [
     BrowserModule,

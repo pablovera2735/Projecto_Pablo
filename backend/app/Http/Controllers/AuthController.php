@@ -84,6 +84,26 @@ class AuthController extends Controller
         return response()->json($comments);
     }
 
+    public function getPublicUserProfile($id)
+{
+    $user = User::with(['comments', 'favorites', 'friends', 'reviews'])->findOrFail($id);
+
+    return response()->json([
+        'name' => $user->name,
+        'profile_photo' => $user->profile_photo,
+        'favorites' => $user->favorites,
+        'reviews' => $user->reviews,
+        'comments' => $user->comments,
+        'friends' => $user->friends->map(function ($friend) {
+            return [
+                'id' => $friend->id,
+                'name' => $friend->name,
+                'profile_photo' => $friend->profile_photo
+            ];
+        }),
+    ]);
+}
+
 
 
 
