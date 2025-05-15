@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-user-profile',
@@ -15,22 +16,36 @@ export class UserProfileComponent implements OnInit {
   watchedMovies: any[] = [];
   favoriteMovies: any[] = [];
   friends: any[] = [];
+  pendingRequests: any[] = [];
   selectedTab: string = 'comments';
   showPhotoMenu: boolean = false;
 
   @ViewChild('photoInput') photoInput!: ElementRef<HTMLInputElement>;
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    this.loadUserProfile();
+    this.route.paramMap.subscribe(params => {
+      const userId = params.get('id');
+
+      if (userId) {
+        this.loadUserProfileById(+userId);
+      } else {
+        this.loadUserProfile();
+      }
+    });
+
     this.loadComments();
     this.loadFavoriteMovies();
     this.loadWatchedMovies();
     this.loadFriends();
   }
 
-  // Cargar perfil y comentarios del usuario
   loadUserProfile(): void {
     const user = this.authService.getUser();
     const token = sessionStorage.getItem('token');
@@ -48,6 +63,23 @@ export class UserProfileComponent implements OnInit {
           this.comments = response.comments;
         });
     }
+  }
+
+  loadUserProfileById(id: number): void {
+    const token = sessionStorage.getItem('token');
+    if (!token) return;
+
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+    this.http.get<any>(`http://localhost:8000/api/user/${id}/profile`, { headers })
+      .subscribe(response => {
+        this.userName = response.name;
+        this.profilePhoto = response.profile_photo
+          ? 'http://localhost:8000/' + response.profile_photo
+          : 'assets/img/Perfil_Inicial.jpg';
+        this.comments = response.comments;
+        // Puedes cargar otras cosas específicas del usuario aquí
+      });
   }
 
   loadComments(): void {
@@ -100,31 +132,29 @@ export class UserProfileComponent implements OnInit {
       });
   }
 
+  loadWatchedMovies(): void {
+    const user = this.authService.getUser();
+    const token = sessionStorage.getItem('token');
 
-loadWatchedMovies(): void {
-  const user = this.authService.getUser();
-  const token = sessionStorage.getItem('token');
+    if (!user || !token) {
+      console.error('Usuario no autenticado o token faltante');
+      return;
+    }
 
-  if (!user || !token) {
-    console.error('Usuario no autenticado o token faltante');
-    return;
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+    this.http.get<any>(`http://localhost:8000/api/watched/${user.id}`, { headers })
+      .subscribe({
+        next: (response) => {
+          this.watchedMovies = response.watchedMovies || [];
+        },
+        error: (err) => {
+          console.error('Error al cargar películas vistas:', err);
+          this.watchedMovies = [];
+        }
+      });
   }
 
-  const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-
-  this.http.get<any>(`http://localhost:8000/api/watched/${user.id}`, { headers })
-    .subscribe({
-      next: (response) => {
-        console.log('Respuesta completa:', response);
-        this.watchedMovies = response.watchedMovies || [];
-        console.log('Películas vistas asignadas:', this.watchedMovies);
-      },
-      error: (err) => {
-        console.error('Error al cargar películas vistas:', err);
-        this.watchedMovies = [];
-      }
-    });
-}
   loadFriends(): void {
     const token = sessionStorage.getItem('token');
     const user = this.authService.getUser();
@@ -140,20 +170,54 @@ loadWatchedMovies(): void {
   }
 
   loadFavoriteMovies(): void {
-  const user = this.authService.getUser();
-  const token = sessionStorage.getItem('token');
+    const user = this.authService.getUser();
+    const token = sessionStorage.getItem('token');
 
-  if (!user || !token) return;
+    if (!user || !token) return;
 
-  const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-  this.http.get<any>(`http://localhost:8000/api/favorites/${user.id}`, { headers })
-    .subscribe(response => {
-      console.log('Favoritos:', response);
-      // Accedemos a la propiedad favorites del objeto response
-      this.favoriteMovies = response.favorites || [];
-    });
-}
+    this.http.get<any>(`http://localhost:8000/api/favorites/${user.id}`, { headers })
+      .subscribe(response => {
+        this.favoriteMovies = response.favorites || [];
+      });
+  }
+
+  loadPendingRequests(): void {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+    this.http.get<any[]>('http://localhost:8000/api/friends/pending', { headers })
+      .subscribe({
+        next: (response) => {
+          this.pendingRequests = response;
+        },
+        error: (err) => {
+          console.error('Error al cargar solicitudes pendientes:', err);
+        }
+      });
+  }
+
+  acceptRequest(senderId: number): void {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+    this.http.post<any>('http://localhost:8000/api/friends/accept', { sender_id: senderId }, { headers })
+      .subscribe(() => {
+        this.pendingRequests = this.pendingRequests.filter(r => r.id !== senderId);
+        this.loadFriends(); // Refrescar lista de amigos
+      });
+  }
+
+  rejectRequest(senderId: number): void {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+    this.http.post<any>('http://localhost:8000/api/friends/reject', { sender_id: senderId }, { headers })
+      .subscribe(() => {
+        this.pendingRequests = this.pendingRequests.filter(r => r.id !== senderId);
+      });
+  }
 
   getFriendPhoto(friend: any): string {
     return friend.profile_photo
@@ -162,14 +226,16 @@ loadWatchedMovies(): void {
   }
 
   selectTab(tab: string): void {
-  this.selectedTab = tab;
+    this.selectedTab = tab;
 
-  if (tab === 'vistas') {
-    this.loadWatchedMovies();
-  } else if (tab === 'favoritas') {
-    this.loadFavoriteMovies();
+    if (tab === 'vistas') {
+      this.loadWatchedMovies();
+    } else if (tab === 'favoritas') {
+      this.loadFavoriteMovies();
+    } else if (tab === 'pendientes') {
+      this.loadPendingRequests();
+    }
   }
-}
 
   togglePhotoMenu(): void {
     this.showPhotoMenu = !this.showPhotoMenu;
@@ -215,17 +281,20 @@ loadWatchedMovies(): void {
     this.http.delete<any>('http://localhost:8000/api/profile/delete-photo', { headers })
       .subscribe(response => {
         if (response.profile_photo) {
-          this.profilePhoto = 'http://localhost:8000/' + response.profile_photo;
+          this.profilePhoto = 'assets/img/Perfil_Inicial.jpg';
 
-          const user = this.authService.getUser();
-          user.profile_photo = response.profile_photo;
-          sessionStorage.setItem('user', JSON.stringify(user));
-        }
-      });
-  }
+      const user = this.authService.getUser();
+      user.profile_photo = null;
+      sessionStorage.setItem('user', JSON.stringify(user));
+    }
+  });
+}
 
-  // Botón para volver atrás
-  goBack(): void {
-    window.history.back();
-  }
+goToFriendProfile(friendId: number): void {
+this.router.navigate(['/user-profile', friendId]);
+}
+
+goBack(): void {
+this.router.navigate(['/menu']);
+}
 }

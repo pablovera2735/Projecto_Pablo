@@ -185,6 +185,55 @@
   gap: 15px;
   padding: 0 10px;
 }
+
+.friends-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 10px 0;
+}
+
+.friend-card {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  padding: 10px;
+  width: 100px; /* ancho fijo para cards iguales */
+  text-align: center;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.friend-card:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+}
+
+.friend-card a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+}
+
+.friend-photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 8px;
+  border: 2px solid white;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+}
+
+.friend-name {
+  font-weight: bold;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
   
 .back-button {
   background: none;

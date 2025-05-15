@@ -5,12 +5,26 @@
       <img [src]="profilePhoto" class="profile-photo" alt="Foto de perfil" />
     </div>
     <h2>{{ userName }}</h2>
-    <div *ngIf="!isOwnProfile && !isFriend" class="ms-4">
+
+    <!-- Mostrar botón solo si no es perfil propio, no es amigo y no hay solicitud pendiente -->
+    <div *ngIf="!isOwnProfile && !isFriend && !isPending" class="ms-4">
       <button class="submit-btn" (click)="sendFriendRequest()">Enviar solicitud de amistad</button>
     </div>
+
+    <!-- Mostrar texto 'Solicitud pendiente' si hay solicitud pendiente -->
+    <div *ngIf="isPending" class="ms-4">
+      <span class="text-warning">Solicitud pendiente</span>
+    </div>
+
+    <!-- Mostrar texto 'Amigos' si ya son amigos -->
     <div *ngIf="isFriend" class="ms-4">
       <span class="text-success">Amigos</span>
     </div>
+
+    <div *ngIf="!isOwnProfile && isFriend" class="ms-4">
+    <button class="submit-btn" (click)="sendPrivateMessage()">Enviar mensaje privado</button>
+  </div>
+  
   </div>
 
   <!-- Pestañas del perfil -->

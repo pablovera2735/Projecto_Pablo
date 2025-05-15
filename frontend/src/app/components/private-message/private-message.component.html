@@ -1,0 +1,11 @@
+<div class="private-message-container">
+  <h2>Enviar mensaje a {{ recipientName }}</h2>
+
+  <textarea [(ngModel)]="messageContent" placeholder="Escribe tu mensaje aquí..." rows="5"></textarea>
+  
+  <button class="submit-btn" (click)="sendMessage()">Enviar</button>
+  
+  <div *ngIf="sendSuccess" class="success-msg">Mensaje enviado correctamente.</div>
+  <div *ngIf="sendError" class="error-msg">Error al enviar el mensaje.</div>
+</div>
+

@@ -56,44 +56,58 @@
     </div>
   </div>
 
-
-<!-- Sección de películas vistas -->
-<div *ngIf="selectedTab === 'vistas'" class="watched-section">
-  <div *ngIf="watchedMovies.length > 0; else noWatched" class="watched-grid">
-    <div *ngFor="let movie of watchedMovies" class="movie-item">
-      <a [routerLink]="['/movies', movie.id, 'detail']">
-        <img [src]="movie.poster_path" class="img-fluid shadow rounded" alt="{{ movie.title }}" title="{{ movie.title }}">
-      </a>
+  <!-- Sección de películas vistas -->
+  <div *ngIf="selectedTab === 'vistas'" class="watched-section">
+    <div *ngIf="watchedMovies.length > 0; else noWatched" class="watched-grid">
+      <div *ngFor="let movie of watchedMovies" class="movie-item">
+        <a [routerLink]="['/movies', movie.id, 'detail']">
+          <img [src]="movie.poster_path" class="img-fluid shadow rounded" alt="{{ movie.title }}" title="{{ movie.title }}" />
+        </a>
+      </div>
     </div>
+    <ng-template #noWatched>
+      <p>No has marcado ninguna película como vista.</p>
+    </ng-template>
   </div>
-  <ng-template #noWatched>
-    <p>No has marcado ninguna película como vista.</p>
-  </ng-template>
-</div>
 
   <!-- Sección de películas favoritas -->
-<div *ngIf="selectedTab === 'favoritas'">
-  <div *ngIf="favoriteMovies.length > 0; else noFavorites" class="favorites-grid">
-    <div *ngFor="let movie of favoriteMovies" class="movie-item">
-      <a [routerLink]="['/movies', movie.id, 'detail']">
-        <img [src]="movie.poster_path" class="img-fluid shadow rounded" alt="{{ movie.title }}" title="{{ movie.title }}">
-      </a>
+  <div *ngIf="selectedTab === 'favoritas'">
+    <div *ngIf="favoriteMovies.length > 0; else noFavorites" class="favorites-grid">
+      <div *ngFor="let movie of favoriteMovies" class="movie-item">
+        <a [routerLink]="['/movies', movie.id, 'detail']">
+          <img [src]="movie.poster_path" class="img-fluid shadow rounded" alt="{{ movie.title }}" title="{{ movie.title }}" />
+        </a>
+      </div>
     </div>
+    <ng-template #noFavorites>
+      <p>No tienes películas favoritas aún.</p>
+    </ng-template>
   </div>
-  <ng-template #noFavorites>
-    <p>No tienes películas favoritas aún.</p>
-  </ng-template>
-</div>
-
 
   <!-- Sección de amigos -->
   <div *ngIf="selectedTab === 'friends'" class="friends-section">
-    <div *ngIf="friends.length === 0" class="no-comments">
-      NO TIENES AMIGOS AÚN.
-    </div>
-    <div *ngFor="let friend of friends" class="friend-card">
+  <div *ngIf="friends.length === 0" class="no-comments">
+    NO TIENES AMIGOS AÚN.
+  </div>
+  <div *ngFor="let friend of friends" class="friend-card">
+    <a [routerLink]="['/usuario', friend.id]" class="text-decoration-none">
       <img [src]="getFriendPhoto(friend)" alt="Foto amigo" class="friend-photo" />
-      <div class="friend-name">{{ friend.name }}</div>
+      <strong>{{ friend.name }}</strong>
+    </a>
+  </div>
+</div>
+
+
+  <!-- Sección de solicitudes pendientes -->
+  <div *ngIf="selectedTab === 'pendientes'" class="pending-section">
+    <div *ngIf="pendingRequests.length === 0" class="no-comments">
+      No tienes solicitudes de amistad pendientes.
+    </div>
+    <div *ngFor="let request of pendingRequests" class="pending-card">
+      <img [src]="getFriendPhoto(request)" class="friend-photo" alt="Foto solicitud" />
+      <div class="friend-name">{{ request.name }}</div>
+      <button class="accept-btn" (click)="acceptRequest(request.id)">Aceptar</button>
+      <button class="reject-btn" (click)="rejectRequest(request.id)">Rechazar</button>
     </div>
   </div>
 

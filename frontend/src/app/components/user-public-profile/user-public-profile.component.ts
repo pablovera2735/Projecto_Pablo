@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -19,67 +20,59 @@ export class UserPublicProfileComponent implements OnInit {
   selectedTab: string = 'comments';
   isOwnProfile: boolean = false;
   isFriend: boolean = false;
+  isPending: boolean = false;  // Nueva variable para estado pendiente
 
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient,
+    private router: Router,
     private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-  this.route.paramMap.subscribe(params => {
-    const id = params.get('id');
-    if (id) {
-      this.userId = id;
-      this.checkIfOwnProfile();
-      this.loadUserProfile(); // Aquí se usa this.userId, no el usuario autenticado
-      this.loadComments();
-      this.loadFavoriteMovies();
-      this.loadWatchedMovies();
-      this.loadFriends();
-    }
-  });
-}
-
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('id');
+      if (id) {
+        this.userId = id;
+        this.checkIfOwnProfile();
+        this.loadUserProfile();
+        this.loadComments();
+        this.loadFavoriteMovies();
+        this.loadWatchedMovies();
+        this.loadFriends(); // Carga amigos y checa estado
+      }
+    });
+  }
 
   checkIfOwnProfile(): void {
     const currentUser = this.authService.getUser();
-    if (currentUser && currentUser.id == this.userId) {
-      this.isOwnProfile = true;
-    }
+    this.isOwnProfile = currentUser && currentUser.id === this.userId;
   }
 
- loadUserProfile(): void {
-  const token = sessionStorage.getItem('token');
-  const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+  loadUserProfile(): void {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-  this.http.get<any>(`http://localhost:8000/api/user/${this.userId}/public-profile`, { headers })
-    .subscribe({
-      next: (response) => {
-        // ✅ Aquí usamos los datos del usuario visitado, no el autenticado
-        this.userName = response.name;
-        this.profilePhoto = response.profile_photo
-          ? `http://localhost:8000/${response.profile_photo}`
-          : 'assets/img/Perfil_Inicial.jpg';
+    this.http.get<any>(`http://localhost:8000/api/user/${this.userId}/public-profile`, { headers })
+      .subscribe({
+        next: (response) => {
+          this.userName = response.name;
+          this.profilePhoto = response.profile_photo
+            ? `http://localhost:8000/${response.profile_photo}`
+            : 'assets/img/Perfil_Inicial.jpg';
+          this.comments = response.comments || [];
+          this.favoriteMovies = response.favorites || [];
+          this.friends = response.friends || [];
+          this.watchedMovies = response.reviews || [];
+        },
+        error: (err) => {
+          console.error('Error al cargar perfil público:', err);
+        }
+      });
+  }
 
-          console.log('Profile photo:', response.profile_photo);
-        this.comments = response.comments || [];
-        this.favoriteMovies = response.favorites || [];
-        this.friends = response.friends || [];
-        this.watchedMovies = response.reviews || []; // si `reviews` son películas vistas o relacionadas
-      },
-      error: (err) => {
-        console.error('Error al cargar perfil público:', err);
-      }
-    });
-}
-
-
-
-
-
-getFullImageUrl(path: string | null): string {
-  return path ? `http://localhost:8000/${path}` : 'assets/img/Perfil_Inicial.jpg';
+  sendPrivateMessage(): void {
+  this.router.navigate(['/messages', this.userId]);
 }
 
   loadComments(): void {
@@ -116,13 +109,48 @@ getFullImageUrl(path: string | null): string {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
+    // Carga lista de amigos confirmados
     this.http.get<any>(`http://localhost:8000/api/friends/${this.userId}`, { headers })
       .subscribe(response => {
         this.friends = response || [];
+        this.checkIfFriend();
+        this.checkIfPending();
       });
   }
 
+  checkIfFriend(): void {
+    const currentUser = this.authService.getUser();
+    if (!currentUser) {
+      this.isFriend = false;
+      return;
+    }
+    this.isFriend = this.friends.some(friend => friend.id === currentUser.id);
+  }
+
+  checkIfPending(): void {
+    const currentUser = this.authService.getUser();
+    if (!currentUser) {
+      this.isPending = false;
+      return;
+    }
+
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+    // Aquí necesitas un endpoint en tu backend que verifique si hay solicitud pendiente
+    this.http.get<any>(
+      `http://localhost:8000/api/friend-requests/status?user1=${currentUser.id}&user2=${this.userId}`, 
+      { headers }
+    ).subscribe(response => {
+      this.isPending = response.pending || false;
+    }, error => {
+      this.isPending = false;
+    });
+  }
+
   sendFriendRequest(): void {
+    if (this.isOwnProfile || this.isPending || this.isFriend) return;
+
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
@@ -132,6 +160,7 @@ getFullImageUrl(path: string | null): string {
       .subscribe({
         next: () => {
           alert('Solicitud de amistad enviada');
+          this.isPending = true;
         },
         error: () => {
           alert('Error al enviar solicitud de amistad');

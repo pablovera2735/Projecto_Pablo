@@ -24,6 +24,7 @@ import { ReleaseComponent } from './components/release/release.component';
 import { AboutComponent } from './components/about/about.component';
 import { PersonDetailComponent } from './components/person-detail/person-detail.component';
 import { UserPublicProfileComponent } from './components/user-public-profile/user-public-profile.component';
+import { PrivateMessageComponent } from './components/private-message/private-message.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -42,6 +43,7 @@ const routes: Routes = [
   { path: 'favorites', component: FavoritesComponent },
   { path: 'movies/:id/forum', component: MovieForumComponent },
   { path: 'friend', component: FriendListComponent },
+  { path: 'messages/:userId', component: PrivateMessageComponent},
   { path: 'perfil', component: UserProfileComponent },
   { path: 'usuario/:id', component: UserPublicProfileComponent },
   { path: 'ajustes', component: UserSettingsComponent },
@@ -69,6 +71,7 @@ const routes: Routes = [
     AboutComponent,
     PersonDetailComponent,
     UserPublicProfileComponent,
+    PrivateMessageComponent,
   ],
   imports: [
     BrowserModule,

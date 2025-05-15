@@ -24,6 +24,28 @@ export class FriendService {
     });
   }
 
+  // Obtener solicitudes pendientes
+  getPendingRequests(): Observable<any> {
+    return this.http.get(`${this.apiUrl}/friends/pending`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // Aceptar solicitud de amistad
+  acceptFriendRequest(senderId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/friends/accept`, { sender_id: senderId }, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+  // Rechazar solicitud de amistad
+  rejectFriendRequest(senderId: number): Observable<any> {
+    return this.http.post(`${this.apiUrl}/friends/reject`, { sender_id: senderId }, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
+
   // Agregar amigo
   addFriend(friendId: number): Observable<any> {
     return this.http.post(`${this.apiUrl}/friends`, { friend_id: friendId }, {

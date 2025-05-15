@@ -43,6 +43,14 @@ Route::group(['middleware' => ['cors']], function () {
         Route::get('/friends', 'FriendController@index');
         Route::post('/friends', 'FriendController@store');
         Route::delete('/friends/{friendId}', 'FriendController@destroy');
+        Route::get('/friends/pending', 'FriendController@getPendingRequests');
+        Route::post('/friends/accept', 'FriendController@acceptFriendRequest');
+        Route::post('/friends/reject', 'FriendController@rejectFriendRequest');
+        Route::get('/friends/{userId}', 'FriendController@getFriends');
+
+
+        Route::post('/messages/send', 'MessageController@send');
+        Route::get('/messages/conversation/{userId}', 'MessageController@conversation');
     
         Route::get('/lists/{userId}', 'ListController@index');
         Route::post('/lists', 'ListController@store');
