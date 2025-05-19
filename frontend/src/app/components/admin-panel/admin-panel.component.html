@@ -18,6 +18,8 @@
             <td>{{ user.email }}</td>
             <td>
               <button class="btn btn-danger btn-sm" (click)="deleteUser(user.id)">Eliminar</button>
+              <button class="btn btn-warning btn-sm" (click)="promoteToAdmin(user.id)">Promover</button>
+
             </td>
           </tr>
         </tbody>

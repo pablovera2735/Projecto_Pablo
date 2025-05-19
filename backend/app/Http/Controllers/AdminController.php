@@ -10,21 +10,30 @@ use App\Models\Review;
 
 class AdminController extends Controller
 {
+    private function checkAdmin()
+    {
+        if (Auth::user()->email !== 'admin@mail.com') {
+            return response()->json(['message' => 'No autorizado'], 403);
+        }
+    }
+
     // Ver todos los usuarios
+
     public function getAllUsers()
     {
-        if (!Auth::user()->is_admin) {
-            return response()->json(['message' => 'No autorizado'], 403);
+        if ($response = $this->checkAdmin()) {
+            return $response;
         }
 
         return response()->json(User::all());
     }
 
+
     // Eliminar usuario
     public function deleteUser($id)
     {
-        if (!Auth::user()->is_admin) {
-            return response()->json(['message' => 'No autorizado'], 403);
+        if ($response = $this->checkAdmin()) {
+            return $response;
         }
 
         if (Auth::id() == $id) {
@@ -40,22 +49,23 @@ class AdminController extends Controller
     // Promover a admin
     public function makeAdmin($id)
     {
-        if (!Auth::user()->is_admin) {
-            return response()->json(['message' => 'No autorizado'], 403);
+        if ($response = $this->checkAdmin()) {
+            return $response;
         }
 
         $user = User::findOrFail($id);
-        $user->is_admin = true;
+        $user->is_admin = true;  // Si quieres seguir usando el campo para otros usuarios
         $user->save();
 
         return response()->json(['message' => 'Usuario promovido a administrador']);
     }
-
+    
+    
     // Obtener todos los comentarios
     public function getAllComments()
     {
-        if (!Auth::user()->is_admin) {
-            return response()->json(['message' => 'No autorizado'], 403);
+        if ($response = $this->checkAdmin()) {
+            return $response;
         }
 
         return response()->json(Comment::with('user')->latest()->get());
@@ -64,19 +74,20 @@ class AdminController extends Controller
     // Eliminar comentario
     public function deleteComment($id)
     {
-        if (!Auth::user()->is_admin) {
-            return response()->json(['message' => 'No autorizado'], 403);
+        if ($response = $this->checkAdmin()) {
+            return $response;
         }
 
         Comment::findOrFail($id)->delete();
         return response()->json(['message' => 'Comentario eliminado']);
     }
 
+
     // Obtener todas las reseñas
     public function getAllReviews()
     {
-        if (!Auth::user()->is_admin) {
-            return response()->json(['message' => 'No autorizado'], 403);
+        if ($response = $this->checkAdmin()) {
+            return $response;
         }
 
         return response()->json(Review::with('user')->latest()->get());
@@ -85,12 +96,11 @@ class AdminController extends Controller
     // Eliminar reseña
     public function deleteReview($id)
     {
-        if (!Auth::user()->is_admin) {
-            return response()->json(['message' => 'No autorizado'], 403);
+        if ($response = $this->checkAdmin()) {
+            return $response;
         }
 
         Review::findOrFail($id)->delete();
         return response()->json(['message' => 'Reseña eliminada']);
     }
 }
-

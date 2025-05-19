@@ -32,6 +32,21 @@ export class AdminPanelComponent implements OnInit {
       });
   }
 
+
+  promoteToAdmin(userId: number): void {
+  const token = sessionStorage.getItem('token');
+  const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+
+  this.http.put(`http://localhost:8000/api/admin/users/${userId}/make-admin`, {}, { headers })
+    .subscribe({
+      next: () => {
+        alert('Usuario promovido a administrador');
+        this.loadUsers();
+      },
+      error: (err) => console.error('Error promoviendo usuario', err)
+    });
+}
+
   deleteUser(userId: number): void {
     if (!confirm('¿Seguro que quieres eliminar este usuario?')) return;
 
