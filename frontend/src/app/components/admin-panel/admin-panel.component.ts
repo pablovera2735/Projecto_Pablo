@@ -22,7 +22,7 @@ export class AdminPanelComponent implements OnInit {
   }
 
   loadUsers(): void {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
     this.http.get<any[]>('http://localhost:8000/api/admin/users', { headers })
@@ -35,7 +35,7 @@ export class AdminPanelComponent implements OnInit {
   deleteUser(userId: number): void {
     if (!confirm('¿Seguro que quieres eliminar este usuario?')) return;
 
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
     this.http.delete(`http://localhost:8000/api/admin/users/${userId}`, { headers })

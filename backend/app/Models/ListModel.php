@@ -14,4 +14,10 @@ class ListModel extends Model
     {
         return $this->hasMany(ListMovie::class, 'list_id');
     }
+
+    public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
 }

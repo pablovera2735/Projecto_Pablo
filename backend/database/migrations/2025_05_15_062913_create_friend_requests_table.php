@@ -17,12 +17,12 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('sender_id');
             $table->unsignedBigInteger('receiver_id');
-            $table->string('status')->default('pending'); // pending, accepted, rejected, etc.
+            $table->string('status')->default('pending');
             $table->timestamps();
 
             $table->foreign('sender_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('receiver_id')->references('id')->on('users')->onDelete('cascade');
-            $table->unique(['sender_id', 'receiver_id']); // evita duplicados
+            $table->unique(['sender_id', 'receiver_id']);
         });
     }
 

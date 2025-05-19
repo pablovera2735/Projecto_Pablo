@@ -28,6 +28,10 @@ Route::group(['middleware' => ['cors']], function () {
         Route::get('/admin/users', 'AdminController@getAllUsers');
         Route::delete('/admin/users/{id}', 'AdminController@deleteUser');
         Route::put('/admin/users/{id}/make-admin', 'AdminController@makeAdmin');
+        Route::get('/admin/comments', 'AdminController@getAllComments');
+        Route::delete('/admin/comments/{id}', 'AdminController@deleteComment');
+        Route::get('/admin/reviews', 'AdminController@getAllReviews');
+        Route::delete('/admin/reviews/{id}', 'AdminController@deleteReview');
     
         Route::get('/favorites/{userId}', 'FavoriteController@index');
         Route::post('/favorites', 'FavoriteController@store');
