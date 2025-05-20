@@ -1,95 +1,113 @@
-# Projecto_Pablo
 
-## Día 1: [25 de Marzo]
-Tarea realizada:
+# 🎬 Proyecto Web de Filmania - Pablo Vera García
 
-Inicialización de Angular y Laravel:
+Este proyecto consiste en una aplicación web desarrollada con **Laravel** (backend) y **Angular** (frontend), que permite a los usuarios explorar películas, marcar favoritas, hacer comentarios, gestionar listas personalizadas, enviar mensajes y más. Incluye además un **panel de administración** para la gestión de usuarios y contenido.
 
--Angular: He creado un nuevo proyecto de Angular con el comando ng new frontend --standalone false --routing false, desactivando la opción de standalone y el enrutamiento para este proyecto, ya que no los necesito en esta etapa inicial. Luego, instalé las dependencias básicas necesarias para el proyecto.
+---
 
--Laravel: He creado un nuevo proyecto de Laravel utilizando el comando composer create-project laravel/laravel backend. Posteriormente, configuré la base de datos en el archivo .env y verifiqué que todo funcionara correctamente al ejecutar php artisan serve.
+## 📁 Estructura del Proyecto
 
+```
+/backend        → Backend Laravel (API RESTful)
+/frontend       → Frontend Angular (SPA)
+/README.md      → Instrucciones del proyecto
+```
 
-## Día 2: [29 de Marzo]
-Tarea realizada:
+---
 
--Angular:He configurado las rutas en Angular y creado los componentes necesarios para la funcionalidad de login. He implementado un archivo separado para el servicio de autenticación, gestionando la lógica de login y sesión de usuario. Modifiqué el archivo app.module.ts para importar y configurar automáticamente los módulos necesarios, asegurando que todo funcione correctamente con la configuración de rutas y autenticación.
+## 🚀 Tecnologías Usadas
 
-Laravel: He configurado las rutas en Laravel para las funciones necesarias del backend. Realicé la migración de las tablas necesarias y poblé las tablas con datos de prueba utilizando los seeds correspondientes. Configuré CORS en Laravel para permitir solicitudes desde el frontend en Angular. Actualicé el archivo config/cors.php para permitir acceso desde el dominio adecuado. Modifiqué el archivo RouteServiceProvider.php para ajustar el namespace de las rutas y asegurar que se apliquen correctamente los controladores con el namespace adecuado.
+- **Laravel 9.19** (PHP 8.0+)
+- **Angular 16**
+- **MySQL / MariaDB**
+- **TMDb API** para obtener datos de películas
+- **Mailtrap SMTP** para pruebas de recuperación por correo
 
+---
 
+## ⚙️ Requisitos Previos
 
-## Día 3: [31 de Marzo]
+- PHP 8.0.30 o superior
+- Composer 2.x
+- Node.js + npm
+- Angular CLI 17.3+ (usado Angular 16)
+- MySQL / MariaDB
+- Git
 
-Tarea realizada:
+---
 
-Laravel:He configurado la API para el registro de usuarios, permitiendo que los nuevos usuarios puedan crear una cuenta en la aplicación.También he implementado la funcionalidad de "Olvidar Contraseña", creando el endpoint que permite enviar un correo con el código de recuperación para restablecer la contraseña. Se ha integrado la generación de un token aleatorio para el restablecimiento de contraseña y su almacenamiento en la base de datos para verificar su validez.
-Además, he configurado el envío de correos utilizando la API de Gmail, permitiendo que los mensajes de recuperación de contraseña se envíen directamente desde una cuenta de Gmail. Se implementó el uso del sistema de notificaciones de Laravel para enviar el correo con el token de recuperación.
+## 🔧 Instalación del Backend (Laravel)
 
-Angular:He diseñado el formulario de registro y el de recuperación de contraseña utilizando HTML y CSS, asegurándome de que tengan una apariencia moderna y clara. En el componente de registro, configuré el archivo TypeScript para manejar el envío del formulario y la conexión con la API del backend. En el componente de "Olvidar Contraseña", también se implementó la lógica para enviar el correo de recuperación al backend, mostrando mensajes de éxito o error según corresponda. Los mensajes de respuesta se muestran de manera clara para que el usuario sepa si el proceso se completó correctamente o si hubo algún problema.
+```bash
+git clone https://github.com/pablovera2735/Projecto_Pablo.git
+cd Projecto_Pablo/backend
+composer install
+```
 
+### Configuración del entorno:
 
+```bash
+cp .env.example .env
+```
 
-## Día 4: [2 de abril]
+Edita el archivo `.env` con tus credenciales de base de datos:
 
-Tarea no realizada:
+```ini
+DB_DATABASE=peliculas
+DB_USERNAME=root
+DB_PASSWORD=tu_contraseña
 
-Me falta añadir la barra de búsqueda, mejorar algunos detalles del diseño para que sea más atractivo y configurar la API privada para que, después de iniciar sesión, los usuarios puedan comentar y valorar las películas.
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=tu_usuario
+MAIL_PASSWORD=tu_contraseña
+MAIL_ENCRYPTION=null
+```
 
-Tarea realizada:
+### Migraciones y seeders:
 
-He integrado la API de TMDB en el backend de Laravel, configurando el controlador y los géneros de las películas. Esto me permite obtener datos sobre las películas populares y sus respectivas categorías desde TMDB, lo cual facilita la visualización y filtrado de películas en la aplicación.
+```bash
+php artisan migrate --seed
+```
 
+### Ejecutar el servidor de desarrollo:
 
+```bash
+php artisan serve
+```
 
-## Día 5: [3 de abril]
+---
 
-tarea realizada:
+## 🌐 Instalación del Frontend (Angular)
 
-Acabo de hacer seccion por categoria de cada pelicula
+```bash
+cd ../frontend
+npm install
+```
 
+### Ejecutar servidor Angular:
 
-tarea no realizad:
+```bash
+ng serve o npm start
+```
 
-Me fataria diseña poco mas el diseño y adaptar en cada dispositivos
+Accede desde el navegador en:  
+📍 `http://localhost:4200`
 
+---
 
-## Día 6: [7 de abril]
+## 🔑 Acceso de prueba
 
-tarea realizada:
+**Usuario normal:**
+- Email: usuario2@mail.com
+- Password: usuario2
 
-Acabo de terminar la api de los foro y he hecho el postman y me funciona y solamente me faltaria acabar lo de angular que ya me queda poco
+**Administrador:**
+- Email: admin@mail.com
+- Password: admin
+---
 
-## Día 7: [11 de abril]
+## 📜 Licencia
 
-tarea realizada:
-
-He terminado la api de cuando tu le da me gusta al catalogo de pelicula y se guaerde estos datos en el perfil
-
-
-## Día 8: [14 de abril]
-
-tarea realizada:
-
-He terminado los foro de angular y el perfil cuando tengas que iniciar sesion que salga el icono y con tu nombre
-
-
-## Día 9: [15 de abril]
-
-tarea realizada:
-
-He hecho pruebas unitarias en laravel lo de authenticacion y he añadido en en el ver detalles de la pelicula una reseña para que tu puedas comentar la opinion de esta pelicula
-
-## Día 10: [18 de abril]
-
-tarea realizada:
-
-
-He creado un nuevo componente llamado "Ver Perfil", donde los usuarios pueden ver su historial de películas que les han gustado, así como la lista de amigos que tienen agregados. También añadí un carrusel al frontend, aunque aún me falta implementar el autoplay, lo cual haré más adelante. Además, he añadido nuevas rutas tanto en Laravel como en Angular, corrigiendo y organizando la estructura para mejorar la navegación y la integración entre el backend y el frontend.
-
-
-## Día 11: [21 de abril]
-
-tarea realizada:
-
-Acabo de terminar la parte del carrusel en la sección principal de las películas. También he añadido Monolog en PHP y he implementado PHPUnit para las pruebas de autenticación. Me falta añadir más pruebas con PHPUnit. Más adelante, voy a implementar la funcionalidad para enviar solicitudes de amistad.
+Este proyecto se ha desarrollado como parte del **Proyecto Integrado** del CFGS de Desarrollo de Aplicaciones Web.
