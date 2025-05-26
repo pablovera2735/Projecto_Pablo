@@ -181,7 +181,7 @@ public function searchMovie(Request $request)
 
 
     // Obtener detalles de una película
-    public function getMovieDetails($id)
+   public function getMovieDetails($id)
 {
     $apiKey = config('services.tmdb.api_key');
     $baseUrl = config('services.tmdb.base_url');
@@ -189,25 +189,45 @@ public function searchMovie(Request $request)
 
     $detailsUrl = "$baseUrl/movie/$id?language=$language&api_key=$apiKey";
     $videosUrl = "$baseUrl/movie/$id/videos?api_key=$apiKey&language=$language";
+    $providersUrl = "$baseUrl/movie/$id/watch/providers?api_key=$apiKey";
 
     Log::channel('peliculas')->info("🎬 Detalles de la película ID $id");
 
     $detailsResponse = Http::get($detailsUrl);
     $videosResponse = Http::get($videosUrl);
+    $providersResponse = Http::get($providersUrl);
 
-    if ($detailsResponse->successful() && $videosResponse->successful()) {
+    if ($detailsResponse->successful() && $videosResponse->successful() && $providersResponse->successful()) {
         $movieDetails = $detailsResponse->json();
         $videos = $videosResponse->json();
+        $providers = $providersResponse->json();
 
         $trailer = collect($videos['results'])->first(function ($video) {
             return $video['type'] === 'Trailer' && $video['site'] === 'YouTube';
         });
 
+        // Agregar trailer a detalles
         $movieDetails['trailer'] = $trailer ? 'https://www.youtube.com/embed/' . $trailer['key'] : null;
+
+        // Obtener plataformas de providers
+        // Por ejemplo para España sería 'ES' o usa un código de país dinámico
+        $countryCode = 'ES'; // Cambia según lo que necesites o configúralo dinámico
+
+        $platforms = [];
+        if (isset($providers['results'][$countryCode]['flatrate'])) {
+            $platforms = collect($providers['results'][$countryCode]['flatrate'])->pluck('provider_name')->toArray();
+        } elseif (isset($providers['results'][$countryCode]['rent'])) {
+            $platforms = collect($providers['results'][$countryCode]['rent'])->pluck('provider_name')->toArray();
+        } elseif (isset($providers['results'][$countryCode]['buy'])) {
+            $platforms = collect($providers['results'][$countryCode]['buy'])->pluck('provider_name')->toArray();
+        }
+
+        $movieDetails['platform'] = implode(', ', $platforms);
 
         Log::channel('peliculas')->info("✅ Detalles obtenidos de película ID $id", [
             'title' => $movieDetails['title'] ?? 'Sin título',
-            'hasTrailer' => $movieDetails['trailer'] ? 'Sí' : 'No'
+            'hasTrailer' => $movieDetails['trailer'] ? 'Sí' : 'No',
+            'platforms' => $movieDetails['platform']
         ]);
 
         return response()->json([
@@ -218,7 +238,8 @@ public function searchMovie(Request $request)
 
     Log::channel('peliculas')->error("❌ Error al obtener detalles de película ID $id", [
         'details_status' => $detailsResponse->status(),
-        'videos_status' => $videosResponse->status()
+        'videos_status' => $videosResponse->status(),
+        'providers_status' => $providersResponse->status()
     ]);
 
     return response()->json([
@@ -226,5 +247,6 @@ public function searchMovie(Request $request)
         'message' => 'No se pudieron obtener los detalles de la película'
     ], 500);
 }
+
 
 }
