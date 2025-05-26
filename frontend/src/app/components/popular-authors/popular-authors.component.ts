@@ -179,6 +179,10 @@ export class PopularAuthorsComponent implements OnInit {
     }
   }
 
+  goToDetails(movieId: number): void {
+    this.router.navigate(['/movies', movieId, 'detail']);
+  }
+
   isAuthenticated(): boolean {
     return this.authService.isLoggedIn();
   }

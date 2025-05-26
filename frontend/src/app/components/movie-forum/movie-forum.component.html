@@ -26,7 +26,7 @@
       (keyup)="onSearchChange()"
     />
     <div class="search-dropdown" *ngIf="suggestions.length > 0">
-      <div *ngFor="let item of suggestions" class="search-item">
+      <div *ngFor="let item of suggestions" class="search-item" (click)="goToDetails(item.id)">
         <img [src]="getItemImage(item)" alt="icono" />
         <span>{{ item.title || item.name }}</span>
       </div>

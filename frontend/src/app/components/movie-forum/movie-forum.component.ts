@@ -89,6 +89,10 @@ export class MovieForumComponent implements OnInit {
     }
   }
 
+  goToDetails(movieId: number): void {
+    this.router.navigate(['/movies', movieId, 'detail']);
+  }
+
   loadMovieDetails(id: string) {
     this.http.get(`http://localhost:8000/api/movies/${id}`).subscribe((res: any) => {
       this.movie = res.movie_details;

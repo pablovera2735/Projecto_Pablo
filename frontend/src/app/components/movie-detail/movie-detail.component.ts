@@ -107,6 +107,11 @@ export class MovieDetailComponent implements OnInit {
       });
   }
 
+
+   goToDetails(movieId: number): void {
+    this.router.navigate(['/movies', movieId, 'detail']);
+  }
+
   submitReview() {
     if (!this.newReview.comment.trim()) return alert('Por favor, escribe un comentario.');
   

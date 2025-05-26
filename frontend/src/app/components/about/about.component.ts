@@ -48,6 +48,10 @@ userName: string = '';
     }
   }
 
+  goToDetails(movieId: number): void {
+    this.router.navigate(['/movies', movieId, 'detail']);
+  }
+
   onSearchChange(): void {
     if (this.searchTerm.length < 2) {
       this.suggestions = [];
