@@ -6,8 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -28,31 +29,27 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    // 🔹 Comentarios
     public function comments()
     {
         return $this->hasMany(Comment::class);
     }
 
-    // 🔹 Favoritos
     public function favorites()
     {
         return $this->hasMany(Favorite::class);
     }
 
-    // 🔹 Reseñas
     public function reviews()
     {
         return $this->hasMany(Review::class);
     }
 
-    // 🔹 Actividades (películas visitadas, etc.)
     public function activities()
     {
         return $this->hasMany(Activity::class);
     }
 
-     public function friends()
+    public function friends()
     {
         return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id');
     }

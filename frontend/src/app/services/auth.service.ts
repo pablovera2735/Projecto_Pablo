@@ -22,6 +22,10 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/register`, { name, email, password, password_confirmation }, { withCredentials: true });
   }
 
+  resendVerification() {
+  return this.http.post('http://localhost:8000/api/email/resend', {});
+}
+
   logout(): Observable<any> {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${sessionStorage.getItem('token')}`);
     return this.http.post(`${this.apiUrl}/logout`, {}, { headers, withCredentials: true });

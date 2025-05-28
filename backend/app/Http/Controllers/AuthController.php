@@ -10,6 +10,9 @@ use App\Mail\CustomResetPassword;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
@@ -45,34 +48,62 @@ class AuthController extends Controller
 
 
     public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed'
-        ]);
-    
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'profile_photo' => 'Perfil_Inicial.jpg',
-            'default_photo' => true,
-        ]);
-    
-        Log::channel('daily')->info('Nuevo usuario registrado', [
-            'user_id' => $user->id,
-            'email' => $user->email
-        ]);
-    
-        $token = $user->createToken('auth_token')->plainTextToken;
-    
-        return response()->json(['data' => [
-            'accessToken' => $token,
-            'token_type' => 'Bearer',
-            'user' => $user
-        ]]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users',
+        'password' => 'required|string|min:8|confirmed'
+    ]);
+
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'profile_photo' => 'Perfil_Inicial.jpg',
+        'default_photo' => true,
+    ]);
+
+    Log::channel('daily')->info('Nuevo usuario registrado', [
+        'user_id' => $user->id,
+        'email' => $user->email
+    ]);
+
+    // 🔐 Dispara el evento de verificación de email
+    event(new Registered($user));
+
+    return response()->json([
+        'message' => 'Cuenta creada correctamente. Revisa tu correo para verificar la cuenta.',
+        'user' => $user
+    ]);
+}
+
+
+public function verifyEmail(Request $request, $id, $hash)
+{
+    $user = User::findOrFail($id);
+
+    // Validar que la URL tenga firma válida
+    if (! URL::hasValidSignature($request)) {
+        return response()->json(['message' => 'Firma inválida.'], 403);
     }
+
+    // Validar que el hash coincida con el email del usuario
+    if (! hash_equals((string) $hash, sha1($user->getEmailForVerification()))) {
+        return response()->json(['message' => 'Hash inválido.'], 403);
+    }
+
+    // Si ya está verificado
+    if ($user->hasVerifiedEmail()) {
+        return response()->json(['message' => 'Correo ya verificado.']);
+    }
+
+    // Marcar email como verificado
+    $user->markEmailAsVerified();
+
+    event(new Verified($user));
+
+    return response()->json(['message' => 'Correo verificado correctamente.']);
+}
     
     
     public function getProfileComments($userId)

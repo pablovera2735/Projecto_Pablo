@@ -18,24 +18,32 @@ export class LoginComponent {
 
   login() {
     this.loading = true;
-  
+    this.errorMessage = '';
+
     this.authService.login(this.email, this.password).subscribe({
       next: (response) => {
-        /*console.log(response);*/
-        if (response && response.data && response.data.accessToken && response.data.user) {
-          sessionStorage.setItem('token', response.data.accessToken); // Cambiado a sessionStorage
-          const user = response.data.user;
-          sessionStorage.setItem('user', JSON.stringify(user)); // Cambiado a sessionStorage
+        const data = response?.data;
+
+        if (data?.accessToken && data?.user) {
+          // ✅ Verificar si el correo ha sido confirmado
+          if (!data.user.email_verified_at) {
+            this.errorMessage = 'Debes verificar tu correo electrónico antes de iniciar sesión.';
+            this.loading = false;
+            return;
+          }
+
+          // ✅ Guardar datos en sessionStorage
+          sessionStorage.setItem('token', data.accessToken);
+          sessionStorage.setItem('user', JSON.stringify(data.user));
           this.router.navigate(['/movies']);
         } else {
-          console.error('Token o usuario no recibido');
-          this.errorMessage = 'Error al obtener los datos';
+          this.errorMessage = 'Error al obtener los datos del usuario.';
         }
         this.loading = false;
       },
       error: (error) => {
         console.error('Error en la respuesta:', error);
-        this.errorMessage = 'Credenciales incorrectas';
+        this.errorMessage = error?.error?.message || 'Credenciales incorrectas';
         this.loading = false;
       }
     });

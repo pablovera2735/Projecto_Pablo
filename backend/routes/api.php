@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::group(['middleware' => ['cors']], function () {
 
@@ -9,6 +10,22 @@ Route::group(['middleware' => ['cors']], function () {
     Route::post('/register', 'AuthController@register');
     Route::post('/send-reset-password', 'AuthController@sendResetPassword');
     Route::post('/reset-password', 'AuthController@resetPasswordWithCode');
+
+
+
+    Route::get('/email/verify/{id}/{hash}', 'AuthController@verifyEmail')
+    ->middleware('signed')
+    ->name('verification.verify');
+
+
+    Route::post('/email/resend', function (Request $request) {
+    if ($request->user()->hasVerifiedEmail()) {
+        return response()->json(['message' => 'El correo ya fue verificado.']);
+    }
+
+    $request->user()->sendEmailVerificationNotification();
+    return response()->json(['message' => 'Correo de verificación reenviado.']);
+    })->middleware(['auth:sanctum']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', 'AuthController@logout');
