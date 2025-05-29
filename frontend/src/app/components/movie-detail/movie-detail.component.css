@@ -499,17 +499,19 @@ button {
   }
   .custom-navbar {
     padding: 10px 15px;
+    padding-top: 15px;
   }
 
   .navbar-content {
     flex-wrap: wrap;
+    margin-top: 5px;
   }
 
   .nav-left {
     display: none; /* Ocultamos el menú principal inicialmente */
     width: 100%;
     order: 2;
-    margin-top: 15px;
+    margin-top: 20px;
     flex-direction: column;
     background-color: #2a2a2a;
     border-radius: 8px;
