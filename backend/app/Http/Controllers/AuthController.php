@@ -61,6 +61,7 @@ class AuthController extends Controller
         'password' => Hash::make($request->password),
         'profile_photo' => 'Perfil_Inicial.jpg',
         'default_photo' => true,
+        'is_admin' => 0,
     ]);
 
     Log::channel('daily')->info('Nuevo usuario registrado', [

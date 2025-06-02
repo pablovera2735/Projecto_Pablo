@@ -74,21 +74,26 @@
 
 <div class="container mt-4" *ngIf="thread">
   <h2 class="forum-title mb-4">Foro de discusión sobre "{{ movie?.title }}"</h2>
+  
 
-  <!-- Formulario para nuevo comentario -->
-  <div class="card mb-4 forum-card">
-    <div class="card-body">
-      <textarea class="form-control mb-3 comment-textarea" 
-                [(ngModel)]="newComment" 
-                placeholder="Escribe un comentario..." 
-                rows="3"></textarea>
-      <button class="btn btn-primary comment-btn" 
-              (click)="postComment()" 
-              [disabled]="loading || !newComment.trim()">
-        {{ loading ? 'Enviando...' : 'Comentar' }}
-      </button>
-    </div>
+  <div *ngIf="userForumBlocked" class="alert alert-danger">
+  Tu acceso al foro ha sido restringido por un administrador.
+</div>
+
+<!-- Formulario para nuevo comentario -->
+<div *ngIf="!userForumBlocked" class="card mb-4 forum-card">
+  <div class="card-body">
+    <textarea class="form-control mb-3 comment-textarea" 
+              [(ngModel)]="newComment" 
+              placeholder="Escribe un comentario..." 
+              rows="3"></textarea>
+    <button class="btn btn-primary comment-btn" 
+            (click)="postComment()" 
+            [disabled]="loading || !newComment.trim()">
+      {{ loading ? 'Enviando...' : 'Comentar' }}
+    </button>
   </div>
+</div>
 
   <!-- Mensaje cuando no hay comentarios -->
   <div *ngIf="thread?.comments?.length === 0" class="alert alert-info no-comments">
@@ -112,9 +117,11 @@
         <div class="card-body comment-body">
           <p class="card-text comment-content">{{ comment.content }}</p>
           
-          <button class="btn btn-sm reply-btn" (click)="toggleReply(comment)">
-            <i class="bi bi-reply-fill me-1"></i> Responder
-          </button>
+          <button class="btn btn-sm reply-btn" 
+        (click)="toggleReply(comment)" 
+        *ngIf="!userForumBlocked">
+  <i class="bi bi-reply-fill me-1"></i> Responder
+</button>
           
           <!-- Formulario de respuesta -->
           <div class="reply-form mt-3" *ngIf="comment.showReply">

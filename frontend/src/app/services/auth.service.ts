@@ -36,9 +36,9 @@ export class AuthService {
   }
 
   isAdmin(): boolean {
-    const user = this.getUser();
-    return user && user.email === 'admin@mail.com';
-  }  
+  const user = this.getUser();
+  return user && user.is_admin === true;
+} 
 
   storeUserData(token: string, user: any) {
     sessionStorage.setItem('token', token);

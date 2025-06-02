@@ -16,6 +16,7 @@ export class MovieForumComponent implements OnInit {
   searchTerm: string = '';
   suggestions: any[] = [];
   notifications: any[] = [];
+  userForumBlocked: boolean = false;
 
   currentSlide: number = 0;
   slideInterval: any;
@@ -41,6 +42,13 @@ export class MovieForumComponent implements OnInit {
       this.loadMovieDetails(id);
       this.loadThread(id);
     }
+
+    this.http.get('http://localhost:8000/api/user', {
+  headers: new HttpHeaders().set('Authorization', `Bearer ${sessionStorage.getItem('token')}`)
+}).subscribe((user: any) => {
+  sessionStorage.setItem('user', JSON.stringify(user));  // <-- actualiza el user en sessionStorage
+  this.setUserName();  // <-- vuelve a ejecutar tu lógica de bloqueo
+});
 
     this.setUserName();
     this.loadNotifications();
@@ -78,16 +86,22 @@ export class MovieForumComponent implements OnInit {
   }
 
   setUserName(): void {
-    const user = this.authService.getUser();
-    if (user && user.name) {
-      this.userName = user.name;
-      this.profilePhoto = user.profile_photo
-        ? 'http://localhost:8000/' + user.profile_photo
-        : 'assets/img/Perfil_Inicial.jpg';
-    } else {
-      this.userName = 'Invitado';
-    }
+  const user = this.authService.getUser();
+  if (user && user.name) {
+    this.userName = user.name;
+    this.profilePhoto = user.profile_photo
+      ? 'http://localhost:8000/' + user.profile_photo
+      : 'assets/img/Perfil_Inicial.jpg';
+
+    // Verifica si el usuario tiene el foro bloqueado temporalmente
+    const ahora = new Date();
+    const bloqueoHasta = user.forum_blocked_until ? new Date(user.forum_blocked_until) : null;
+
+    this.userForumBlocked = user.forum_blocked === 1 && (!bloqueoHasta || bloqueoHasta > ahora);
+  } else {
+    this.userName = 'Invitado';
   }
+}
 
   goToDetails(movieId: number): void {
     this.router.navigate(['/movies', movieId, 'detail']);

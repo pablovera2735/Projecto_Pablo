@@ -27,6 +27,7 @@ class UsersTableSeeder extends Seeder
                 'profile_photo' => 'Perfil_Inicial.jpg',
                 'default_photo' => true,
                 'email_verified_at' => Carbon::now(),
+                'is_admin' => 1,
                 'created_at' => now(),
                 'updated_at' => now()
             ],
@@ -37,6 +38,7 @@ class UsersTableSeeder extends Seeder
                 'profile_photo' => 'Perfil_Inicial.jpg',
                 'default_photo' => true,
                 'email_verified_at' => Carbon::now(),
+                'is_admin' => 0,
                 'created_at' => now(),
                 'updated_at' => now()
             ]
