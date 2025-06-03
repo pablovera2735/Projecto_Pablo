@@ -112,6 +112,9 @@ export class MovieDetailComponent implements OnInit {
     this.router.navigate(['/movies', movieId, 'detail']);
   }
 
+  goToDetailsPeople(personId: number): void {
+    this.router.navigate(['/persona', personId, 'detail']);
+}
   submitReview() {
     if (!this.newReview.comment.trim()) return alert('Por favor, escribe un comentario.');
   
