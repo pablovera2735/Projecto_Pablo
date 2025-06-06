@@ -19,6 +19,7 @@ export class ReleaseComponent implements OnInit {
   mobileMenuOpen: boolean = false;
 
   recommendedReleases: any[] = [];
+  upcomingReleases: any[] = [];
   loading: boolean = true;
   selectedYear: string = '2025';
   selectedMonth: number = 0;
@@ -132,32 +133,55 @@ export class ReleaseComponent implements OnInit {
   }
 
   getRecommendedReleases(): void {
-    this.http.get<any>('http://localhost:8000/api/movies/popular').subscribe({
-      next: (response) => {
-        const currentYear = parseInt(this.selectedYear);
-        const currentMonth = this.selectedMonth;
+  const currentYear = parseInt(this.selectedYear);
+  const currentMonth = this.selectedMonth;
 
-        this.recommendedReleases = (response.movies || []).filter((movie: any) => {
-          if (!movie.release_date) return false;
+  this.loading = true;
 
-          const releaseDate = new Date(movie.release_date);
-          const movieYear = releaseDate.getFullYear();
-          const movieMonth = releaseDate.getMonth() + 1;
+  // Obtener películas populares (ya estrenadas)
+  this.http.get<any>('http://localhost:8000/api/movies/popular', {
+    params: {
+      year: this.selectedYear,
+      month: this.selectedMonth.toString()
+    }
+  }).subscribe({
+    next: (response) => {
+      this.recommendedReleases = (response.movies || []).filter((movie: any) => {
+        if (!movie.release_date) return false;
 
-          const matchYear = movieYear === currentYear;
-          const matchMonth = currentMonth === 0 || movieMonth === currentMonth;
+        const releaseDate = new Date(movie.release_date);
+        const movieYear = releaseDate.getFullYear();
+        const movieMonth = releaseDate.getMonth() + 1;
 
-          return matchYear && matchMonth;
-        }).slice(0, 12);
+        const matchYear = movieYear === currentYear;
+        const matchMonth = currentMonth === 0 || movieMonth === currentMonth;
 
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error al obtener películas recomendadas:', err);
-        this.loading = false;
-      }
-    });
-  }
+        return matchYear && matchMonth;
+      }).slice(0, 12);
+
+      this.loading = false;
+    },
+    error: (err) => {
+      console.error('Error al obtener películas recomendadas:', err);
+      this.loading = false;
+    }
+  });
+
+  // Obtener películas próximas a estrenarse
+  this.http.get<any>('http://localhost:8000/api/movies/upcoming', {
+    params: {
+      year: this.selectedYear,
+      month: this.selectedMonth.toString()
+    }
+  }).subscribe({
+    next: (response) => {
+      this.upcomingReleases = (response.movies || []).slice(0, 12);
+    },
+    error: (err) => {
+      console.error('Error al obtener próximos estrenos:', err);
+    }
+  });
+}
   
   getImage(path: string): string {
     return path ? `https://image.tmdb.org/t/p/w500${path}` : 'assets/img/no-image.png';

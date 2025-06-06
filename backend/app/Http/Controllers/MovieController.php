@@ -68,6 +68,65 @@ class MovieController extends Controller
     ], 500);
 }
 
+public function getUpcomingMovies(Request $request)
+{
+    $apiKey = config('services.tmdb.api_key');
+    $baseUrl = config('services.tmdb.base_url');
+    $language = config('services.tmdb.language');
+    $page = $request->get('page', 1);
+    $year = $request->get('year');
+    $month = $request->get('month');
+
+    $query = [
+        'language' => $language,
+        'api_key' => $apiKey,
+        'page' => $page,
+        'sort_by' => 'popularity.desc',
+        'primary_release_date.gte' => now()->format('Y-m-d'), // solo estrenos futuros desde hoy
+    ];
+
+    if ($year && $month) {
+        $month = str_pad($month, 2, '0', STR_PAD_LEFT);
+        $query['primary_release_date.gte'] = "$year-$month-01";
+        $query['primary_release_date.lte'] = date("Y-m-t", strtotime($query['primary_release_date.gte']));
+    } elseif ($year && !$month) {
+        $query['primary_release_date.gte'] = "$year-01-01";
+        $query['primary_release_date.lte'] = "$year-12-31";
+    }
+
+    $url = "$baseUrl/discover/movie";
+    Log::channel('peliculas')->info("Llamando a TMDB (próximas): $url", $query);
+
+    $response = Http::get($url, $query);
+
+    if ($response->successful()) {
+        $movies = $response->json()['results'];
+        $totalPages = $response->json()['total_pages'];
+
+        Log::channel('peliculas')->info("Películas próximas recibidas", [
+            'page' => $page,
+            'count' => count($movies)
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'movies' => $movies,
+            'total_pages' => $totalPages
+        ]);
+    }
+
+    Log::channel('peliculas')->error('Error al obtener películas próximas', [
+        'status' => $response->status(),
+        'body' => $response->body()
+    ]);
+
+    return response()->json([
+        'status' => 'error',
+        'message' => 'No se pudieron obtener las películas próximas'
+    ], 500);
+}
+
+
     // Listar los géneros de películas
     public function listGenres()
     {
