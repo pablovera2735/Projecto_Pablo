@@ -750,7 +750,8 @@ header .search-form input:focus {
   }
 }
 
-@media screen and (max-width: 1024px) {
+
+@media (min-width: 768px) and (max-width: 1024px) {
     header {
     flex-direction: column;
     align-items: center;
@@ -761,7 +762,7 @@ header .search-form input:focus {
   }
 
   .movie-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
   .custom-navbar {
     padding: 10px 15px;

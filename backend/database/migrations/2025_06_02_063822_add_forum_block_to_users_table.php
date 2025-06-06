@@ -16,6 +16,8 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
         $table->boolean('forum_blocked')->default(false);
         $table->timestamp('forum_blocked_until')->nullable();
+        $table->boolean('review_blocked')->default(false);
+        $table->timestamp('review_blocked_until')->nullable();
     });
     }
 

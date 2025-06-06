@@ -154,6 +154,39 @@ public function unblockUserForum($id)
     return response()->json(['message' => 'Usuario desbloqueado del foro']);
 }
 
+
+public function blockUserReview($id, Request $request)
+{
+    if ($response = $this->checkAdmin()) {
+        return $response;
+    }
+
+    $user = User::findOrFail($id);
+    
+    $durationMinutes = $request->input('duration', 60); // duración opcional, por defecto 60 minutos
+
+    $user->review_blocked = true;
+    $user->review_blocked_until = now()->addMinutes($durationMinutes);
+    $user->save();
+
+    return response()->json(['message' => 'Usuario bloqueado para reseñas']);
+}
+
+// Desbloquear reseñas del usuario
+public function unblockUserReview($id)
+{
+    if ($response = $this->checkAdmin()) {
+        return $response;
+    }
+
+    $user = User::findOrFail($id);
+    $user->review_blocked = false;
+    $user->review_blocked_until = null;
+    $user->save();
+
+    return response()->json(['message' => 'Usuario desbloqueado para reseñas']);
+}
+
     // Eliminar reseña
     public function deleteReview($id)
     {

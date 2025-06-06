@@ -15,12 +15,31 @@ class MovieController extends Controller
     $baseUrl = config('services.tmdb.base_url');
     $language = config('services.tmdb.language');
     $page = $request->get('page', 1);
+    $year = $request->get('year');
+    $month = $request->get('month');
 
-    $url = "$baseUrl/discover/movie?sort_by=popularity.desc&language=$language&api_key=$apiKey&page=$page";
+    $query = [
+        'sort_by' => 'popularity.desc',
+        'language' => $language,
+        'api_key' => $apiKey,
+        'page' => $page,
+    ];
 
-    Log::channel('peliculas')->info("Llamando a TMDB: $url");
+    // Agregar filtros si están presentes
+    if ($year) {
+        $query['primary_release_year'] = $year;
+    }
 
-    $response = Http::get($url);
+    if ($year && $month) {
+        $month = str_pad($month, 2, '0', STR_PAD_LEFT);
+        $query['primary_release_date.gte'] = "$year-$month-01";
+        $query['primary_release_date.lte'] = "$year-$month-31";
+    }
+
+    $url = "$baseUrl/discover/movie";
+    Log::channel('peliculas')->info("Llamando a TMDB: $url", $query);
+
+    $response = Http::get($url, $query);
 
     if ($response->successful()) {
         $movies = $response->json()['results'];

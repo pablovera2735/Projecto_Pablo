@@ -15,6 +15,7 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 
 class AuthController extends Controller
@@ -105,8 +106,9 @@ public function verifyEmail(Request $request, $id, $hash)
 
     return response()->json(['message' => 'Correo verificado correctamente.']);
 }
-    
-    
+
+
+
     public function getProfileComments($userId)
     {
         $comments = ProfileComment::where('profile_user_id', $userId)
@@ -203,21 +205,66 @@ public function deleteProfilePhoto(Request $request)
 
 public function updateEmail(Request $request)
 {
-    $user = $request->user();
-
-    $validator = Validator::make($request->all(), [
-        'email' => 'required|email|unique:users,email,' . $user->id,
+    $request->validate([
+        'email' => 'required|email|unique:users,email',
     ]);
 
-    if ($validator->fails()) {
-        return response()->json(['errors' => $validator->errors()], 422);
+    $user = $request->user();
+    $newEmail = $request->email;
+
+    // Generar código de 6 dígitos
+    $code = rand(100000, 999999);
+
+    // Guardar temporalmente en cache (15 minutos)
+    Cache::put("email_change_{$user->id}", [
+        'new_email' => $newEmail,
+        'code' => $code,
+    ], now()->addMinutes(15));
+
+    // Enviar código al nuevo correo
+    Mail::raw("Tu código para cambiar el correo es: {$code}", function ($message) use ($newEmail) {
+        $message->to($newEmail)
+                ->subject('Código de verificación para cambio de correo');
+    });
+
+    return response()->json(['message' => 'Código enviado al nuevo correo.']);
+}
+
+
+public function confirmEmailChange(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email',
+        'code' => 'required|digits:6',
+    ]);
+
+    $user = $request->user();
+    $key = "email_change_{$user->id}";
+
+    if (!Cache::has($key)) {
+        return response()->json(['message' => 'No hay solicitud de cambio o el código expiró.'], 400);
     }
 
-    $user->email = $request->email;
+    $data = Cache::get($key);
+
+    if ($data['new_email'] !== $request->email || $data['code'] != $request->code) {
+        return response()->json(['message' => 'Código inválido o el correo no coincide.'], 400);
+    }
+
+    // Actualizar email
+    $user->email = $data['new_email'];
+    $user->email_verified_at = null; // invalidar verificación si usas verificación de email
     $user->save();
 
-    return response()->json(['message' => 'Correo actualizado exitosamente']);
+    Cache::forget($key);
+
+    // Opcional: enviar verificación
+    event(new Registered($user));
+
+    return response()->json(['message' => 'Correo actualizado. Verifica tu nuevo correo.']);
 }
+
+
 
 public function updatePassword(Request $request)
 {
@@ -296,6 +343,11 @@ public function resetPasswordWithCode(Request $request)
     DB::table('password_resets')->where('email', $request->email)->delete();
 
     return response()->json(['message' => 'Contraseña actualizada correctamente']);
+}
+
+public function profile(Request $request)
+{
+    return response()->json(['email' => $request->user()->email]);
 }
 
 

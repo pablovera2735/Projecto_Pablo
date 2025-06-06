@@ -56,6 +56,21 @@
             >
               Desbloquear Foro
             </button>
+
+            <button
+              *ngIf="!user.review_blocked"
+              class="btn btn-secondary btn-sm"
+              (click)="blockUserReview(user.id)"
+            >
+              Bloquear Reseña
+            </button>
+            <button
+              *ngIf="user.review_blocked"
+              class="btn btn-success btn-sm"
+              (click)="unblockUserReview(user.id)"
+            >
+              Desbloquear Reseña
+            </button>
           </td>
         </tr>
       </tbody>

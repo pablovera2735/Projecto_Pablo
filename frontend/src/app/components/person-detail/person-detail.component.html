@@ -1,3 +1,76 @@
+<header class="custom-navbar">
+  <nav class="navbar-content container">
+
+    <button class="menu-btn" (click)="toggleMobileMenu()">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    
+    <!-- Menú de navegación -->
+    <div class="nav-left" [class.active]="mobileMenuOpen">
+      <a routerLink="/movies">Inicio</a>
+      <a routerLink="/estrenos">Estrenos</a>
+      <a routerLink="/personas">Personas</a>
+      <a routerLink="/foro">Foro</a>
+      <a routerLink="/nosotros">Nosotros</a>
+    </div>
+
+
+    <!-- Buscador y perfil -->
+    <div class="nav-right">
+      <input
+      type="text"
+      class="search-input"
+      placeholder="Buscar..."
+      [(ngModel)]="searchTerm"
+      (keyup)="onSearchChange()"
+    />
+    <div class="search-dropdown" *ngIf="suggestions.length > 0">
+      <div *ngFor="let item of suggestions" class="search-item" (click)="goToDetails(item.id)">
+        <img [src]="getItemImage(item)" alt="icono" />
+        <span>{{ item.title || item.name }}</span>
+      </div>
+      <div class="search-footer" (click)="goToSearchResults()">Ver todos los resultados</div>
+    </div>
+
+
+    <div class="notification-wrapper" (click)="toggleDropdown()">
+      <i class="bi bi-bell-fill notification-icon"></i>
+    
+      <div *ngIf="showDropdown" class="dropdown-menu show shadow">
+        <h6 class="dropdown-header">Últimas notificaciones</h6>
+        <div *ngIf="notifications.length === 0" class="dropdown-item text-muted">No hay notificaciones</div>
+        <div *ngFor="let noti of notifications" class="dropdown-item">
+          <strong>{{ noti.title }}</strong>
+          <p class="mb-0 small">{{ noti.message }}</p>
+        </div>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item text-center text-primary" (click)="markAllAsRead()">Marcar como leídas</button>
+      </div>
+    </div>
+
+
+
+      <div *ngIf="isAuthenticated()" class="user-box dropdown">
+        <button class="user-btn dropdown-toggle" data-bs-toggle="dropdown">
+          <img [src]="profilePhoto" class="rounded-circle me-2" width="30" height="30" alt="Perfil" />
+    {{ userName }}
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><a class="dropdown-item" [routerLink]="'/perfil'">Ver perfil</a></li>
+    <li><a class="dropdown-item" [routerLink]="'/ajustes'">Ajustes</a></li>
+    <li><a class="dropdown-item" (click)="logout()">Cerrar sesión</a></li>
+  </ul>
+</div>
+
+      <div *ngIf="!isAuthenticated()">
+        <a class="nav-link text-white" routerLink="/login">Iniciar sesión</a>
+      </div>
+    </div>
+  </nav>
+</header>
+
 <div *ngIf="isLoading" class="text-center mt-5">Cargando...</div>
 
 <div *ngIf="!isLoading && person" class="container mt-4">
@@ -30,5 +103,73 @@
       </div>
     </div>
   </div>
+  <div class="back-button-wrapper">
+    <button class="back-button" (click)="goBack()">← Volver al menú</button>
+  </div>
 </div>
 
+
+
+<footer class="site-footer">
+  <div class="footer-container">
+    <!-- Sección 1: Logo y descripción -->
+    <div class="footer-section about">
+      <div class="footer-logo">
+        <img src="assets/img/logo.png" alt="Finanía Logo" class="logo-rounded">
+      </div>
+      <p class="footer-about-text">
+        Tu plataforma favorita para descubrir películas y actores. Mantente al día con los últimos estrenos y clásicos del cine.
+      </p>
+      <div class="social-links">
+        <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+        <a href="#" aria-label="Twitter"><i class="bi bi-twitter-x"></i></a>
+        <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
+        <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
+      </div>
+    </div>
+
+    <!-- Sección 2: Enlaces rápidos -->
+    <div class="footer-section links">
+      <h3 class="footer-title">Enlaces rápidos</h3>
+      <ul class="footer-links">
+        <li><a routerLink="/">Inicio</a></li>
+        <li><a routerLink="/estrenos">Estrenos</a></li>
+        <li><a routerLink="/personas">Actores</a></li>
+        <li><a routerLink="/foro">Foro</a></li>
+        <li><a routerLink="/nosotros">Sobre nosotros</a></li>
+        <li><a routerLink="/contacto">Contacto</a></li>
+      </ul>
+    </div>
+
+    <!-- Sección 3: Categorías -->
+    <div class="footer-section categories">
+      <h3 class="footer-title">Géneros</h3>
+      <ul class="footer-links">
+        <li><a routerLink="/movies" [queryParams]="{genre: '28'}">Acción</a></li>
+        <li><a routerLink="/movies" [queryParams]="{genre: '12'}">Aventura</a></li>
+        <li><a routerLink="/movies" [queryParams]="{genre: '35'}">Comedia</a></li>
+        <li><a routerLink="/movies" [queryParams]="{genre: '18'}">Drama</a></li>
+        <li><a routerLink="/movies" [queryParams]="{genre: '27'}">Terror</a></li>
+        <li><a routerLink="/movies" [queryParams]="{genre: '878'}">Ciencia Ficción</a></li>
+      </ul>
+    </div>
+
+    <!-- Sección 4: Newsletter -->
+    <div class="footer-section newsletter">
+      <h3 class="footer-title">Newsletter</h3>
+      <p>Suscríbete para recibir las últimas novedades</p>
+    </div>
+  </div>
+
+  <!-- Copyright y enlaces legales -->
+  <div class="footer-bottom">
+    <div class="footer-bottom-content">
+      <p>&copy; 2025 Filmania. Todos los derechos reservados.</p>
+      <div class="legal-links">
+        <a href="#">Términos de servicio</a>
+        <a href="#">Política de privacidad</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>

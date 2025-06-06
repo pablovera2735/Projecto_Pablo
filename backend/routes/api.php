@@ -1,9 +1,7 @@
 <?php
 
-use App\Http\Controllers\AdminController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
 
 Route::group(['middleware' => ['cors']], function () {
 
@@ -33,7 +31,9 @@ Route::group(['middleware' => ['cors']], function () {
         Route::get('/profile-comments/{userId}', 'AuthController@getProfileComments');
         Route::post('/profile-comments', 'AuthController@storeProfileComment');
         Route::delete('/profile/delete-photo', 'AuthController@deleteProfilePhoto');
-        Route::put('/profile/update-email', 'AuthController@updateEmail');
+        Route::get('/profile', 'AuthController@profile');
+        Route::post('/profile/update-email', 'AuthController@updateEmail');
+        Route::post('/profile/confirm-email-change', 'AuthController@confirmEmailChange');
         Route::put('/profile/update-password', 'AuthController@updatePassword');
         Route::get('/user/{id}/public-profile', 'AuthController@getPublicUserProfile');
         
@@ -47,6 +47,8 @@ Route::group(['middleware' => ['cors']], function () {
         Route::delete('/admin/reviews/{id}', 'AdminController@deleteReview');
         Route::put('/admin/users/{id}/block-forum', 'AdminController@blockUserForum');
         Route::put('/admin/users/{id}/unblock-forum', 'AdminController@unblockUserForum');
+        Route::put('/admin/users/{id}/block-reviews', 'AdminController@blockUserReview');
+        Route::put('/admin/users/{id}/unblock-reviews', 'AdminController@unblockUserReview');
     
         Route::get('/favorites/{userId}', 'FavoriteController@index');
         Route::post('/favorites', 'FavoriteController@store');
@@ -73,10 +75,14 @@ Route::group(['middleware' => ['cors']], function () {
         Route::post('/lists/{listId}/add-movie', 'ListController@addMovie');
 
         // Aquí agregamos middleware para bloqueo de foro para el usuario que no respete la comunidad
-        Route::middleware('check.forum.blocked')->group(function () {
-            Route::post('/comments', 'CommentController@store');
-            Route::post('/reviews', 'ReviewController@store');
-        });
+        Route::middleware(['check.forum.blocked'])->group(function () {
+        Route::post('/comments', 'CommentController@store');
+    });
+
+        // Aquí agregamos middleware para bloqueo la reseña para el usuario que no respete la comunidad
+        Route::middleware(['review.blocked'])->group(function () {
+        Route::post('/reviews', 'ReviewController@store');
+    });
     });    
 
     Route::get('/movies/search', 'MovieController@searchMovie');

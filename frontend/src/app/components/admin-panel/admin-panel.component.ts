@@ -9,7 +9,9 @@ interface User {
   email: string;
   is_admin: boolean;
   forum_blocked: boolean;
-  forum_blocked_until?: string; // opcional si lo usas
+  review_blocked: boolean;
+  forum_blocked_until?: string;
+  review_blocked_until?: string;
 }
 
 @Component({
@@ -95,6 +97,42 @@ export class AdminPanelComponent implements OnInit {
     ).subscribe({
       next: () => {
         alert('Usuario desbloqueado del foro');
+        this.loadUsers();
+      },
+      error: (err) => {
+        alert('Error desbloqueando usuario');
+        console.error(err);
+      }
+    });
+  }
+
+
+  blockUserReview(userId: number): void {
+    const duration = 60; // minutos
+    this.http.put(
+      `http://localhost:8000/api/admin/users/${userId}/block-reviews`,
+      { duration },
+      { headers: this.getAuthHeaders() }
+    ).subscribe({
+      next: () => {
+        alert('Usuario bloqueado para reseñas');
+        this.loadUsers();
+      },
+      error: (err) => {
+        alert('Error bloqueando usuario');
+        console.error(err);
+      }
+    });
+  }
+
+  unblockUserReview(userId: number): void {
+    this.http.put(
+      `http://localhost:8000/api/admin/users/${userId}/unblock-reviews`,
+      {},
+      { headers: this.getAuthHeaders() }
+    ).subscribe({
+      next: () => {
+        alert('Usuario desbloqueado para reseñas');
         this.loadUsers();
       },
       error: (err) => {

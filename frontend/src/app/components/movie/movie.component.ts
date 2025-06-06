@@ -38,7 +38,7 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
   moviesByGenre: { [key: number]: Movie[] } = {};
   currentPageByGenre: { [key: number]: number } = {};
   totalPagesByGenre: { [key: number]: number } = {};
-  moviesPerPage: number = 5;
+  moviesPerPage: number = 6;
 
   currentSlide: number = 0;
   slideInterval: any;

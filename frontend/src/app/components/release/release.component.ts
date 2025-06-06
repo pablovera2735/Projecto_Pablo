@@ -132,28 +132,31 @@ export class ReleaseComponent implements OnInit {
   }
 
   getRecommendedReleases(): void {
-    this.http.get<any>('http://localhost:8000/api/movies/popular')
-      .subscribe(response => {
-        this.recommendedReleases = response.movies
-        .filter((movie: any) => {
+    this.http.get<any>('http://localhost:8000/api/movies/popular').subscribe({
+      next: (response) => {
+        const currentYear = parseInt(this.selectedYear);
+        const currentMonth = this.selectedMonth;
+
+        this.recommendedReleases = (response.movies || []).filter((movie: any) => {
           if (!movie.release_date) return false;
-      
+
           const releaseDate = new Date(movie.release_date);
           const movieYear = releaseDate.getFullYear();
           const movieMonth = releaseDate.getMonth() + 1;
-      
-          console.log(`${movie.title} - ${movie.release_date} (Año: ${movieYear}, Mes: ${movieMonth})`);
-      
-          const matchYear = movieYear === parseInt(this.selectedYear);
-          const matchMonth = this.selectedMonth === 0 || movieMonth === this.selectedMonth;
-      
+
+          const matchYear = movieYear === currentYear;
+          const matchMonth = currentMonth === 0 || movieMonth === currentMonth;
+
           return matchYear && matchMonth;
-        })
-        .slice(0, 12);
-      
-  
+        }).slice(0, 12);
+
         this.loading = false;
-      });
+      },
+      error: (err) => {
+        console.error('Error al obtener películas recomendadas:', err);
+        this.loading = false;
+      }
+    });
   }
   
   getImage(path: string): string {
@@ -165,7 +168,8 @@ export class ReleaseComponent implements OnInit {
   }
 
   onFiltersChange(): void {
-    this.loading = true;
-    this.getRecommendedReleases();
-  }
+  this.selectedMonth = Number(this.selectedMonth);
+  this.loading = true;
+  this.getRecommendedReleases();
+}
 }

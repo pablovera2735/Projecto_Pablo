@@ -26,11 +26,14 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     protected $casts = [
-        'email_verified_at' => 'datetime',
-        'is_admin' => 'boolean',
-        'forum_blocked' => 'boolean',
-        'forum_blocked_until' => 'datetime',
+    'email_verified_at' => 'datetime',
+    'is_admin' => 'boolean',
+    'forum_blocked' => 'boolean',
+    'forum_blocked_until' => 'datetime',
+    'review_blocked' => 'boolean',
+    'review_blocked_until' => 'datetime',
     ];
+
 
     public function comments()
     {
