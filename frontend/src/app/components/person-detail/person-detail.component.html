@@ -76,7 +76,12 @@
 <div *ngIf="!isLoading && person" class="container mt-4">
   <div class="row">
     <div class="col-md-4 text-center">
-      <img [src]="getImage(person.profile_path)" class="img-fluid rounded shadow" alt="{{ person.name }}" />
+     <img 
+  [src]="getImage(person.profile_path)" 
+  class="rounded shadow img-fluid" 
+  alt="{{ person.name }}" 
+  style="max-width: 300px; height: auto;" 
+/>
     </div>
     <div class="col-md-8">
       <h2 class="fw-bold">{{ person.name }}</h2>

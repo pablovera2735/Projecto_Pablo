@@ -61,7 +61,7 @@ describe('AboutComponent', () => {
     component.searchTerm = 'batman';
     component.onSearchChange();
 
-    const req = httpMock.expectOne('http://localhost:8000/api/movies/search?q=batman');
+    const req = httpMock.expectOne('https://filmania.ddns.net:8000/api/movies/search?q=batman');
     expect(req.request.method).toBe('GET');
     req.flush({ results: [{ title: 'Batman Begins' }, { title: 'The Batman' }] });
 

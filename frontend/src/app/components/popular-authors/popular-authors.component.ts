@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { NotificationService } from '../../services/notification.service';
+import { Subject, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, switchMap, catchError, map } from 'rxjs/operators';
 
 interface Actor {
   id: number;
@@ -27,18 +29,18 @@ export class PopularAuthorsComponent implements OnInit {
   searchTerm: string = '';
   suggestions: any[] = [];
   notifications: any[] = [];
+  searchTermActor: string = '';
+  filteredActors: Actor[] = [];
   showDropdown: boolean = false;
   mobileMenuOpen: boolean = false;
-
   popularAuthors: Actor[] = [];
   isLoading: boolean = true;
   errorMessage: string | null = null;
-
   currentPage: number = 1;
   totalPages: number = 1;
-
-  // Add showBackToTop property
   showBackToTop: boolean = false;
+
+  private searchActorSubject = new Subject<string>();
 
   constructor(
     private actorService: ActorService,
@@ -52,16 +54,49 @@ export class PopularAuthorsComponent implements OnInit {
     this.setUserName();
     this.loadPopularAuthors();
     window.addEventListener('scroll', this.onScroll);
+
+    this.searchActorSubject.pipe(
+  debounceTime(500), // Espera más tiempo antes de lanzar la petición
+  distinctUntilChanged(),
+  switchMap(term => {
+    const cleanTerm = term.trim();
+    if (cleanTerm.length < 3) return of([]); // No buscar si hay menos de 3 letras
+    return this.searchActors(cleanTerm);
+  })
+).subscribe({
+  next: (actors) => {
+    this.filteredActors = this.removeDuplicateActors(actors);
+  },
+  error: () => {
+    this.filteredActors = [];
+  }
+});
   }
 
-  // Scroll listener to toggle the back-to-top button visibility
-  onScroll = (): void => {
-    this.showBackToTop = window.scrollY > 300; // Show button when scrolled more than 300px
-  };
+  // Emitir búsqueda al escribir
+  filterActorsByName(): void {
+    this.searchActorSubject.next(this.searchTermActor.trim());
+  }
 
-  // Scroll to top method
-  scrollToTop(): void {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Método con petición HTTP
+  private searchActors(term: string) {
+    if (term.length < 2) {
+      return of([]);
+    }
+
+    return this.http.get<any>(`https://filmania.ddns.net:8000/api/people/search?q=${encodeURIComponent(term)}`).pipe(
+      map(response => response.results || []),
+      catchError(() => of([]))
+    );
+  }
+
+  removeDuplicateActors(actors: Actor[]): Actor[] {
+    const seen = new Set();
+    return actors.filter(actor => {
+      if (seen.has(actor.id)) return false;
+      seen.add(actor.id);
+      return true;
+    });
   }
 
   loadPopularAuthors(page: number = 1): void {
@@ -83,15 +118,12 @@ export class PopularAuthorsComponent implements OnInit {
     });
   }
 
-  loadNotifications(): void {
-    this.notificationService.getNotifications().subscribe({
-      next: (data) => {
-        this.notifications = data;
-      },
-      error: (err) => {
-        console.error('Error al cargar notificaciones:', err);
-      }
-    });
+  onScroll = (): void => {
+    this.showBackToTop = window.scrollY > 300;
+  };
+
+  scrollToTop(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   toggleDropdown(): void {
@@ -99,11 +131,11 @@ export class PopularAuthorsComponent implements OnInit {
   }
 
   toggleMobileMenu(): void {
-  this.mobileMenuOpen = !this.mobileMenuOpen;
+    this.mobileMenuOpen = !this.mobileMenuOpen;
   }
 
   closeMobileMenu(): void {
-  this.mobileMenuOpen = false;
+    this.mobileMenuOpen = false;
   }
 
   markAllAsRead(): void {
@@ -119,27 +151,17 @@ export class PopularAuthorsComponent implements OnInit {
   getKnownDepartment(person: any): string {
     const dept = person.known_for_department?.toLowerCase();
     switch (dept) {
-      case 'acting':
-        return 'Actor/Actriz';
-      case 'directing':
-        return 'Director/a';
-      case 'writing':
-        return 'Guionista';
-      case 'production':
-        return 'Productor/a';
-      case 'camera':
-        return 'Camarógrafo/a';
-      case 'editing':
-        return 'Editor/a';
-      case 'art':
-        return 'Director/a de arte';
-      case 'sound':
-        return 'Diseñador/a de sonido';
-      default:
-        return 'Desconocido';
+      case 'acting': return 'Actor/Actriz';
+      case 'directing': return 'Director/a';
+      case 'writing': return 'Guionista';
+      case 'production': return 'Productor/a';
+      case 'camera': return 'Camarógrafo/a';
+      case 'editing': return 'Editor/a';
+      case 'art': return 'Director/a de arte';
+      case 'sound': return 'Diseñador/a de sonido';
+      default: return 'Desconocido';
     }
   }
-  
 
   onSearchChange(): void {
     if (this.searchTerm.length < 2) {
@@ -147,12 +169,12 @@ export class PopularAuthorsComponent implements OnInit {
       return;
     }
 
-    this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
+    this.http.get<any>(`https://filmania.ddns.net:8000/api/movies/search?q=${this.searchTerm}`)
       .subscribe(response => {
         this.suggestions = response.results.slice(0, 8);
       });
 
-      this.closeMobileMenu();
+    this.closeMobileMenu();
   }
 
   getItemImage(item: any): string {
@@ -172,7 +194,7 @@ export class PopularAuthorsComponent implements OnInit {
     if (user && user.name) {
       this.userName = user.name;
       this.profilePhoto = user.profile_photo
-        ? `http://localhost:8000/${user.profile_photo}`
+        ? `https://filmania.ddns.net:8000/${user.profile_photo}`
         : 'assets/img/Perfil_Inicial.jpg';
     } else {
       this.userName = 'Invitado';
@@ -219,3 +241,4 @@ export class PopularAuthorsComponent implements OnInit {
     return pages;
   }
 }
+

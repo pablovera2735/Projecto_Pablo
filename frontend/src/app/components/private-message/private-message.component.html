@@ -1,11 +1,37 @@
-<div class="private-message-container">
-  <h2>Enviar mensaje a {{ recipientName }}</h2>
+<div class="chat-container">
+  <h2>
+  Chatear con {{ recipientName }}
+  <span [class.online]="isOnline" [class.offline]="!isOnline">
+    {{ isOnline ? '🟢 En línea' : '🔴 Desconectado' }}
+  </span>
+</h2>
 
-  <textarea [(ngModel)]="messageContent" placeholder="Escribe tu mensaje aquí..." rows="5"></textarea>
-  
-  <button class="submit-btn" (click)="sendMessage()">Enviar</button>
-  
-  <div *ngIf="sendSuccess" class="success-msg">Mensaje enviado correctamente.</div>
-  <div *ngIf="sendError" class="error-msg">Error al enviar el mensaje.</div>
+  <div class="chat-box">
+    <div 
+      class="chat-message" 
+      *ngFor="let msg of messages"
+      [ngClass]="{'outgoing': msg.sender_id === currentUserId, 'incoming': msg.sender_id !== currentUserId}"
+    >
+      <div class="message-text">{{ msg.text }}</div>
+      <div class="message-meta">
+        <span class="message-time">{{ msg.created_at | date: 'shortTime' }}</span>
+
+        <span *ngIf="msg.sender_id === currentUserId" class="tick-status">
+          <span *ngIf="msg.read" class="read">✔✔ leído</span>
+          <span *ngIf="!msg.read" class="sent">✔ enviado</span>
+        </span>
+      </div>
+    </div>
+
+    <div *ngIf="sendSuccess" class="success-msg">✅ Mensaje enviado correctamente.</div>
+    <div *ngIf="sendError" class="error-msg">❌ Error al enviar el mensaje.</div>
+  </div>
+
+  <div class="chat-input-area">
+  <textarea [(ngModel)]="messageContent" rows="3" placeholder="Escribe tu mensaje..."></textarea>
+
+  <div class="chat-actions">
+    <button routerLink="/perfil/id" class="btn-volver">← Volver</button>
+    <button (click)="sendMessage()" class="send-btn">Enviar</button>
+  </div>
 </div>
-

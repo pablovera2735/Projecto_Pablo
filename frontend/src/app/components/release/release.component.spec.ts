@@ -58,7 +58,7 @@ describe('ReleaseComponent', () => {
     component.selectedMonth = 1;
     fixture.detectChanges();
 
-    const req = httpMock.expectOne('http://localhost:8000/api/movies/popular');
+    const req = httpMock.expectOne('https://filmania.ddns.net:8000/api/movies/popular');
     expect(req.request.method).toBe('GET');
     req.flush({ movies: mockMovies });
 

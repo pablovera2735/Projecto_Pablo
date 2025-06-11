@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Message;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
 
 class MessageController extends Controller
@@ -46,4 +47,35 @@ class MessageController extends Controller
 
         return response()->json($messages);
     }
+
+
+    public function markAsRead(Request $request)
+{
+    $authId = Auth::id();
+
+    // Marcar como leídos todos los mensajes enviados por $request->sender_id a $authId
+    Message::where('sender_id', $request->sender_id)
+           ->where('recipient_id', $authId)
+           ->where('read', false)
+           ->update(['read' => true]);
+
+    return response()->json(['success' => true, 'message' => 'Mensajes marcados como leídos']);
+}
+
+public function ping()
+{
+    $user = Auth::user();
+    Cache::put('user-is-online-' . $user->id, true, now()->addMinutes(2));
+    return response()->noContent();
+}
+
+
+public function isOnline($id)
+{
+    return response()->json([
+        'is_online' => Cache::has('user-is-online-' . $id)
+    ]);
+}
+
+
 }

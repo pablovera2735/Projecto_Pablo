@@ -85,4 +85,40 @@ class PeopleController extends Controller
 
         return response()->json(['message' => 'No se pudieron obtener los créditos de la persona'], 500);
     }
+
+    public function searchPerson(Request $request)
+{
+    $query = $request->query('q');
+
+    if (!$query || strlen($query) < 2) {
+        return response()->json(['results' => []]);
+    }
+
+    $apiKey = config('services.tmdb.api_key');
+    $baseUrl = config('services.tmdb.base_url');
+    $language = config('services.tmdb.language');
+
+    $url = "$baseUrl/search/person?language=$language&api_key=$apiKey&query=" . urlencode($query);
+
+    try {
+        $response = Http::get($url);
+
+        if ($response->successful()) {
+            return response()->json(['results' => $response->json()['results'] ?? []]);
+        }
+
+        Log::channel('daily')->error('TMDB API failed', [
+            'url' => $url,
+            'status' => $response->status(),
+            'body' => $response->body()
+        ]);
+
+        return response()->json(['message' => 'Error consultando TMDB'], 500);
+    } catch (\Exception $e) {
+        Log::channel('daily')->error('Error buscando persona', ['error' => $e->getMessage()]);
+        return response()->json(['message' => 'Error interno del servidor'], 500);
+    }
+}
+
+
 }

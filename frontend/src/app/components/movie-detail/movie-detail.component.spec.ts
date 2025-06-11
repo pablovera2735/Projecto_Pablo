@@ -70,13 +70,13 @@ describe('MovieDetailComponent', () => {
     const dummyNotifications = [{ id: 1, message: 'Notificación', read: false }];
 
     // Simular respuestas HTTP
-    const movieReq = httpMock.expectOne('http://localhost:8000/api/movies/1');
+    const movieReq = httpMock.expectOne('https://filmania.ddns.net:8000/api/movies/1');
     movieReq.flush(dummyMovie);
 
-    const castReq = httpMock.expectOne('http://localhost:8000/api/movies/1/cast');
+    const castReq = httpMock.expectOne('https://filmania.ddns.net:8000/api/movies/1/cast');
     castReq.flush(dummyCast);
 
-    const reviewReq = httpMock.expectOne('http://localhost:8000/api/movies/1/reviews');
+    const reviewReq = httpMock.expectOne('https://filmania.ddns.net:8000/api/movies/1/reviews');
     reviewReq.flush(dummyReviews);
 
     notificationServiceSpy.getNotifications.and.returnValue(of(dummyNotifications));
@@ -97,7 +97,7 @@ describe('MovieDetailComponent', () => {
     component.setUserName();
 
     expect(component.userName).toBe('Pablo');
-    expect(component.profilePhoto).toContain('http://localhost:8000/images/pablo.jpg');
+    expect(component.profilePhoto).toContain('https://filmania.ddns.net:8000/images/pablo.jpg');
   });
 
   it('debería marcar todas las notificaciones como leídas', () => {

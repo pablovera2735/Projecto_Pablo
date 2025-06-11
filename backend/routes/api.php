@@ -69,6 +69,9 @@ Route::group(['middleware' => ['cors']], function () {
 
         Route::post('/messages/send', 'MessageController@send');
         Route::get('/messages/conversation/{userId}', 'MessageController@conversation');
+        Route::post('/messages/mark-as-read', 'MessageController@markAsRead');
+        Route::post('/ping', 'MessageController@ping');
+        Route::get('/is-online/{id}', 'MessageController@isOnline');
 
         Route::get('/lists/{userId}', 'ListController@index');
         Route::post('/lists', 'ListController@store');
@@ -90,12 +93,14 @@ Route::group(['middleware' => ['cors']], function () {
     Route::get('/movies/popular', 'MovieController@getPopularMovies');
     Route::get('/movies/upcoming', 'MovieController@getUpcomingMovies');
     Route::get('/people/popular', 'PeopleController@getAllPeople');
-    Route::get('/people/{id}', 'PeopleController@getPersonDetail');
+    Route::get('/people/search', 'PeopleController@searchPerson'); 
     Route::get('/people/{id}/credits', 'PeopleController@getPersonCredits');
+    Route::get('/people/{id}', 'PeopleController@getPersonDetail');
     Route::get('/movies/genres', 'MovieController@listGenres');
     Route::get('/movies/genre/{genreId}', 'MovieController@getMoviesByGenre');
     Route::get('/movies/{id}', 'MovieController@getMovieDetails');
     Route::get('/movies/{id}/reviews', 'ReviewController@index');
     
     Route::get('/threads/{movieId}', 'ThreadController@showOrCreate');
+    Route::get('/foros/search', 'ThreadController@search');
 });

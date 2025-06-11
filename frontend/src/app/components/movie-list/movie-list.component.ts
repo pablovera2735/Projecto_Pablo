@@ -28,6 +28,9 @@ export class MovieListComponent implements OnInit {
   suggestions: any[] = [];
   notifications: any[] = [];
   genres: Genre[] = [];
+ forumSearchTerm: string = '';
+isSearching: boolean = false;
+searchResults: any[] = [];
   moviesByGenre: { [key: number]: Movie[] } = {};
 
   showDropdown: boolean = false;
@@ -81,7 +84,7 @@ export class MovieListComponent implements OnInit {
     if (user && user.name) {
       this.userName = user.name;
       this.profilePhoto = user.profile_photo
-        ? 'http://localhost:8000/' + user.profile_photo
+        ? 'https://filmania.ddns.net:8000/' + user.profile_photo
         : 'assets/img/Perfil_Inicial.jpg';
     } else {
       this.userName = 'Invitado';
@@ -97,7 +100,7 @@ export class MovieListComponent implements OnInit {
   }
 
   loadGenres(): void {
-    this.http.get<any>('http://127.0.0.1:8000/api/movies/genres')
+    this.http.get<any>('https://filmania.ddns.net:8000/api/movies/genres')
       .subscribe(res => {
         this.genres = res.genres;
         this.genres.forEach(genre => {
@@ -107,7 +110,7 @@ export class MovieListComponent implements OnInit {
   }
 
   loadMoviesByGenre(genreId: number): void {
-    this.http.get<any>(`http://127.0.0.1:8000/api/movies/genre/${genreId}?page=1`)
+    this.http.get<any>(`https://filmania.ddns.net:8000/api/movies/genre/${genreId}?page=1`)
       .subscribe(res => {
         this.moviesByGenre[genreId] = res.movies;
       });
@@ -120,13 +123,39 @@ export class MovieListComponent implements OnInit {
       return;
     }
 
-    this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
+    this.http.get<any>(`https://filmania.ddns.net:8000/api/movies/search?q=${this.searchTerm}`)
       .subscribe(response => {
         this.suggestions = response.results.slice(0, 8);
       });
 
       this.closeMobileMenu();
   }
+
+
+  onForumSearchChange() {
+  const term = this.forumSearchTerm.trim().toLowerCase();
+  if (!term) {
+    this.isSearching = false;
+    return;
+  }
+
+  this.searchResults = [];
+
+  // Recorre todas las películas en todos los géneros
+  for (const genreId in this.moviesByGenre) {
+    const movies = this.moviesByGenre[genreId];
+    const filtered = movies.filter(movie =>
+      movie.title.toLowerCase().includes(term)
+    );
+    this.searchResults.push(...filtered);
+  }
+
+  this.isSearching = this.searchResults.length > 0;
+}
+
+goToForumSearchResults(): void {
+  this.router.navigate(['/foro'], { queryParams: { q: this.forumSearchTerm } });
+}
 
 
   getItemImage(item: any): string {

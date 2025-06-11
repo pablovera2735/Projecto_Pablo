@@ -1,37 +1,153 @@
-.private-message-container {
+.chat-container {
   max-width: 600px;
   margin: 2rem auto;
-  background: #1e1e1e;
-  color: white;
   padding: 1.5rem;
-  border-radius: 8px;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
 }
 
-textarea {
-  width: 100%;
-  background: #2a2a2a;
-  border: none;
-  color: white;
-  padding: 0.5rem;
+
+.chat-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+
+.chat-box {
+  flex-grow: 1;
   margin-bottom: 1rem;
-  resize: vertical;
-  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 10px;
+  scroll-behavior: smooth;
 }
 
-.submit-btn {
-  background-color: #343434;
-  color: white;
-  padding: 0.5rem 1rem;
+.chat-message {
+  max-width: 70%;
+  padding: 0.75rem 1rem;
+  border-radius: 18px;
+  line-height: 1.4;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  backdrop-filter: blur(5px);
+  word-wrap: break-word;
+  position: relative;
+}
+
+
+.btn-volver {
+  margin-bottom: 10px;
+  background-color: #ccc;
   border: none;
+  padding: 6px 12px;
   cursor: pointer;
+  border-radius: 6px;
+}
+
+/* Mensajes enviados (tú) - derecha */
+.outgoing {
+  background-color: rgba(29, 185, 84, 0.85); /* verde whatsapp */
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+  margin-left: auto;
+}
+
+/* Mensajes recibidos (otros) - izquierda */
+.incoming {
+  background-color: rgba(230, 230, 230, 0.85); /* gris claro */
+  color: black;
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+  margin-right: auto;
+}
+
+.message-text {
+  font-size: 0.95rem;
+}
+
+.message-meta {
+  font-size: 0.75rem;
+  text-align: right;
+  color: #666;
+  margin-top: 0.25rem;
+  user-select: none;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+}
+
+.tick-status {
+  font-weight: 600;
+  margin-left: 10px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tick-status.sent {
+  color: #6c757d; /* gris para enviado */
+  background-color: rgba(108, 117, 125, 0.15);
+}
+
+.tick-status.read {
+  color: #28a745; /* verde para leído */
+  background-color: rgba(40, 167, 69, 0.15);
 }
 
 .success-msg {
-  color: #4CAF50;
-  margin-top: 1rem;
+  color: #28a745;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
 }
 
 .error-msg {
-  color: #f44336;
-  margin-top: 1rem;
+  color: #dc3545;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.chat-input-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+textarea {
+  resize: none;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.send-btn {
+  align-self: flex-end;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.send-btn:hover {
+  background-color: #0056b3;
 }

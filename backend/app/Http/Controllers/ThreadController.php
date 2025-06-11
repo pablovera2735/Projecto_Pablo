@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use App\Models\Thread;
 
 class ThreadController extends Controller
@@ -22,4 +23,24 @@ class ThreadController extends Controller
 
         return response()->json($thread);
     }
+
+    public function search(Request $request)
+{
+    $query = $request->input('q');
+
+    $response = Http::get('https://api.themoviedb.org/3/search/movie', [
+        'api_key' => env('TMDB_API_KEY'),
+        'query' => $query,
+    ]);
+
+    $results = collect($response->json()['results'])->map(function ($movie) {
+        return [
+            'id' => $movie['id'],
+            'title' => $movie['title'],
+        ];
+    });
+
+    return response()->json(['results' => $results]);
+}
+
 }

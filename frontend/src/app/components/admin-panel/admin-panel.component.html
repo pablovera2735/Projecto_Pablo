@@ -2,78 +2,87 @@
   <h1>Panel de Administración</h1>
 
   <div class="admin-actions">
-    <table class="table table-dark table-hover">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>Nombre</th>
-          <th>Email</th>
-          <th>Rol</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let user of users">
-          <td>{{ user.id }}</td>
-          <td>{{ user.name }}</td>
-          <td>{{ user.email }}</td>
-          <td>
-            <span *ngIf="user.is_admin; else noAdmin">Admin</span>
-            <ng-template #noAdmin>Usuario</ng-template>
-          </td>
-          <td>
-            <button class="btn btn-danger btn-sm" (click)="deleteUser(user.id)">
-              Eliminar
-            </button>
+    <div class="table-responsive">
+      <table class="table table-dark table-hover">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Rol</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users">
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <span *ngIf="user.is_admin; else noAdmin">Admin</span>
+              <ng-template #noAdmin>Usuario</ng-template>
+            </td>
+            <td>
+              <div class="d-flex flex-wrap flex-column flex-md-row gap-2">
+                <button
+                  class="btn btn-danger btn-sm"
+                  (click)="deleteUser(user.id)"
+                >
+                  Eliminar
+                </button>
 
-            <button
-              *ngIf="!user.is_admin"
-              class="btn btn-warning btn-sm"
-              (click)="promoteToAdmin(user.id)"
-            >
-              Ser Admin
-            </button>
+                <button
+                  *ngIf="!user.is_admin"
+                  class="btn btn-warning btn-sm"
+                  (click)="promoteToAdmin(user.id)"
+                >
+                  Ser Admin
+                </button>
 
-            <button
-              *ngIf="user.is_admin && user.email !== 'admin@mail.com'"
-              class="btn btn-outline-warning btn-sm"
-              (click)="revokeAdmin(user.id)"
-            >
-              Quitar Admin
-            </button>
+                <button
+                  *ngIf="user.is_admin && user.email !== 'admin@mail.com'"
+                  class="btn btn-outline-warning btn-sm"
+                  (click)="revokeAdmin(user.id)"
+                >
+                  Quitar Admin
+                </button>
 
-            <button
-              *ngIf="!user.forum_blocked"
-              class="btn btn-secondary btn-sm"
-              (click)="blockUserForum(user.id)"
-            >
-              Bloquear Foro
-            </button>
-            <button
-              *ngIf="user.forum_blocked"
-              class="btn btn-success btn-sm"
-              (click)="unblockUserForum(user.id)"
-            >
-              Desbloquear Foro
-            </button>
+                <button
+                  *ngIf="!user.forum_blocked"
+                  class="btn btn-secondary btn-sm"
+                  (click)="blockUserForum(user.id)"
+                >
+                  Bloquear Foro
+                </button>
 
-            <button
-              *ngIf="!user.review_blocked"
-              class="btn btn-secondary btn-sm"
-              (click)="blockUserReview(user.id)"
-            >
-              Bloquear Reseña
-            </button>
-            <button
-              *ngIf="user.review_blocked"
-              class="btn btn-success btn-sm"
-              (click)="unblockUserReview(user.id)"
-            >
-              Desbloquear Reseña
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+                <button
+                  *ngIf="user.forum_blocked"
+                  class="btn btn-success btn-sm"
+                  (click)="unblockUserForum(user.id)"
+                >
+                  Desbloquear Foro
+                </button>
+
+                <button
+                  *ngIf="!user.review_blocked"
+                  class="btn btn-secondary btn-sm"
+                  (click)="blockUserReview(user.id)"
+                >
+                  Bloquear Reseña
+                </button>
+
+                <button
+                  *ngIf="user.review_blocked"
+                  class="btn btn-success btn-sm"
+                  (click)="unblockUserReview(user.id)"
+                >
+                  Desbloquear Reseña
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>

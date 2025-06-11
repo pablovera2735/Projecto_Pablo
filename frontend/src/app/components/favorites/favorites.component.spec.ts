@@ -51,11 +51,11 @@ describe('FavoritesComponent', () => {
 
     component.ngOnInit();
 
-    const favReq = httpMock.expectOne('http://127.0.0.1:8000/api/users/1/favorites');
+    const favReq = httpMock.expectOne('https://filmania.ddns.net:8000/api/users/1/favorites');
     expect(favReq.request.method).toBe('GET');
     favReq.flush(mockFavorites);
 
-    const listReq = httpMock.expectOne('http://127.0.0.1:8000/api/users/1/lists');
+    const listReq = httpMock.expectOne('https://filmania.ddns.net:8000/api/users/1/lists');
     expect(listReq.request.method).toBe('GET');
     listReq.flush(mockLists);
 

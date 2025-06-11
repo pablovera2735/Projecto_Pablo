@@ -26,7 +26,7 @@ export class UserSettingsComponent {
   loadCurrentEmail() {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-    this.http.get<{ email: string }>('http://localhost:8000/api/profile', { headers })
+    this.http.get<{ email: string }>('https://filmania.ddns.net:8000/api/profile', { headers })
       .subscribe({
         next: (data) => this.currentEmail = data.email,
         error: () => alert('Error cargando el correo actual')
@@ -42,7 +42,7 @@ export class UserSettingsComponent {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.post('http://localhost:8000/api/profile/request-email-change', { email: this.newEmail }, { headers })
+    this.http.post('https://filmania.ddns.net:8000/api/profile/request-email-change', { email: this.newEmail }, { headers })
       .subscribe({
         next: () => {
           alert('Se ha enviado un código de verificación a tu nuevo correo.');
@@ -61,7 +61,7 @@ export class UserSettingsComponent {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.post('http://localhost:8000/api/profile/confirm-email-change', { email: this.newEmail, code: this.verificationCode }, { headers })
+    this.http.post('https://filmania.ddns.net:8000/api/profile/confirm-email-change', { email: this.newEmail, code: this.verificationCode }, { headers })
       .subscribe({
         next: () => {
           alert('Correo actualizado correctamente');
@@ -78,7 +78,7 @@ export class UserSettingsComponent {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.put('http://localhost:8000/api/profile/update-email', { email: this.newEmail }, { headers })
+    this.http.put('https://filmania.ddns.net:8000/api/profile/update-email', { email: this.newEmail }, { headers })
       .subscribe({
         next: () => alert('Correo actualizado correctamente'),
         error: () => alert('Error al actualizar el correo')
@@ -100,7 +100,7 @@ export class UserSettingsComponent {
       password_confirmation: this.confirmPassword
     };
 
-    this.http.put('http://localhost:8000/api/profile/update-password', passwordData, { headers })
+    this.http.put('https://filmania.ddns.net:8000/api/profile/update-password', passwordData, { headers })
       .subscribe({
         next: () => {
           alert('Contraseña actualizada correctamente');

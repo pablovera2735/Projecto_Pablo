@@ -188,6 +188,12 @@ header .search-form input:focus {
   margin-top: 50px;
 }
 
+
+.card-img-top {
+  max-height: 180px;
+  object-fit: cover;
+}
+
 .footer-container {
   max-width: 1200px;
   margin: 0 auto;

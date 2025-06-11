@@ -60,11 +60,11 @@ describe('MovieForumComponent', () => {
   });
 
   it('should initialize movieId and call loadMovieDetails and loadThread', () => {
-    const movieReq = httpMock.expectOne('http://localhost:8000/api/movies/1');
+    const movieReq = httpMock.expectOne('https://filmania.ddns.net:8000/api/movies/1');
     expect(movieReq.request.method).toBe('GET');
     movieReq.flush({ movie_details: { id: 1, title: 'Test Movie' } });
 
-    const threadReq = httpMock.expectOne('http://localhost:8000/api/threads/1');
+    const threadReq = httpMock.expectOne('https://filmania.ddns.net:8000/api/threads/1');
     expect(threadReq.request.method).toBe('GET');
     threadReq.flush({ id: 1, comments: [] });
 
@@ -80,11 +80,11 @@ describe('MovieForumComponent', () => {
 
     component.postComment();
 
-    const postReq = httpMock.expectOne('http://localhost:8000/api/comments');
+    const postReq = httpMock.expectOne('https://filmania.ddns.net:8000/api/comments');
     expect(postReq.request.method).toBe('POST');
     postReq.flush({});
 
-    const threadReq = httpMock.expectOne('http://localhost:8000/api/threads/1');
+    const threadReq = httpMock.expectOne('https://filmania.ddns.net:8000/api/threads/1');
     threadReq.flush({ id: 1, comments: [] });
 
     tick();
@@ -108,11 +108,11 @@ describe('MovieForumComponent', () => {
 
     component.replyTo(comment.id, comment.replyText);
 
-    const postReq = httpMock.expectOne('http://localhost:8000/api/comments');
+    const postReq = httpMock.expectOne('https://filmania.ddns.net:8000/api/comments');
     expect(postReq.request.method).toBe('POST');
     postReq.flush({});
 
-    const threadReq = httpMock.expectOne('http://localhost:8000/api/threads/1');
+    const threadReq = httpMock.expectOne('https://filmania.ddns.net:8000/api/threads/1');
     threadReq.flush({ id: 1, comments: [] });
 
     tick();
@@ -129,7 +129,7 @@ describe('MovieForumComponent', () => {
     component.searchTerm = 'test';
     component.onSearchChange();
 
-    const req = httpMock.expectOne('http://localhost:8000/api/movies/search?q=test');
+    const req = httpMock.expectOne('https://filmania.ddns.net:8000/api/movies/search?q=test');
     req.flush({ results: [{ title: 'Test Movie' }] });
 
     expect(component.suggestions.length).toBeGreaterThan(0);

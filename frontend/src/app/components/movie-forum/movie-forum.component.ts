@@ -43,7 +43,7 @@ export class MovieForumComponent implements OnInit {
       this.loadThread(id);
     }
 
-    this.http.get('http://localhost:8000/api/user', {
+    this.http.get('https://filmania.ddns.net:8000/api/user', {
   headers: new HttpHeaders().set('Authorization', `Bearer ${sessionStorage.getItem('token')}`)
 }).subscribe((user: any) => {
   sessionStorage.setItem('user', JSON.stringify(user));  // <-- actualiza el user en sessionStorage
@@ -90,7 +90,7 @@ export class MovieForumComponent implements OnInit {
   if (user && user.name) {
     this.userName = user.name;
     this.profilePhoto = user.profile_photo
-      ? 'http://localhost:8000/' + user.profile_photo
+      ? 'https://filmania.ddns.net:8000/' + user.profile_photo
       : 'assets/img/Perfil_Inicial.jpg';
 
     // Verifica si el usuario tiene el foro bloqueado temporalmente
@@ -108,13 +108,13 @@ export class MovieForumComponent implements OnInit {
   }
 
   loadMovieDetails(id: string) {
-    this.http.get(`http://localhost:8000/api/movies/${id}`).subscribe((res: any) => {
+    this.http.get(`https://filmania.ddns.net:8000/api/movies/${id}`).subscribe((res: any) => {
       this.movie = res.movie_details;
     });
   }
 
   loadThread(movieId: string) {
-    this.http.get(`http://localhost:8000/api/threads/${movieId}`).subscribe((res: any) => {
+    this.http.get(`https://filmania.ddns.net:8000/api/threads/${movieId}`).subscribe((res: any) => {
       // Agregamos propiedad para controlar visibilidad de formulario de respuesta
       res.comments = res.comments.map((comment: any) => ({
         ...comment,
@@ -133,7 +133,7 @@ export class MovieForumComponent implements OnInit {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     this.http.post(
-      'http://localhost:8000/api/comments',
+      'https://filmania.ddns.net:8000/api/comments',
       {
         thread_id: this.thread.id,
         content: this.newComment,
@@ -169,7 +169,7 @@ export class MovieForumComponent implements OnInit {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     this.http.post(
-      'http://localhost:8000/api/comments',
+      'https://filmania.ddns.net:8000/api/comments',
       {
         thread_id: this.thread.id,
         content: text,
@@ -190,7 +190,7 @@ export class MovieForumComponent implements OnInit {
       return;
     }
 
-    this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
+    this.http.get<any>(`https://filmania.ddns.net:8000/api/movies/search?q=${this.searchTerm}`)
       .subscribe(response => {
         this.suggestions = response.results.slice(0, 8);
       });

@@ -69,6 +69,14 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "frontend:build",
+            "ssl": true,
+            "sslKey": "certs/filmania.ddns.net-key.pem",
+            "sslCert": "certs/filmania.ddns.net-crt.pem",
+            "host": "filmania.ddns.net",
+            "port": 8080
+          },
           "configurations": {
             "production": {
               "buildTarget": "frontend:build:production"

@@ -8,4 +8,18 @@
   .admin-actions {
     margin-top: 2rem;
   }
-  
+
+@media (max-width: 768px) {
+  .admin-container {
+    padding: 1rem;
+  }
+
+  .btn {
+    font-size: 0.85rem;
+  }
+
+  .table td,
+  .table th {
+    white-space: nowrap;
+  }
+}

@@ -72,6 +72,40 @@
 </header>
 
 <main class="container mt-5">
+
+<input
+  type="text"
+  class="search-input"
+  placeholder="Buscar en foros..."
+  [(ngModel)]="forumSearchTerm"
+  (keyup)="onForumSearchChange()" />
+
+<!-- 🔁 Resultados si hay búsqueda -->
+<div *ngIf="isSearching">
+  <div class="row mt-4">
+    <div *ngFor="let movie of searchResults" class="col-md-3 mb-4">
+      <div class="card h-100 shadow-sm">
+        <img
+          [src]="'https://image.tmdb.org/t/p/w500' + movie.poster_path"
+          alt="{{ movie.title }}"
+          class="card-img-top"
+          style="height: 350px; object-fit: cover;"
+          onerror="this.src='assets/img/no-image.png'" />
+
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ movie.title }}</h5>
+          <p class="card-text text-muted">📅 {{ movie.release_date }}</p>
+          <button class="btn btn-outline-primary mt-auto w-100" (click)="goToForum(movie.id)">
+            Ir al Foro
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
   <div *ngFor="let genre of genres">
     <h3>{{ genre.name }}</h3>
 
