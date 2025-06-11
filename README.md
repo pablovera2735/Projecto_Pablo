@@ -93,7 +93,9 @@ ng serve o npm start
 ```
 
 Accede desde el navegador en:  
-📍 `http://localhost:4200`
+📍 `http://localhost:8080`
+en mi caso seria:
+📍 `https://filmania.ddns.net:8080`
 
 ---
 
