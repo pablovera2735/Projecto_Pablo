@@ -83,7 +83,7 @@ describe('PopularAuthorsComponent', () => {
     const http = TestBed.inject(HttpTestingController);
     component.onSearchChange();
 
-    const req = http.expectOne('https://filmania.ddns.net:8000/api/movies/search?q=batman');
+    const req = http.expectOne('http://localhost:8000/api/movies/search?q=batman');
     expect(req.request.method).toBe('GET');
     req.flush({ results: Array(10).fill({}) });
 

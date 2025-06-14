@@ -217,7 +217,7 @@ public function getUpcomingMovies(Request $request)
 
 public function searchMovie(Request $request)
 {
-    $query = $request->input('q'); // <- clave: debe ser 'q' para que coincida con Angular
+    $query = $request->input('q'); // clave: 'q'
 
     if (!$query) {
         return response()->json(['status' => 'error', 'message' => 'Falta el parámetro de búsqueda'], 400);
@@ -227,28 +227,51 @@ public function searchMovie(Request $request)
     $baseUrl = config('services.tmdb.base_url');
     $language = config('services.tmdb.language');
 
-    $url = "$baseUrl/search/movie?query=" . urlencode($query) . "&language=$language&api_key=$apiKey";
+    // Primero, buscar en foro (tu catálogo local)
+    $foroUrl = "$baseUrl/search/movie?query=" . urlencode($query) . "&language=$language&api_key=$apiKey&include_adult=false";
 
-    Log::channel('peliculas')->info("🔍 Búsqueda de película: '$query' -> URL: $url");
+    Log::channel('peliculas')->info("🔍 Búsqueda foro: '$query' -> URL: $foroUrl");
 
-    $response = Http::get($url);
+    $foroResponse = Http::get($foroUrl);
 
-    if ($response->successful()) {
-        $movies = $response->json()['results'];
+    $foroPeliculas = [];
+    if ($foroResponse->successful()) {
+        $foroData = $foroResponse->json();
+        $foroPeliculas = $foroData['results'] ?? [];
+    }
 
-        Log::channel('peliculas')->info("✅ Resultados obtenidos para '$query'", [
-            'total' => count($movies)
-        ]);
+    if (count($foroPeliculas) > 0) {
+        Log::channel('peliculas')->info("✅ Resultados foro para '$query'", ['total' => count($foroPeliculas)]);
 
         return response()->json([
             'status' => 'success',
-            'results' => $movies
+            'source' => 'foro',
+            'results' => $foroPeliculas
+        ]);
+    }
+
+    // Si no hay resultados en foro, buscar en TMDb (API externa)
+    $apiUrl = "$baseUrl/search/movie?query=" . urlencode($query) . "&language=$language&api_key=$apiKey&include_adult=false";
+
+    Log::channel('peliculas')->info("🔍 Búsqueda API externa: '$query' -> URL: $apiUrl");
+
+    $apiResponse = Http::get($apiUrl);
+
+    if ($apiResponse->successful()) {
+        $apiMovies = $apiResponse->json()['results'];
+
+        Log::channel('peliculas')->info("✅ Resultados API externa para '$query'", ['total' => count($apiMovies)]);
+
+        return response()->json([
+            'status' => 'success',
+            'source' => 'api',
+            'results' => $apiMovies
         ]);
     }
 
     Log::channel('peliculas')->error("❌ Error al buscar '$query'", [
-        'status' => $response->status(),
-        'body' => $response->body()
+        'status' => $apiResponse->status(),
+        'body' => $apiResponse->body()
     ]);
 
     return response()->json([
@@ -256,6 +279,7 @@ public function searchMovie(Request $request)
         'message' => 'No se pudieron obtener los resultados de la búsqueda'
     ], 500);
 }
+
 
 
     // Obtener detalles de una película

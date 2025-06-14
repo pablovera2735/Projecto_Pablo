@@ -6,13 +6,13 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ActorService {
-  private apiUrl = 'https://filmania.ddns.net:8000/api'; // Cambia esto si tu backend está en otra ruta
+  private apiUrl = 'http://localhost:8000/api'; // Cambia esto si tu backend está en otra ruta
 
   constructor(private http: HttpClient) {}
 
   // Obtener actores, actrices, directores etc populares
   getPopularPeople(page: number = 1): Observable<any> {
-    return this.http.get<any>(`https://filmania.ddns.net:8000/api/people/popular?page=${page}`);
+    return this.http.get<any>(`http://localhost:8000/api/people/popular?page=${page}`);
   }
   
 

@@ -147,7 +147,7 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
     if (user && user.name) {
       this.userName = user.name;
       this.profilePhoto = user.profile_photo
-        ? 'https://filmania.ddns.net:8000/' + user.profile_photo
+        ? 'http://localhost:8000/' + user.profile_photo
         : 'assets/img/Perfil_Inicial.jpg';
     } else {
       this.userName = 'Invitado';
@@ -160,7 +160,7 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
 
-    this.http.get<any>(`https://filmania.ddns.net:8000/api/movies/search?q=${this.searchTerm}`)
+    this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
       .subscribe(response => {
         this.suggestions = response.results.slice(0, 8);
       });
@@ -181,7 +181,7 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getGenres(): void {
-    this.http.get<any>('https://filmania.ddns.net:8000/api/movies/genres')
+    this.http.get<any>('http://localhost:8000/api/movies/genres')
       .subscribe(response => {
         if (response && response.genres) {
           this.genres = response.genres;
@@ -195,7 +195,7 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
 
   getMoviesByGenre(genreId: number): void {
     const currentPage = this.currentPageByGenre[genreId];
-    this.http.get<any>(`https://filmania.ddns.net:8000/api/movies/genre/${genreId}?page=${currentPage}`)
+    this.http.get<any>(`http://localhost:8000/api/movies/genre/${genreId}?page=${currentPage}`)
       .subscribe(response => {
         if (response && response.movies) {
           this.moviesByGenre[genreId] = response.movies.slice(0, this.moviesPerPage);
@@ -205,7 +205,7 @@ export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   getRecommendedMovies(): void {
-    this.http.get<any>('https://filmania.ddns.net:8000/api/movies/popular')
+    this.http.get<any>('http://localhost:8000/api/movies/popular')
       .subscribe(response => {
         this.recommendedMovies = response.movies
           .filter((m: Movie) => m.vote_average >= 6.5 && m.backdrop_path)

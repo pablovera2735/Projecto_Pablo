@@ -68,7 +68,7 @@ export class PrivateMessageComponent implements OnInit {
       const token = sessionStorage.getItem('token');
       const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-      this.http.post('https://filmania.ddns.net:8000/api/ping', {}, { headers }).subscribe();
+      this.http.post('http://localhost:8000/api/ping', {}, { headers }).subscribe();
     }, 60000);
   }
 
@@ -77,7 +77,7 @@ export class PrivateMessageComponent implements OnInit {
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
     this.http.get<{ is_online: boolean }>(
-      `https://filmania.ddns.net:8000/api/is-online/${this.userId}`,
+      `http://localhost:8000/api/is-online/${this.userId}`,
       { headers }
     ).subscribe({
       next: (res) => this.isOnline = res.is_online,
@@ -89,7 +89,7 @@ export class PrivateMessageComponent implements OnInit {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.get<any>(`https://filmania.ddns.net:8000/api/user/${this.userId}/public-profile`, { headers })
+    this.http.get<any>(`http://localhost:8000/api/user/${this.userId}/public-profile`, { headers })
       .subscribe({
         next: (response) => {
           this.recipientName = response.name;
@@ -104,7 +104,7 @@ export class PrivateMessageComponent implements OnInit {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.get<BackendMessage[]>(`https://filmania.ddns.net:8000/api/messages/conversation/${this.userId}`, { headers })
+    this.http.get<BackendMessage[]>(`http://localhost:8000/api/messages/conversation/${this.userId}`, { headers })
       .subscribe({
         next: (response) => {
           this.messages = response.map(m => ({
@@ -126,7 +126,7 @@ export class PrivateMessageComponent implements OnInit {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.post('https://filmania.ddns.net:8000/api/messages/mark-as-read', { sender_id: this.userId }, { headers })
+    this.http.post('http://localhost:8000/api/messages/mark-as-read', { sender_id: this.userId }, { headers })
       .subscribe({
         next: () => {
           this.messages = this.messages.map(msg => {
@@ -159,7 +159,7 @@ export class PrivateMessageComponent implements OnInit {
     message: trimmedMessage
   };
 
-  this.http.post('https://filmania.ddns.net:8000/api/messages/send', body, { headers })
+  this.http.post('http://localhost:8000/api/messages/send', body, { headers })
     .subscribe({
       next: () => {
         this.sendSuccess = true;

@@ -42,7 +42,7 @@ export class ReleaseComponent implements OnInit {
     if (user && user.name) {
       this.userName = user.name;
       this.profilePhoto = user.profile_photo
-        ? 'https://filmania.ddns.net:8000/' + user.profile_photo
+        ? 'http://localhost:8000/' + user.profile_photo
         : 'assets/img/Perfil_Inicial.jpg';
     } else {
       this.userName = 'Invitado';
@@ -55,7 +55,7 @@ export class ReleaseComponent implements OnInit {
       return;
     }
 
-    this.http.get<any>(`https://filmania.ddns.net:8000/api/movies/search?q=${this.searchTerm}`)
+    this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
       .subscribe(response => {
         this.suggestions = response.results.slice(0, 8);
       });
@@ -139,7 +139,7 @@ export class ReleaseComponent implements OnInit {
   this.loading = true;
 
   // Obtener películas populares (ya estrenadas)
-  this.http.get<any>('https://filmania.ddns.net:8000/api/movies/popular', {
+  this.http.get<any>('http://localhost:8000/api/movies/popular', {
     params: {
       year: this.selectedYear,
       month: this.selectedMonth.toString()
@@ -168,7 +168,7 @@ export class ReleaseComponent implements OnInit {
   });
 
   // Obtener películas próximas a estrenarse
-  this.http.get<any>('https://filmania.ddns.net:8000/api/movies/upcoming', {
+  this.http.get<any>('http://localhost:8000/api/movies/upcoming', {
     params: {
       year: this.selectedYear,
       month: this.selectedMonth.toString()

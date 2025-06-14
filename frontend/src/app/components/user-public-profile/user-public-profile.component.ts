@@ -53,12 +53,12 @@ export class UserPublicProfileComponent implements OnInit {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.get<any>(`https://filmania.ddns.net:8000/api/user/${this.userId}/public-profile`, { headers })
+    this.http.get<any>(`http://localhost:8000/api/user/${this.userId}/public-profile`, { headers })
       .subscribe({
         next: (response) => {
           this.userName = response.name;
           this.profilePhoto = response.profile_photo
-            ? `https://filmania.ddns.net:8000/${response.profile_photo}`
+            ? `http://localhost:8000/${response.profile_photo}`
             : 'assets/img/Perfil_Inicial.jpg';
           this.comments = response.comments || [];
           this.favoriteMovies = response.favorites || [];
@@ -79,7 +79,7 @@ export class UserPublicProfileComponent implements OnInit {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.get<any[]>(`https://filmania.ddns.net:8000/api/profile-comments/${this.userId}`, { headers })
+    this.http.get<any[]>(`http://localhost:8000/api/profile-comments/${this.userId}`, { headers })
       .subscribe(response => {
         this.comments = response;
       });
@@ -89,7 +89,7 @@ export class UserPublicProfileComponent implements OnInit {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.get<any>(`https://filmania.ddns.net:8000/api/favorites/${this.userId}`, { headers })
+    this.http.get<any>(`http://localhost:8000/api/favorites/${this.userId}`, { headers })
       .subscribe(response => {
         this.favoriteMovies = response.favorites || [];
       });
@@ -99,7 +99,7 @@ export class UserPublicProfileComponent implements OnInit {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.get<any>(`https://filmania.ddns.net:8000/api/watched/${this.userId}`, { headers })
+    this.http.get<any>(`http://localhost:8000/api/watched/${this.userId}`, { headers })
       .subscribe(response => {
         this.watchedMovies = response.watchedMovies || [];
       });
@@ -110,7 +110,7 @@ export class UserPublicProfileComponent implements OnInit {
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
     // Carga lista de amigos confirmados
-    this.http.get<any>(`https://filmania.ddns.net:8000/api/friends/${this.userId}`, { headers })
+    this.http.get<any>(`http://localhost:8000/api/friends/${this.userId}`, { headers })
       .subscribe(response => {
         this.friends = response || [];
         this.checkIfFriend();
@@ -139,7 +139,7 @@ export class UserPublicProfileComponent implements OnInit {
 
     // Aquí necesitas un endpoint en tu backend que verifique si hay solicitud pendiente
     this.http.get<any>(
-      `https://filmania.ddns.net:8000/api/friend-requests/status?user1=${currentUser.id}&user2=${this.userId}`, 
+      `http://localhost:8000/api/friend-requests/status?user1=${currentUser.id}&user2=${this.userId}`, 
       { headers }
     ).subscribe(response => {
       this.isPending = response.pending || false;
@@ -156,7 +156,7 @@ export class UserPublicProfileComponent implements OnInit {
 
     const body = { friend_id: this.userId };
 
-    this.http.post('https://filmania.ddns.net:8000/api/friends', body, { headers })
+    this.http.post('http://localhost:8000/api/friends', body, { headers })
       .subscribe({
         next: () => {
           alert('Solicitud de amistad enviada');
@@ -179,7 +179,7 @@ export class UserPublicProfileComponent implements OnInit {
 
   getFriendPhoto(friend: any): string {
     return friend.profile_photo
-      ? `https://filmania.ddns.net:8000/${friend.profile_photo}`
+      ? `http://localhost:8000/${friend.profile_photo}`
       : 'assets/img/Perfil_Inicial.jpg';
   }
 

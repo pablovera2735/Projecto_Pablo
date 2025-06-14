@@ -42,7 +42,7 @@ export class AdminPanelComponent implements OnInit {
   }
 
   loadUsers(): void {
-    this.http.get<User[]>('https://filmania.ddns.net:8000/api/admin/users', {
+    this.http.get<User[]>('http://localhost:8000/api/admin/users', {
       headers: this.getAuthHeaders()
     }).subscribe({
       next: (data) => this.users = data,
@@ -58,7 +58,7 @@ export class AdminPanelComponent implements OnInit {
   const token = sessionStorage.getItem('token');
   const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-  this.http.put(`https://filmania.ddns.net:8000/api/admin/users/${userId}/revoke-admin`, {}, { headers })
+  this.http.put(`http://localhost:8000/api/admin/users/${userId}/revoke-admin`, {}, { headers })
     .subscribe({
       next: () => {
         alert('Rol de admin revocado');
@@ -74,7 +74,7 @@ export class AdminPanelComponent implements OnInit {
   blockUserForum(userId: number): void {
     const duration = 60; // minutos
     this.http.put(
-      `https://filmania.ddns.net:8000/api/admin/users/${userId}/block-forum`,
+      `http://localhost:8000/api/admin/users/${userId}/block-forum`,
       { duration },
       { headers: this.getAuthHeaders() }
     ).subscribe({
@@ -91,7 +91,7 @@ export class AdminPanelComponent implements OnInit {
 
   unblockUserForum(userId: number): void {
     this.http.put(
-      `https://filmania.ddns.net:8000/api/admin/users/${userId}/unblock-forum`,
+      `http://localhost:8000/api/admin/users/${userId}/unblock-forum`,
       {},
       { headers: this.getAuthHeaders() }
     ).subscribe({
@@ -110,7 +110,7 @@ export class AdminPanelComponent implements OnInit {
   blockUserReview(userId: number): void {
     const duration = 60; // minutos
     this.http.put(
-      `https://filmania.ddns.net:8000/api/admin/users/${userId}/block-reviews`,
+      `http://localhost:8000/api/admin/users/${userId}/block-reviews`,
       { duration },
       { headers: this.getAuthHeaders() }
     ).subscribe({
@@ -127,7 +127,7 @@ export class AdminPanelComponent implements OnInit {
 
   unblockUserReview(userId: number): void {
     this.http.put(
-      `https://filmania.ddns.net:8000/api/admin/users/${userId}/unblock-reviews`,
+      `http://localhost:8000/api/admin/users/${userId}/unblock-reviews`,
       {},
       { headers: this.getAuthHeaders() }
     ).subscribe({
@@ -144,7 +144,7 @@ export class AdminPanelComponent implements OnInit {
 
   promoteToAdmin(userId: number): void {
     this.http.put(
-      `https://filmania.ddns.net:8000/api/admin/users/${userId}/make-admin`,
+      `http://localhost:8000/api/admin/users/${userId}/make-admin`,
       {},
       { headers: this.getAuthHeaders() }
     ).subscribe({
@@ -163,7 +163,7 @@ export class AdminPanelComponent implements OnInit {
     if (!confirm('¿Seguro que quieres eliminar este usuario?')) return;
 
     this.http.delete(
-      `https://filmania.ddns.net:8000/api/admin/users/${userId}`,
+      `http://localhost:8000/api/admin/users/${userId}`,
       { headers: this.getAuthHeaders() }
     ).subscribe({
       next: () => {

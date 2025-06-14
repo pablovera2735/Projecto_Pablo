@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://filmania.ddns.net:8000/api';
+  private apiUrl = 'http://localhost:8000/api';
 
   constructor(private http: HttpClient) {}
 
@@ -23,7 +23,7 @@ export class AuthService {
   }
 
   resendVerification() {
-  return this.http.post('https://filmania.ddns.net:8000/api/email/resend', {});
+  return this.http.post('http://localhost:8000/api/email/resend', {});
 }
 
   logout(): Observable<any> {
