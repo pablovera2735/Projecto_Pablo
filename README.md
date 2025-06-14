@@ -18,7 +18,7 @@ Este proyecto consiste en una aplicación web desarrollada con **Laravel** (back
 ## 🚀 Tecnologías Usadas
 
 - **Laravel 9.19** (PHP 8.0+)
-- **Angular 16**
+- **Angular 17**
 - **MySQL / MariaDB**
 - **TMDb API** para obtener datos de películas
 - **Mailtrap SMTP** para pruebas de recuperación por correo
