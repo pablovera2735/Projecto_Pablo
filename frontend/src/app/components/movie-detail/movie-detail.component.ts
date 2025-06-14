@@ -16,6 +16,8 @@ export class MovieDetailComponent implements OnInit {
   movieId!: string;
   movie: any;
   trailerUrl: SafeResourceUrl = '';
+  alertMessage: string = '';
+  alertType: 'success' | 'error' = 'success';
   cast: any[] = [];
   profilePhoto: string = 'assets/img/Perfil_Inicial.jpg';
   reviews: any[] = [];
@@ -49,17 +51,23 @@ export class MovieDetailComponent implements OnInit {
     });
   }
 
+  showAlert(message: string, type: 'success' | 'error' = 'success') {
+    this.alertMessage = message;
+    this.alertType = type;
+    setTimeout(() => {
+      this.alertMessage = '';
+    }, 4000);
+  }
+
   loadMovie() {
     this.http.get<any>(`http://localhost:8000/api/movies/${this.movieId}`).subscribe(res => {
       this.movie = res.movie_details;
-  
       if (this.movie.trailer) {
         const trailerUrl = this.movie.trailer;
         this.trailerUrl = this.sanitizer.bypassSecurityTrustResourceUrl(trailerUrl);
       }
-  
-      this.checkIfFavorite();  // Verificar si la película está en favoritos
-      this.checkIfWatched();   // Verificar si la película está marcada como vista
+      this.checkIfFavorite();
+      this.checkIfWatched();
     });
   }
 
@@ -85,13 +93,12 @@ export class MovieDetailComponent implements OnInit {
     this.showDropdown = !this.showDropdown;
   }
 
-
   toggleMobileMenu(): void {
-  this.mobileMenuOpen = !this.mobileMenuOpen;
+    this.mobileMenuOpen = !this.mobileMenuOpen;
   }
 
   closeMobileMenu(): void {
-  this.mobileMenuOpen = false;
+    this.mobileMenuOpen = false;
   }
 
   markAllAsRead(): void {
@@ -107,57 +114,156 @@ export class MovieDetailComponent implements OnInit {
       });
   }
 
-
-   goToDetails(movieId: number): void {
+  goToDetails(movieId: number): void {
     this.router.navigate(['/movies', movieId, 'detail']);
   }
 
   goToDetailsPeople(personId: number): void {
     this.router.navigate(['/persona', personId, 'detail']);
-}
+  }
+
   submitReview() {
-    if (!this.newReview.comment.trim()) return alert('Por favor, escribe un comentario.');
-  
+    if (!this.newReview.comment.trim()) {
+      this.showAlert('Por favor, escribe un comentario.', 'error');
+      return;
+    }
+
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    
+
     const data = {
       movie_id: this.movie.id,
       rating: this.newReview.rating,
       comment: this.newReview.comment
     };
-    
-    this.http.post('http://localhost:8000/api/reviews', data, { headers }).subscribe(response => {
-      this.newReview = { rating: 5, comment: '' };
-      this.loadReviews(); // refresca las reseñas
+
+    this.http.post('http://localhost:8000/api/reviews', data, { headers }).subscribe({
+      next: () => {
+        this.newReview = { rating: 5, comment: '' };
+        this.loadReviews();
+        this.showAlert('Reseña enviada correctamente.');
+      },
+      error: () => {
+        this.showAlert('Error al enviar reseña.', 'error');
+      }
     });
   }
 
   addToFavorites() {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-    
+
     const data = {
       movie_id: this.movie.id,
       title: this.movie.title,
       poster_path: this.movie.poster_path,
     };
-  
+
     this.http.post('http://localhost:8000/api/favorites', data, { headers })
-      .subscribe(response => {
-        const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-        const alreadyExists = storedFavorites.some((movie: any) => movie.id === this.movie.id);
-  
-        if (!alreadyExists) {
-          storedFavorites.push(this.movie);
-          sessionStorage.setItem('favorites', JSON.stringify(storedFavorites));
-          this.isFavorite = true;
+      .subscribe({
+        next: () => {
+          const storedFavorites = JSON.parse(sessionStorage.getItem('favorites') || '[]');
+          const alreadyExists = storedFavorites.some((movie: any) => movie.id === this.movie.id);
+
+          if (!alreadyExists) {
+            storedFavorites.push(this.movie);
+            sessionStorage.setItem('favorites', JSON.stringify(storedFavorites));
+            this.isFavorite = true;
+          }
+
+          this.showAlert('Película agregada a favoritos.');
+        },
+        error: () => {
+          this.showAlert('Hubo un error al agregar a favoritos.', 'error');
         }
-  
-        alert('Película agregada a favoritos');
-      }, (error) => {
-        console.error('Error al agregar a favoritos:', error);
-        alert('Hubo un error al agregar la película a favoritos');
+      });
+  }
+
+  removeFromFavorites() {
+    const token = sessionStorage.getItem('token');
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    this.http.delete(`http://localhost:8000/api/favorites/${this.movie.id}`, { headers })
+      .subscribe({
+        next: () => {
+          const storedFavorites = JSON.parse(sessionStorage.getItem('favorites') || '[]');
+          const updatedFavorites = storedFavorites.filter((movie: any) => movie.id !== this.movie.id);
+          sessionStorage.setItem('favorites', JSON.stringify(updatedFavorites));
+          if (updatedFavorites.length === 0) sessionStorage.removeItem('favorites');
+          this.isFavorite = false;
+          this.showAlert('Película eliminada de favoritos.');
+        },
+        error: () => {
+          this.showAlert('Hubo un error al eliminar la película de favoritos.', 'error');
+        }
+      });
+  }
+
+  markAsWatched(): void {
+    const user = this.authService.getUser();
+    const token = sessionStorage.getItem('token');
+    if (!user || !token) return;
+
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    const data = { user_id: user.id, movie_id: this.movie.id };
+
+    this.http.post('http://localhost:8000/api/watched', data, { headers })
+      .subscribe({
+        next: () => {
+          this.isWatched = true;
+          const watchedMovies = JSON.parse(sessionStorage.getItem('watchedMovies') || '[]');
+          if (!watchedMovies.includes(this.movie.id)) {
+            watchedMovies.push(this.movie.id);
+            sessionStorage.setItem('watchedMovies', JSON.stringify(watchedMovies));
+          }
+          this.showAlert('Película marcada como vista.');
+        },
+        error: () => {
+          this.showAlert('Hubo un error al marcar la película como vista.', 'error');
+        }
+      });
+  }
+
+  removeFromWatched(): void {
+    const user = this.authService.getUser();
+    const token = sessionStorage.getItem('token');
+    if (!user || !token) return;
+
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    const data = { user_id: user.id, movie_id: this.movie.id };
+
+    this.http.post('http://localhost:8000/api/watched/remove', data, { headers })
+      .subscribe({
+        next: () => {
+          this.isWatched = false;
+          let watchedMovies = JSON.parse(sessionStorage.getItem('watchedMovies') || '[]');
+          watchedMovies = watchedMovies.filter((movieId: number) => movieId !== this.movie.id);
+          watchedMovies.length === 0
+            ? sessionStorage.removeItem('watchedMovies')
+            : sessionStorage.setItem('watchedMovies', JSON.stringify(watchedMovies));
+          this.showAlert('Película eliminada de vistos.');
+        },
+        error: () => {
+          this.showAlert('Hubo un error al eliminar la película de los vistos.', 'error');
+        }
+      });
+  }
+
+  checkIfWatched(): void {
+    const user = this.authService.getUser();
+    const token = sessionStorage.getItem('token');
+    if (!user || !token) return;
+
+    const watchedMovies = JSON.parse(sessionStorage.getItem('watchedMovies') || '[]');
+    if (watchedMovies.includes(this.movie.id)) {
+      this.isWatched = true;
+      return;
+    }
+
+    const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
+    this.http.get<any>(`http://localhost:8000/api/is-movie-watched/${user.id}/${this.movie.id}`, { headers })
+      .subscribe(response => {
+        this.isWatched = response.isWatched;
       });
   }
 
@@ -165,127 +271,6 @@ export class MovieDetailComponent implements OnInit {
     const storedFavorites = JSON.parse(sessionStorage.getItem('favorites') || '[]');
     this.isFavorite = storedFavorites.some((movie: any) => movie.id === this.movie.id);
   }
-
-  removeFromFavorites() {
-    const token = sessionStorage.getItem('token');
-  
-    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
-  
-    this.http.delete(`http://localhost:8000/api/favorites/${this.movie.id}`, { headers })
-      .subscribe(response => {
-        const storedFavorites = JSON.parse(sessionStorage.getItem('favorites') || '[]');
-        
-        const updatedFavorites = storedFavorites.filter((movie: any) => movie.id !== this.movie.id);
-        sessionStorage.setItem('favorites', JSON.stringify(updatedFavorites));
-  
-        if (updatedFavorites.length === 0) {
-          sessionStorage.removeItem('favorites'); 
-        }
-  
-        this.isFavorite = false;
-        alert('Película eliminada de favoritos');
-      }, (error) => {
-        console.error('Error al eliminar de favoritos:', error);
-        alert('Hubo un error al eliminar la película de favoritos');
-      });
-  }
-  
-  markAsWatched(): void {
-  const user = this.authService.getUser();
-  const token = sessionStorage.getItem('token');
-
-  if (!user || !token) return;
-
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
-
-  const data = {
-    user_id: user.id,
-    movie_id: this.movie.id
-  };
-
-  this.http.post('http://localhost:8000/api/watched', data, { headers })
-    .subscribe({
-      next: () => {
-        this.isWatched = true;
-
-
-        const watchedMovies = JSON.parse(sessionStorage.getItem('watchedMovies') || '[]');
-        if (!watchedMovies.includes(this.movie.id)) {
-          watchedMovies.push(this.movie.id);
-          sessionStorage.setItem('watchedMovies', JSON.stringify(watchedMovies));
-        }
-      },
-      error: err => {
-        console.error('Error al marcar como vista:', err);
-        alert('Hubo un error al marcar la película como vista');
-      }
-    });
-}
-
-
-removeFromWatched(): void {
-  const user = this.authService.getUser();
-  const token = sessionStorage.getItem('token');
-
-  if (!user || !token) return;
-
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
-
-  const data = {
-    user_id: user.id,
-    movie_id: this.movie.id
-  };
-
-  this.http.post('http://localhost:8000/api/watched/remove', data, { headers })
-    .subscribe({
-      next: () => {
-        this.isWatched = false;
-
-        // Eliminar de localStorage
-        let watchedMovies = JSON.parse(sessionStorage.getItem('watchedMovies') || '[]');
-        watchedMovies = watchedMovies.filter((movieId: number) => movieId !== this.movie.id);
-
-        // Si el array está vacío, eliminar la clave de localStorage
-        if (watchedMovies.length === 0) {
-          sessionStorage.removeItem('watchedMovies');
-        } else {
-          sessionStorage.setItem('watchedMovies', JSON.stringify(watchedMovies));
-        }
-      },
-      error: err => {
-        console.error('Error al eliminar de vistos:', err);
-        alert('Hubo un error al eliminar la película de los vistos');
-      }
-    });
-}
-  checkIfWatched(): void {
-  const user = this.authService.getUser();
-  const token = sessionStorage.getItem('token');
-
-  if (!user || !token) return;
-
-  // Verificar primero si ya está en localStorage
-  const watchedMovies = JSON.parse(sessionStorage.getItem('watchedMovies') || '[]');
-  if (watchedMovies.includes(this.movie.id)) {
-    this.isWatched = true;
-    return; // Si ya está marcado como visto, no es necesario llamar al API
-  }
-
-
-  const headers = new HttpHeaders({
-    Authorization: `Bearer ${token}`
-  });
-
-  this.http.get<any>(`http://localhost:8000/api/is-movie-watched/${user.id}/${this.movie.id}`, { headers })
-    .subscribe(response => {
-      this.isWatched = response.isWatched;
-    });
-}
-
 
   isAuthenticated(): boolean {
     return this.authService.isLoggedIn();
@@ -314,7 +299,7 @@ removeFromWatched(): void {
         this.suggestions = response.results.slice(0, 8);
       });
 
-      this.closeMobileMenu();
+    this.closeMobileMenu();
   }
 
   getItemImage(item: any): string {

@@ -67,6 +67,10 @@
   </nav>
 </header>
 
+<div *ngIf="alertMessage" class="alert-box text-center" [ngClass]="{'alert-success': alertType === 'success', 'alert-danger': alertType === 'error'}">
+  {{ alertMessage }}
+</div>
+
 <div class="container mt-5 movie-detail" *ngIf="movie">
   <div class="row align-items-center">
     <div class="col-lg-4 text-center mb-4 mb-lg-0">
