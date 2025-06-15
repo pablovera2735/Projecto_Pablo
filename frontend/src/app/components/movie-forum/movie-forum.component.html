@@ -87,7 +87,7 @@
               [(ngModel)]="newComment" 
               placeholder="Escribe un comentario..." 
               rows="3"></textarea>
-    <button class="btn btn-primary comment-btn" 
+    <button class="btn btn-primary comment-btn1" 
             (click)="postComment()" 
             [disabled]="loading || !newComment.trim()">
       {{ loading ? 'Enviando...' : 'Comentar' }}

@@ -41,6 +41,17 @@ body {
   transition: all 0.3s ease;
 }
 
+
+.comment-btn1 {
+  background-color: purple;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
 .navbar-content {
   display: flex;
   justify-content: space-between;
