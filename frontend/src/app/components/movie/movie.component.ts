@@ -29,6 +29,7 @@ interface Genre {
 export class MovieComponent implements OnInit, AfterViewInit, OnDestroy {
   userName: string = '';
   profilePhoto: string = 'assets/img/Perfil_Inicial.jpg';
+  showAllSuggestions: boolean = false;
   searchTerm: string = '';
   suggestions: any[] = [];
   notifications: any[] = [];

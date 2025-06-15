@@ -28,11 +28,13 @@
       (keyup)="onSearchChange()"
     />
     <div class="search-dropdown" *ngIf="suggestions.length > 0">
-      <div *ngFor="let item of suggestions" class="search-item" (click)="goToDetails(item.id)">
+      <div *ngFor="let item of showAllSuggestions ? suggestions : suggestions.slice(0, 8)" class="search-item" (click)="goToDetails(item.id)">
         <img [src]="getItemImage(item)" alt="icono" />
         <span>{{ item.title || item.name }}</span>
       </div>
-      <div class="search-footer" (click)="goToSearchResults()">Ver todos los resultados</div>
+      <div class="search-footer" (click)="showAllSuggestions = true" *ngIf="!showAllSuggestions && suggestions.length > 8">
+  Ver todos los resultados
+</div>
     </div>
 
 

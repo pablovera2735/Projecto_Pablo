@@ -15,6 +15,7 @@ export class ReleaseComponent implements OnInit {
   searchTerm: string = '';
   showBackToTop: boolean = false;
   suggestions: any[] = [];
+  showAllSuggestions: boolean = false;
   notifications: any[] = [];
   showDropdown: boolean = false;
   mobileMenuOpen: boolean = false;

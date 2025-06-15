@@ -17,6 +17,7 @@ export class MovieDetailComponent implements OnInit {
   movie: any;
   trailerUrl: SafeResourceUrl = '';
   alertMessage: string = '';
+  showAllSuggestions: boolean = false;
   alertType: 'success' | 'error' = 'success';
   cast: any[] = [];
   profilePhoto: string = 'assets/img/Perfil_Inicial.jpg';

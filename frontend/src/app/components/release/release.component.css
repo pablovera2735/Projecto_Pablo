@@ -63,12 +63,37 @@ body {
   display: flex;
   align-items: center;
   gap: 15px;
-  margin-left: 640px;
+  margin-left: auto;
   position: relative;
 }
 
 .menu-btn{
   display: none;
+}
+
+.notification-wrapper {
+  position: relative;
+  cursor: pointer;
+
+  .notification-icon {
+    font-size: 1.5rem;
+    color: white;
+    transition: color 0.3s ease;
+  }
+
+  .notification-icon:hover {
+    color: #0d6efd;
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 35px;
+    right: 0;
+    min-width: 280px;
+    background-color: #fff;
+    border-radius: 0.5rem;
+    z-index: 1000;
+  }
 }
 
 .search-dropdown {

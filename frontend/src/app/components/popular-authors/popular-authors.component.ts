@@ -28,6 +28,7 @@ export class PopularAuthorsComponent implements OnInit {
   profilePhoto: string = 'assets/img/Perfil_Inicial.jpg';
   searchTerm: string = '';
   suggestions: any[] = [];
+  showAllSuggestions: boolean = false;
   notifications: any[] = [];
   searchTermActor: string = '';
   filteredActors: Actor[] = [];

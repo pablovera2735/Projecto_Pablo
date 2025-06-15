@@ -27,6 +27,7 @@ export class MovieListComponent implements OnInit {
   searchTerm: string = '';
   showBackToTop: boolean = false;
   suggestions: any[] = [];
+  showAllSuggestions: boolean = false;
   notifications: any[] = [];
   genres: Genre[] = [];
  forumSearchTerm: string = '';

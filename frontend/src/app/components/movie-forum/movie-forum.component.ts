@@ -15,6 +15,7 @@ export class MovieForumComponent implements OnInit {
   profilePhoto: string = 'assets/img/Perfil_Inicial.jpg';
   searchTerm: string = '';
   suggestions: any[] = [];
+  showAllSuggestions: boolean = false;
   notifications: any[] = [];
   userForumBlocked: boolean = false;
 
