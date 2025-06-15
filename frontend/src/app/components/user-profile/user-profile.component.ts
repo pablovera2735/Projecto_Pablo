@@ -53,12 +53,12 @@ export class UserProfileComponent implements OnInit {
     if (user && token) {
       this.userName = user.name;
       this.profilePhoto = user.profile_photo
-        ? 'http://localhost:8000/' + user.profile_photo
+        ? 'http://filmania.ddns.net:8000/' + user.profile_photo
         : 'assets/img/Perfil_Inicial.jpg';
 
       const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-      this.http.get<any>(`http://localhost:8000/api/user/${user.id}/profile`, { headers })
+      this.http.get<any>(`http://filmania.ddns.net:8000/api/user/${user.id}/profile`, { headers })
         .subscribe(response => {
           this.comments = response.comments;
         });
@@ -71,11 +71,11 @@ export class UserProfileComponent implements OnInit {
 
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.get<any>(`http://localhost:8000/api/user/${id}/profile`, { headers })
+    this.http.get<any>(`http://filmania.ddns.net:8000/api/user/${id}/profile`, { headers })
       .subscribe(response => {
         this.userName = response.name;
         this.profilePhoto = response.profile_photo
-          ? 'http://localhost:8000/' + response.profile_photo
+          ? 'http://filmania.ddns.net:8000/' + response.profile_photo
           : 'assets/img/Perfil_Inicial.jpg';
         this.comments = response.comments;
         // Puedes cargar otras cosas específicas del usuario aquí
@@ -90,7 +90,7 @@ export class UserProfileComponent implements OnInit {
   
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
   
-    this.http.get<any[]>(`http://localhost:8000/api/profile-comments/${user.id}`, { headers })
+    this.http.get<any[]>(`http://filmania.ddns.net:8000/api/profile-comments/${user.id}`, { headers })
       .subscribe(response => {
         this.comments = response;
       });
@@ -116,7 +116,7 @@ export class UserProfileComponent implements OnInit {
       content: this.commentContent
     };
   
-    this.http.post('http://localhost:8000/api/profile-comments', body, { headers })
+    this.http.post('http://filmania.ddns.net:8000/api/profile-comments', body, { headers })
       .subscribe({
         next: (res: any) => {
           this.comments.unshift({
@@ -143,7 +143,7 @@ export class UserProfileComponent implements OnInit {
 
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.get<any>(`http://localhost:8000/api/watched/${user.id}`, { headers })
+    this.http.get<any>(`http://filmania.ddns.net:8000/api/watched/${user.id}`, { headers })
       .subscribe({
         next: (response) => {
           this.watchedMovies = response.watchedMovies || [];
@@ -162,7 +162,7 @@ export class UserProfileComponent implements OnInit {
     if (user && token) {
       const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-      this.http.get<any>('http://localhost:8000/api/friends', { headers })
+      this.http.get<any>('http://filmania.ddns.net:8000/api/friends', { headers })
         .subscribe(response => {
           this.friends = response;
         });
@@ -177,7 +177,7 @@ export class UserProfileComponent implements OnInit {
 
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.get<any>(`http://localhost:8000/api/favorites/${user.id}`, { headers })
+    this.http.get<any>(`http://filmania.ddns.net:8000/api/favorites/${user.id}`, { headers })
       .subscribe(response => {
         this.favoriteMovies = response.favorites || [];
       });
@@ -187,7 +187,7 @@ export class UserProfileComponent implements OnInit {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.get<any[]>('http://localhost:8000/api/friends/pending', { headers })
+    this.http.get<any[]>('http://filmania.ddns.net:8000/api/friends/pending', { headers })
       .subscribe({
         next: (response) => {
           this.pendingRequests = response;
@@ -202,7 +202,7 @@ export class UserProfileComponent implements OnInit {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.post<any>('http://localhost:8000/api/friends/accept', { sender_id: senderId }, { headers })
+    this.http.post<any>('http://filmania.ddns.net:8000/api/friends/accept', { sender_id: senderId }, { headers })
       .subscribe(() => {
         this.pendingRequests = this.pendingRequests.filter(r => r.id !== senderId);
         this.loadFriends(); // Refrescar lista de amigos
@@ -213,7 +213,7 @@ export class UserProfileComponent implements OnInit {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.post<any>('http://localhost:8000/api/friends/reject', { sender_id: senderId }, { headers })
+    this.http.post<any>('http://filmania.ddns.net:8000/api/friends/reject', { sender_id: senderId }, { headers })
       .subscribe(() => {
         this.pendingRequests = this.pendingRequests.filter(r => r.id !== senderId);
       });
@@ -221,7 +221,7 @@ export class UserProfileComponent implements OnInit {
 
   getFriendPhoto(friend: any): string {
     return friend.profile_photo
-      ? `http://localhost:8000/${friend.profile_photo}`
+      ? `http://filmania.ddns.net:8000/${friend.profile_photo}`
       : 'assets/img/Perfil_Inicial.jpg';
   }
 
@@ -258,10 +258,10 @@ export class UserProfileComponent implements OnInit {
       Authorization: `Bearer ${token}`
     });
 
-    this.http.post<any>('http://localhost:8000/api/profile/upload-photo', formData, { headers })
+    this.http.post<any>('http://filmania.ddns.net:8000/api/profile/upload-photo', formData, { headers })
       .subscribe(response => {
         if (response.profile_photo) {
-          this.profilePhoto = 'http://localhost:8000/' + response.profile_photo;
+          this.profilePhoto = 'http://filmania.ddns.net:8000/' + response.profile_photo;
 
           const user = this.authService.getUser();
           user.profile_photo = response.profile_photo;
@@ -278,7 +278,7 @@ export class UserProfileComponent implements OnInit {
       Authorization: `Bearer ${token}`
     });
 
-    this.http.delete<any>('http://localhost:8000/api/profile/delete-photo', { headers })
+    this.http.delete<any>('http://filmania.ddns.net:8000/api/profile/delete-photo', { headers })
       .subscribe(response => {
         if (response.profile_photo) {
           this.profilePhoto = 'assets/img/Perfil_Inicial.jpg';

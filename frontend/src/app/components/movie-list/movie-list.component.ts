@@ -84,7 +84,7 @@ searchResults: any[] = [];
     if (user && user.name) {
       this.userName = user.name;
       this.profilePhoto = user.profile_photo
-        ? 'http://localhost:8000/' + user.profile_photo
+        ? 'http://filmania.ddns.net:8000/' + user.profile_photo
         : 'assets/img/Perfil_Inicial.jpg';
     } else {
       this.userName = 'Invitado';
@@ -100,7 +100,7 @@ searchResults: any[] = [];
   }
 
   loadGenres(): void {
-    this.http.get<any>('http://localhost:8000/api/movies/genres')
+    this.http.get<any>('http://filmania.ddns.net:8000/api/movies/genres')
       .subscribe(res => {
         this.genres = res.genres;
         this.genres.forEach(genre => {
@@ -110,7 +110,7 @@ searchResults: any[] = [];
   }
 
   loadMoviesByGenre(genreId: number): void {
-    this.http.get<any>(`http://localhost:8000/api/movies/genre/${genreId}?page=1`)
+    this.http.get<any>(`http://filmania.ddns.net:8000/api/movies/genre/${genreId}?page=1`)
       .subscribe(res => {
         this.moviesByGenre[genreId] = res.movies;
       });
@@ -123,7 +123,7 @@ searchResults: any[] = [];
       return;
     }
 
-    this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
+    this.http.get<any>(`http://filmania.ddns.net:8000/api/movies/search?q=${this.searchTerm}`)
       .subscribe(response => {
         this.suggestions = response.results.slice(0, 8);
       });
@@ -158,7 +158,7 @@ onForumSearchChange() {
     this.isSearching = true;
   } else {
     // Si no hay resultados en foro, buscar en backend (API)
-    this.http.get<any>(`http://localhost:8000/api/movies/search?q=${term}`)
+    this.http.get<any>(`http://filmania.ddns.net:8000/api/movies/search?q=${term}`)
       .subscribe(response => {
         this.searchResults = response.results;
         this.isSearching = this.searchResults.length > 0;

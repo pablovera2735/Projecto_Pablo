@@ -32,7 +32,7 @@ describe('UserSettingsComponent', () => {
 
     component.updateEmail();
 
-    const req = httpMock.expectOne('http://localhost:8000/api/profile/update-email');
+    const req = httpMock.expectOne('http://filmania.ddns.net:8000/api/profile/update-email');
     expect(req.request.method).toBe('PUT');
     expect(req.request.body).toEqual({ email: 'test@example.com' });
 

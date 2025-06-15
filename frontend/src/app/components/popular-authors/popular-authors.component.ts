@@ -84,7 +84,7 @@ export class PopularAuthorsComponent implements OnInit {
       return of([]);
     }
 
-    return this.http.get<any>(`http://localhost:8000/api/people/search?q=${encodeURIComponent(term)}`).pipe(
+    return this.http.get<any>(`http://filmania.ddns.net:8000/api/people/search?q=${encodeURIComponent(term)}`).pipe(
       map(response => response.results || []),
       catchError(() => of([]))
     );
@@ -169,7 +169,7 @@ export class PopularAuthorsComponent implements OnInit {
       return;
     }
 
-    this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
+    this.http.get<any>(`http://filmania.ddns.net:8000/api/movies/search?q=${this.searchTerm}`)
       .subscribe(response => {
         this.suggestions = response.results.slice(0, 8);
       });
@@ -194,7 +194,7 @@ export class PopularAuthorsComponent implements OnInit {
     if (user && user.name) {
       this.userName = user.name;
       this.profilePhoto = user.profile_photo
-        ? `http://localhost:8000/${user.profile_photo}`
+        ? `http://filmania.ddns.net:8000/${user.profile_photo}`
         : 'assets/img/Perfil_Inicial.jpg';
     } else {
       this.userName = 'Invitado';

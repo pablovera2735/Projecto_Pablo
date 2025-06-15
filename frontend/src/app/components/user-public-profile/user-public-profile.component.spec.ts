@@ -64,7 +64,7 @@ describe('UserPublicProfileComponent', () => {
 
     expect(component.userId).toBe('123');
     expect(httpClientSpy.get).toHaveBeenCalledWith(
-      'http://localhost:8000/api/user/123/public-profile',
+      'http://filmania.ddns.net:8000/api/user/123/public-profile',
       jasmine.any(Object)
     );
   });
@@ -96,7 +96,7 @@ describe('UserPublicProfileComponent', () => {
     component.sendFriendRequest();
 
     expect(httpClientSpy.post).toHaveBeenCalledWith(
-      'http://localhost:8000/api/friends',
+      'http://filmania.ddns.net:8000/api/friends',
       { friend_id: '123' },
       jasmine.any(Object)
     );

@@ -36,7 +36,7 @@ export class UserSettingsComponent {
   loadCurrentEmail() {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-    this.http.get<{ email: string }>('http://localhost:8000/api/profile', { headers })
+    this.http.get<{ email: string }>('http://filmania.ddns.net:8000/api/profile', { headers })
       .subscribe({
         next: (data) => this.currentEmail = data.email,
         error: () => this.showAlert('Error cargando el correo actual', 'error')
@@ -52,7 +52,7 @@ export class UserSettingsComponent {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.post('http://localhost:8000/api/profile/update-email', { email: this.newEmail }, { headers })
+    this.http.post('http://filmania.ddns.net:8000/api/profile/update-email', { email: this.newEmail }, { headers })
       .subscribe({
         next: () => {
           this.showAlert('Se ha enviado un código de verificación a tu nuevo correo.', 'success');
@@ -71,7 +71,7 @@ export class UserSettingsComponent {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    this.http.post('http://localhost:8000/api/profile/confirm-email-change', { email: this.newEmail, code: this.verificationCode }, { headers })
+    this.http.post('http://filmania.ddns.net:8000/api/profile/confirm-email-change', { email: this.newEmail, code: this.verificationCode }, { headers })
       .subscribe({
         next: () => {
           this.showAlert('Correo actualizado correctamente', 'success');
@@ -99,7 +99,7 @@ export class UserSettingsComponent {
       password_confirmation: this.confirmPassword
     };
 
-    this.http.put('http://localhost:8000/api/profile/update-password', passwordData, { headers })
+    this.http.put('http://filmania.ddns.net:8000/api/profile/update-password', passwordData, { headers })
       .subscribe({
         next: () => {
           this.showAlert('Contraseña actualizada correctamente', 'success');

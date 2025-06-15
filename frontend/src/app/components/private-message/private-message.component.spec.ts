@@ -48,7 +48,7 @@ describe('PrivateMessageComponent', () => {
   });
 
   it('should load recipient name successfully', () => {
-    const req = httpMock.expectOne('http://localhost:8000/api/user/123/public-profile');
+    const req = httpMock.expectOne('http://filmania.ddns.net:8000/api/user/123/public-profile');
     expect(req.request.method).toBe('GET');
     expect(req.request.headers.get('Authorization')).toBe('Bearer mock-token');
 
@@ -58,7 +58,7 @@ describe('PrivateMessageComponent', () => {
   });
 
   it('should set recipientName to fallback on error', () => {
-    const req = httpMock.expectOne('http://localhost:8000/api/user/123/public-profile');
+    const req = httpMock.expectOne('http://filmania.ddns.net:8000/api/user/123/public-profile');
     req.error(new ErrorEvent('Network error'));
 
     expect(component.recipientName).toBe('Usuario desconocido');
@@ -69,7 +69,7 @@ describe('PrivateMessageComponent', () => {
 
     component.sendMessage();
 
-    const req = httpMock.expectOne('http://localhost:8000/api/messages/send');
+    const req = httpMock.expectOne('http://filmania.ddns.net:8000/api/messages/send');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({
       recipient_id: '123',
@@ -88,7 +88,7 @@ describe('PrivateMessageComponent', () => {
 
     component.sendMessage();
 
-    const req = httpMock.expectOne('http://localhost:8000/api/messages/send');
+    const req = httpMock.expectOne('http://filmania.ddns.net:8000/api/messages/send');
     req.error(new ErrorEvent('Error al enviar'));
 
     expect(component.sendSuccess).toBeFalse();
@@ -99,7 +99,7 @@ describe('PrivateMessageComponent', () => {
     component.messageContent = '    ';
     component.sendMessage();
 
-    httpMock.expectNone('http://localhost:8000/api/messages/send');
+    httpMock.expectNone('http://filmania.ddns.net:8000/api/messages/send');
     expect(component.sendSuccess).toBeFalse();
   });
 });

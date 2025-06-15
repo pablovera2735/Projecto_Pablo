@@ -57,14 +57,14 @@ describe('MovieListComponent', () => {
   it('should load genres and movies by genre on init', () => {
     const mockGenres = { genres: [{ id: 1, name: 'Action' }, { id: 2, name: 'Drama' }] };
 
-    const req = httpMock.expectOne('http://localhost:8000/api/movies/genres');
+    const req = httpMock.expectOne('http://filmania.ddns.net:8000/api/movies/genres');
     expect(req.request.method).toBe('GET');
     req.flush(mockGenres);
 
-    const genreReq1 = httpMock.expectOne('http://localhost:8000/api/movies/genre/1?page=1');
+    const genreReq1 = httpMock.expectOne('http://filmania.ddns.net:8000/api/movies/genre/1?page=1');
     genreReq1.flush({ movies: [{ id: 101, title: 'Action Movie' }] });
 
-    const genreReq2 = httpMock.expectOne('http://localhost:8000/api/movies/genre/2?page=1');
+    const genreReq2 = httpMock.expectOne('http://filmania.ddns.net:8000/api/movies/genre/2?page=1');
     genreReq2.flush({ movies: [{ id: 102, title: 'Drama Movie' }] });
 
     expect(component.genres.length).toBe(2);
@@ -76,7 +76,7 @@ describe('MovieListComponent', () => {
     component.searchTerm = 'batman';
     component.onSearchChange();
 
-    const req = httpMock.expectOne('http://localhost:8000/api/movies/search?q=batman');
+    const req = httpMock.expectOne('http://filmania.ddns.net:8000/api/movies/search?q=batman');
     expect(req.request.method).toBe('GET');
 
     req.flush({ results: Array(10).fill({ title: 'Batman Movie' }) });

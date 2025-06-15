@@ -26,7 +26,7 @@ export class FavoritesComponent implements OnInit {
 
   loadFavorites(): void {
     const userId = this.authService.getUser()?.id;
-    this.http.get<any>(`http://localhost:8000/api/users/${userId}/favorites`)
+    this.http.get<any>(`http://filmania.ddns.net:8000/api/users/${userId}/favorites`)
       .subscribe(res => {
         this.userFavorites = res.favorites;
       });
@@ -34,7 +34,7 @@ export class FavoritesComponent implements OnInit {
 
   loadCustomLists(): void {
     const userId = this.authService.getUser()?.id;
-    this.http.get<any>(`http://localhost:8000/api/users/${userId}/lists`)
+    this.http.get<any>(`http://filmania.ddns.net:8000/api/users/${userId}/lists`)
       .subscribe(res => {
         this.customLists = res.lists;
       });

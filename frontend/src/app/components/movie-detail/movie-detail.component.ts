@@ -60,7 +60,7 @@ export class MovieDetailComponent implements OnInit {
   }
 
   loadMovie() {
-    this.http.get<any>(`http://localhost:8000/api/movies/${this.movieId}`).subscribe(res => {
+    this.http.get<any>(`http://filmania.ddns.net:8000/api/movies/${this.movieId}`).subscribe(res => {
       this.movie = res.movie_details;
       if (this.movie.trailer) {
         const trailerUrl = this.movie.trailer;
@@ -72,7 +72,7 @@ export class MovieDetailComponent implements OnInit {
   }
 
   loadReviews() {
-    this.http.get<any>(`http://localhost:8000/api/movies/${this.movieId}/reviews`)
+    this.http.get<any>(`http://filmania.ddns.net:8000/api/movies/${this.movieId}/reviews`)
       .subscribe(res => {
         this.reviews = res.reviews;
       });
@@ -108,7 +108,7 @@ export class MovieDetailComponent implements OnInit {
   }
 
   loadCast() {
-    this.http.get<any>(`http://localhost:8000/api/movies/${this.movieId}/cast`)
+    this.http.get<any>(`http://filmania.ddns.net:8000/api/movies/${this.movieId}/cast`)
       .subscribe(res => {
         this.cast = res.cast;
       });
@@ -137,7 +137,7 @@ export class MovieDetailComponent implements OnInit {
       comment: this.newReview.comment
     };
 
-    this.http.post('http://localhost:8000/api/reviews', data, { headers }).subscribe({
+    this.http.post('http://filmania.ddns.net:8000/api/reviews', data, { headers }).subscribe({
       next: () => {
         this.newReview = { rating: 5, comment: '' };
         this.loadReviews();
@@ -159,7 +159,7 @@ export class MovieDetailComponent implements OnInit {
       poster_path: this.movie.poster_path,
     };
 
-    this.http.post('http://localhost:8000/api/favorites', data, { headers })
+    this.http.post('http://filmania.ddns.net:8000/api/favorites', data, { headers })
       .subscribe({
         next: () => {
           const storedFavorites = JSON.parse(sessionStorage.getItem('favorites') || '[]');
@@ -183,7 +183,7 @@ export class MovieDetailComponent implements OnInit {
     const token = sessionStorage.getItem('token');
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    this.http.delete(`http://localhost:8000/api/favorites/${this.movie.id}`, { headers })
+    this.http.delete(`http://filmania.ddns.net:8000/api/favorites/${this.movie.id}`, { headers })
       .subscribe({
         next: () => {
           const storedFavorites = JSON.parse(sessionStorage.getItem('favorites') || '[]');
@@ -207,7 +207,7 @@ export class MovieDetailComponent implements OnInit {
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
     const data = { user_id: user.id, movie_id: this.movie.id };
 
-    this.http.post('http://localhost:8000/api/watched', data, { headers })
+    this.http.post('http://filmania.ddns.net:8000/api/watched', data, { headers })
       .subscribe({
         next: () => {
           this.isWatched = true;
@@ -232,7 +232,7 @@ export class MovieDetailComponent implements OnInit {
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
     const data = { user_id: user.id, movie_id: this.movie.id };
 
-    this.http.post('http://localhost:8000/api/watched/remove', data, { headers })
+    this.http.post('http://filmania.ddns.net:8000/api/watched/remove', data, { headers })
       .subscribe({
         next: () => {
           this.isWatched = false;
@@ -261,7 +261,7 @@ export class MovieDetailComponent implements OnInit {
     }
 
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
-    this.http.get<any>(`http://localhost:8000/api/is-movie-watched/${user.id}/${this.movie.id}`, { headers })
+    this.http.get<any>(`http://filmania.ddns.net:8000/api/is-movie-watched/${user.id}/${this.movie.id}`, { headers })
       .subscribe(response => {
         this.isWatched = response.isWatched;
       });
@@ -281,7 +281,7 @@ export class MovieDetailComponent implements OnInit {
     if (user && user.name) {
       this.userName = user.name;
       this.profilePhoto = user.profile_photo
-        ? 'http://localhost:8000/' + user.profile_photo
+        ? 'http://filmania.ddns.net:8000/' + user.profile_photo
         : 'assets/img/Perfil_Inicial.jpg';
     } else {
       this.userName = 'Invitado';
@@ -294,7 +294,7 @@ export class MovieDetailComponent implements OnInit {
       return;
     }
 
-    this.http.get<any>(`http://localhost:8000/api/movies/search?q=${this.searchTerm}`)
+    this.http.get<any>(`http://filmania.ddns.net:8000/api/movies/search?q=${this.searchTerm}`)
       .subscribe(response => {
         this.suggestions = response.results.slice(0, 8);
       });

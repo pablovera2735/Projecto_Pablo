@@ -74,7 +74,7 @@ describe('UserProfileComponent', () => {
     component.ngOnInit();
 
     expect(httpClientSpy.get).toHaveBeenCalledWith(
-      'http://localhost:8000/api/user/123/profile',
+      'http://filmania.ddns.net:8000/api/user/123/profile',
       jasmine.any(Object)
     );
   });

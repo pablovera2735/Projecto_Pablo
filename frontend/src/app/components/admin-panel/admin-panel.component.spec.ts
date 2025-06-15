@@ -48,7 +48,7 @@ describe('AdminPanelComponent', () => {
 
     component.ngOnInit();
 
-    const req = httpMock.expectOne('http://localhost:8000/api/admin/users');
+    const req = httpMock.expectOne('http://filmania.ddns.net:8000/api/admin/users');
     expect(req.request.method).toBe('GET');
     expect(req.request.headers.get('Authorization')).toBe('Bearer fake-token');
 
@@ -64,7 +64,7 @@ describe('AdminPanelComponent', () => {
 
     component.promoteToAdmin(123);
 
-    const req = httpMock.expectOne('http://localhost:8000/api/admin/users/123/make-admin');
+    const req = httpMock.expectOne('http://filmania.ddns.net:8000/api/admin/users/123/make-admin');
     expect(req.request.method).toBe('PUT');
     req.flush({});
 
@@ -78,7 +78,7 @@ describe('AdminPanelComponent', () => {
 
     component.deleteUser(123);
 
-    const req = httpMock.expectOne('http://localhost:8000/api/admin/users/123');
+    const req = httpMock.expectOne('http://filmania.ddns.net:8000/api/admin/users/123');
     expect(req.request.method).toBe('DELETE');
     req.flush({});
 
@@ -91,7 +91,7 @@ describe('AdminPanelComponent', () => {
 
     component.deleteUser(123);
 
-    httpMock.expectNone('http://localhost:8000/api/admin/users/123');
+    httpMock.expectNone('http://filmania.ddns.net:8000/api/admin/users/123');
     expect(component.loadUsers).not.toHaveBeenCalled();
   });
 });
