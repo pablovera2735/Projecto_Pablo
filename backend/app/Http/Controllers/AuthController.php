@@ -65,7 +65,7 @@ class AuthController extends Controller
         'is_admin' => 0,
     ]);
 
-    Log::channel('daily')->info('Nuevo usuario registrado', [
+    Log::channel('peliculas')->info('Nuevo usuario registrado', [
         'user_id' => $user->id,
         'email' => $user->email
     ]);

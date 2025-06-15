@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
@@ -25,6 +25,7 @@ export class MovieListComponent implements OnInit {
   userName: string = '';
   profilePhoto: string = 'assets/img/Perfil_Inicial.jpg';
   searchTerm: string = '';
+  showBackToTop: boolean = false;
   suggestions: any[] = [];
   notifications: any[] = [];
   genres: Genre[] = [];
@@ -172,6 +173,16 @@ onForumSearchChange() {
 
 goToForumSearchResults(): void {
   this.router.navigate(['/foro'], { queryParams: { q: this.forumSearchTerm } });
+}
+
+
+@HostListener('window:scroll', [])
+onWindowScroll(): void {
+  this.showBackToTop = window.pageYOffset > 300;
+}
+
+scrollToTop(): void {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 

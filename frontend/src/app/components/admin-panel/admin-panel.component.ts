@@ -21,6 +21,8 @@ interface User {
 })
 export class AdminPanelComponent implements OnInit {
   users: User[] = [];
+  alertMessage: string | null = null;
+  alertType: 'success' | 'error' = 'success';
 
   constructor(
     private http: HttpClient,
@@ -41,13 +43,22 @@ export class AdminPanelComponent implements OnInit {
     return new HttpHeaders({ Authorization: `Bearer ${token}` });
   }
 
+
+  showAlert(message: string, type: 'success' | 'error' = 'success'): void {
+  this.alertMessage = message;
+  this.alertType = type;
+  setTimeout(() => {
+    this.alertMessage = null;
+  }, 3000); // Desaparece después de 3 segundos
+}
+
   loadUsers(): void {
     this.http.get<User[]>('http://filmania.ddns.net:8000/api/admin/users', {
       headers: this.getAuthHeaders()
     }).subscribe({
       next: (data) => this.users = data,
       error: (err) => {
-        alert('Error cargando usuarios');
+        this.showAlert('Error cargando usuarios');
         console.error(err);
       }
     });
@@ -61,11 +72,11 @@ export class AdminPanelComponent implements OnInit {
   this.http.put(`http://filmania.ddns.net:8000/api/admin/users/${userId}/revoke-admin`, {}, { headers })
     .subscribe({
       next: () => {
-        alert('Rol de admin revocado');
+        this.showAlert('Rol de admin revocado');
         this.loadUsers();
       },
       error: (err) => {
-        alert(err.error.message || 'Error revocando rol de admin');
+        this.showAlert(err.error.message || 'Error revocando rol de admin');
         console.error('Error revocando admin', err);
       }
     });
@@ -79,11 +90,11 @@ export class AdminPanelComponent implements OnInit {
       { headers: this.getAuthHeaders() }
     ).subscribe({
       next: () => {
-        alert('Usuario bloqueado del foro');
+        this.showAlert('Usuario bloqueado del foro');
         this.loadUsers();
       },
       error: (err) => {
-        alert('Error bloqueando usuario');
+        this.showAlert('Error bloqueando usuario');
         console.error(err);
       }
     });
@@ -96,11 +107,11 @@ export class AdminPanelComponent implements OnInit {
       { headers: this.getAuthHeaders() }
     ).subscribe({
       next: () => {
-        alert('Usuario desbloqueado del foro');
+        this.showAlert('Usuario desbloqueado del foro');
         this.loadUsers();
       },
       error: (err) => {
-        alert('Error desbloqueando usuario');
+        this.showAlert('Error desbloqueando usuario');
         console.error(err);
       }
     });
@@ -115,11 +126,11 @@ export class AdminPanelComponent implements OnInit {
       { headers: this.getAuthHeaders() }
     ).subscribe({
       next: () => {
-        alert('Usuario bloqueado para reseñas');
+        this.showAlert('Usuario bloqueado para reseñas');
         this.loadUsers();
       },
       error: (err) => {
-        alert('Error bloqueando usuario');
+        this.showAlert('Error bloqueando usuario');
         console.error(err);
       }
     });
@@ -132,11 +143,11 @@ export class AdminPanelComponent implements OnInit {
       { headers: this.getAuthHeaders() }
     ).subscribe({
       next: () => {
-        alert('Usuario desbloqueado para reseñas');
+        this.showAlert('Usuario desbloqueado para reseñas');
         this.loadUsers();
       },
       error: (err) => {
-        alert('Error desbloqueando usuario');
+        this.showAlert('Error desbloqueando usuario');
         console.error(err);
       }
     });
@@ -149,7 +160,7 @@ export class AdminPanelComponent implements OnInit {
       { headers: this.getAuthHeaders() }
     ).subscribe({
       next: () => {
-        alert('Usuario promovido a administrador');
+        this.showAlert('Usuario promovido a administrador');
         this.loadUsers();
       },
       error: (err) => {
@@ -167,13 +178,17 @@ export class AdminPanelComponent implements OnInit {
       { headers: this.getAuthHeaders() }
     ).subscribe({
       next: () => {
-        alert('Usuario eliminado');
+        this.showAlert('Usuario eliminado');
         this.loadUsers();
       },
       error: (err) => {
-        alert('Error eliminando usuario');
+        this.showAlert('Error eliminando usuario');
         console.error(err);
       }
     });
   }
+
+  goBackToMenu(): void {
+  this.router.navigate(['/menu']);
+}
 }

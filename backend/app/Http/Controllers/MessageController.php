@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Message;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 class MessageController extends Controller
@@ -31,6 +32,13 @@ class MessageController extends Controller
             'message' => $request->message,
         ]);
 
+        Log::channel('peliculas')->info('Mensaje enviado', [
+            'sender_id' => Auth::id(),
+            'recipient_id' => $request->recipient_id,
+            'timestamp' => now()->toDateTimeString(),
+            'message_id' => $message->id
+        ]);
+
         return response()->json(['success' => true, 'message' => 'Mensaje enviado correctamente']);
     }
 
@@ -45,37 +53,60 @@ class MessageController extends Controller
             $q->where('sender_id', $userId)->where('recipient_id', $authId);
         })->orderBy('created_at', 'asc')->get();
 
+        Log::channel('peliculas')->info('Conversación cargada', [
+            'user_id' => $authId,
+            'with_user_id' => $userId,
+            'total_messages' => $messages->count(),
+            'timestamp' => now()->toDateTimeString()
+        ]);
+
         return response()->json($messages);
     }
 
-
     public function markAsRead(Request $request)
-{
-    $authId = Auth::id();
+    {
+        $authId = Auth::id();
 
-    // Marcar como leídos todos los mensajes enviados por $request->sender_id a $authId
-    Message::where('sender_id', $request->sender_id)
-           ->where('recipient_id', $authId)
-           ->where('read', false)
-           ->update(['read' => true]);
+        $updated = Message::where('sender_id', $request->sender_id)
+            ->where('recipient_id', $authId)
+            ->where('read', false)
+            ->update(['read' => true]);
 
-    return response()->json(['success' => true, 'message' => 'Mensajes marcados como leídos']);
-}
+        Log::channel('peliculas')->info('Mensajes marcados como leídos', [
+            'auth_user_id' => $authId,
+            'from_user_id' => $request->sender_id,
+            'mensajes_actualizados' => $updated,
+            'timestamp' => now()->toDateTimeString()
+        ]);
 
-public function ping()
-{
-    $user = Auth::user();
-    Cache::put('user-is-online-' . $user->id, true, now()->addMinutes(2));
-    return response()->noContent();
-}
+        return response()->json(['success' => true, 'message' => 'Mensajes marcados como leídos']);
+    }
 
+    public function ping()
+    {
+        $user = Auth::user();
+        Cache::put('user-is-online-' . $user->id, true, now()->addMinutes(2));
 
-public function isOnline($id)
-{
-    return response()->json([
-        'is_online' => Cache::has('user-is-online-' . $id)
-    ]);
-}
+        Log::channel('peliculas')->info('Ping de usuario activo', [
+            'user_id' => $user->id,
+            'timestamp' => now()->toDateTimeString()
+        ]);
 
+        return response()->noContent();
+    }
 
+    public function isOnline($id)
+    {
+        $isOnline = Cache::has('user-is-online-' . $id);
+
+        Log::channel('peliculas')->info('Consulta de estado online', [
+            'consultado_id' => $id,
+            'estado_online' => $isOnline,
+            'timestamp' => now()->toDateTimeString()
+        ]);
+
+        return response()->json([
+            'is_online' => $isOnline
+        ]);
+    }
 }

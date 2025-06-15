@@ -10,14 +10,17 @@ class ReviewController extends Controller
 {
     // Obtener todas las reseñas de una película (sin usar modelo Movie)
     public function index($id)
-    {
-        $reviews = Review::with('user') // Incluye la info del usuario que dejó la reseña
-                ->where('movie_id', $id)
-                ->latest()
-                ->get();
+{
+    Log::channel('peliculas')->info("Consultando reseñas para película ID $id");
 
-        return response()->json(['reviews' => $reviews]);
-    }
+    $reviews = Review::with('user')
+            ->where('movie_id', $id)
+            ->latest()
+            ->get();
+
+    return response()->json(['reviews' => $reviews]);
+}
+
 
     // Guardar una nueva reseña
     public function store(Request $request)

@@ -416,6 +416,36 @@ h3 {
   color: var(--accent-color);
 }
 
+.back-to-top {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 50px;
+  text-align: center;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  opacity: 0.9;
+  transition: all 0.3s ease;
+  width: 40px;
+  height: 40px;
+
+  /* Flexbox para centrar contenido */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.back-to-top:hover {
+  background-color: #0056b3;
+  opacity: 1;
+}
+
+
 @media (max-width: 768px) {
 
    header {

@@ -16,7 +16,7 @@ class PeopleController extends Controller
         $language = config('services.tmdb.language');
 
         $url = "$baseUrl/person/popular?language=$language&api_key=$apiKey&page=$page";
-        Log::channel('daily')->info("Obteniendo personas populares desde TMDB: $url");
+        Log::channel('peliculas')->info("Obteniendo personas populares desde TMDB: $url");
 
         $response = Http::get($url);
 
@@ -29,7 +29,7 @@ class PeopleController extends Controller
             ]);
         }
 
-        Log::channel('daily')->error('Error al obtener personas populares', [
+        Log::channel('peliculas')->error('Error al obtener personas populares', [
             'status' => $response->status(),
             'body' => $response->body(),
         ]);
@@ -47,7 +47,7 @@ class PeopleController extends Controller
         $language = config('services.tmdb.language');
 
         $url = "$baseUrl/person/$id?language=$language&api_key=$apiKey";
-        Log::channel('daily')->info("Obteniendo detalles de la persona ID $id desde TMDB: $url");
+        Log::channel('peliculas')->info("Obteniendo detalles de la persona ID $id desde TMDB: $url");
 
         $response = Http::get($url);
 
@@ -55,7 +55,7 @@ class PeopleController extends Controller
             return response()->json($response->json());
         }
 
-        Log::channel('daily')->error("Error al obtener detalles de la persona ID $id", [
+        Log::channel('peliculas')->error("Error al obtener detalles de la persona ID $id", [
             'status' => $response->status(),
             'body' => $response->body(),
         ]);
@@ -70,7 +70,7 @@ class PeopleController extends Controller
         $language = config('services.tmdb.language');
 
         $url = "$baseUrl/person/$id/combined_credits?language=$language&api_key=$apiKey";
-        Log::channel('daily')->info("Obteniendo créditos de la persona ID $id desde TMDB: $url");
+        Log::channel('peliculas')->info("Obteniendo créditos de la persona ID $id desde TMDB: $url");
 
         $response = Http::get($url);
 
@@ -78,7 +78,7 @@ class PeopleController extends Controller
             return response()->json($response->json());
         }
 
-        Log::channel('daily')->error("Error al obtener créditos de la persona ID $id", [
+        Log::channel('peliculas')->error("Error al obtener créditos de la persona ID $id", [
             'status' => $response->status(),
             'body' => $response->body(),
         ]);
@@ -87,38 +87,36 @@ class PeopleController extends Controller
     }
 
     public function searchPerson(Request $request)
-{
-    $query = $request->query('q');
+    {
+        $query = $request->query('q');
 
-    if (!$query || strlen($query) < 2) {
-        return response()->json(['results' => []]);
-    }
-
-    $apiKey = config('services.tmdb.api_key');
-    $baseUrl = config('services.tmdb.base_url');
-    $language = config('services.tmdb.language');
-
-    $url = "$baseUrl/search/person?language=$language&api_key=$apiKey&query=" . urlencode($query);
-
-    try {
-        $response = Http::get($url);
-
-        if ($response->successful()) {
-            return response()->json(['results' => $response->json()['results'] ?? []]);
+        if (!$query || strlen($query) < 2) {
+            return response()->json(['results' => []]);
         }
 
-        Log::channel('daily')->error('TMDB API failed', [
-            'url' => $url,
-            'status' => $response->status(),
-            'body' => $response->body()
-        ]);
+        $apiKey = config('services.tmdb.api_key');
+        $baseUrl = config('services.tmdb.base_url');
+        $language = config('services.tmdb.language');
 
-        return response()->json(['message' => 'Error consultando TMDB'], 500);
-    } catch (\Exception $e) {
-        Log::channel('daily')->error('Error buscando persona', ['error' => $e->getMessage()]);
-        return response()->json(['message' => 'Error interno del servidor'], 500);
+        $url = "$baseUrl/search/person?language=$language&api_key=$apiKey&query=" . urlencode($query);
+
+        try {
+            $response = Http::get($url);
+
+            if ($response->successful()) {
+                return response()->json(['results' => $response->json()['results'] ?? []]);
+            }
+
+            Log::channel('peliculas')->error('TMDB API failed', [
+                'url' => $url,
+                'status' => $response->status(),
+                'body' => $response->body()
+            ]);
+
+            return response()->json(['message' => 'Error consultando TMDB'], 500);
+        } catch (\Exception $e) {
+            Log::channel('peliculas')->error('Error buscando persona', ['error' => $e->getMessage()]);
+            return response()->json(['message' => 'Error interno del servidor'], 500);
+        }
     }
-}
-
-
 }

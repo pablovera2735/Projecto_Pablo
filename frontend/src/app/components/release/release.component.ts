@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
@@ -13,6 +13,7 @@ export class ReleaseComponent implements OnInit {
   userName: string = '';
   profilePhoto: string = 'assets/img/Perfil_Inicial.jpg';
   searchTerm: string = '';
+  showBackToTop: boolean = false;
   suggestions: any[] = [];
   notifications: any[] = [];
   showDropdown: boolean = false;
@@ -99,6 +100,15 @@ export class ReleaseComponent implements OnInit {
     }
     return 'assets/img/no-image.png';
   }
+
+  @HostListener('window:scroll', [])
+onWindowScroll(): void {
+  this.showBackToTop = window.pageYOffset > 300;
+}
+
+scrollToTop(): void {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
   goToSearchResults(): void {
     this.router.navigate(['/busqueda'], {

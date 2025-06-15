@@ -205,6 +205,10 @@ header .search-form input:focus {
   border: 1px solid #f5c2c7;
 }
 
+#white{
+  color: white;
+}
+
 
 
 body {
