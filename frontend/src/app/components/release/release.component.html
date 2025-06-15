@@ -99,10 +99,13 @@
 <div class="estrenos-container">
   <h2>Películas Recientes Recomendadas</h2>
 
-  <div *ngIf="loading">Cargando estrenos...</div>
-  <div *ngIf="!loading && recommendedReleases.length === 0">
-    <p>No se encontraron estrenos para el mes y año seleccionados.</p>
-  </div>
+  <div *ngIf="loading" class="text-center mt-4">
+  <img src="../../../assets/loading.gif" alt="Cargando estrenos..." width="60">
+</div>
+
+<div *ngIf="!loading && recommendedReleases.length === 0" class="text-center mt-3">
+  <p>No se encontraron estrenos para el mes y año seleccionados.</p>
+</div>
 
   <div class="movie-grid">
     <div
