@@ -73,12 +73,16 @@
 
 <main class="container mt-5">
 
-<input
-  type="text"
-  class="search-input"
-  placeholder="Buscar en foros..."
-  [(ngModel)]="forumSearchTerm"
-  (keyup)="onForumSearchChange()" />
+
+  <div class="mb-4">
+      <input
+        type="text"
+        [(ngModel)]="forumSearchTerm"
+        (input)="onForumSearchChange()"
+        placeholder="Buscar en foros..."
+        class="form-control"
+      />
+    </div>
 
 <!-- 🔁 Resultados si hay búsqueda -->
 <div *ngIf="isSearching">
