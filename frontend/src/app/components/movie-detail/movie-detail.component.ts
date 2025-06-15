@@ -283,7 +283,7 @@ export class MovieDetailComponent implements OnInit {
       this.userName = user.name;
       this.profilePhoto = user.profile_photo
         ? 'http://filmania.ddns.net:8000/' + user.profile_photo
-        : 'assets/img/Perfil_Inicial.jpg';
+        : 'http://filmania.ddns.net:8000/Perfil_Inicial.jpg';
     } else {
       this.userName = 'Invitado';
     }

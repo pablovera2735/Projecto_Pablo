@@ -54,7 +54,7 @@ export class UserProfileComponent implements OnInit {
       this.userName = user.name;
       this.profilePhoto = user.profile_photo
         ? 'http://filmania.ddns.net:8000/' + user.profile_photo
-        : 'assets/img/Perfil_Inicial.jpg';
+        : 'http://filmania.ddns.net:8000/Perfil_Inicial.jpg';
 
       const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
@@ -76,7 +76,7 @@ export class UserProfileComponent implements OnInit {
         this.userName = response.name;
         this.profilePhoto = response.profile_photo
           ? 'http://filmania.ddns.net:8000/' + response.profile_photo
-          : 'assets/img/Perfil_Inicial.jpg';
+          : 'http://filmania.ddns.net:8000/Perfil_Inicial.jpg';
         this.comments = response.comments;
         // Puedes cargar otras cosas específicas del usuario aquí
       });
@@ -222,7 +222,7 @@ export class UserProfileComponent implements OnInit {
   getFriendPhoto(friend: any): string {
     return friend.profile_photo
       ? `http://filmania.ddns.net:8000/${friend.profile_photo}`
-      : 'assets/img/Perfil_Inicial.jpg';
+      : 'http://filmania.ddns.net:8000/Perfil_Inicial.jpg';
   }
 
   selectTab(tab: string): void {
@@ -271,23 +271,22 @@ export class UserProfileComponent implements OnInit {
   }
 
   deletePhoto(): void {
-    this.showPhotoMenu = false;
+  this.showPhotoMenu = false;
 
-    const token = sessionStorage.getItem('token');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
+  const token = sessionStorage.getItem('token');
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`
+  });
 
-    this.http.delete<any>('http://filmania.ddns.net:8000/api/profile/delete-photo', { headers })
-      .subscribe(response => {
-        if (response.profile_photo) {
-          this.profilePhoto = 'assets/img/Perfil_Inicial.jpg';
+  this.http.delete<any>('http://filmania.ddns.net:8000/api/profile/delete-photo', { headers })
+    .subscribe(() => {
+      // Forzamos la imagen predeterminada
+      this.profilePhoto = 'http://filmania.ddns.net:8000/Perfil_Inicial.jpg';
 
       const user = this.authService.getUser();
       user.profile_photo = null;
       sessionStorage.setItem('user', JSON.stringify(user));
-    }
-  });
+    });
 }
 
 goToFriendProfile(friendId: number): void {

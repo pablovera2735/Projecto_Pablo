@@ -92,7 +92,7 @@ export class MovieForumComponent implements OnInit {
     this.userName = user.name;
     this.profilePhoto = user.profile_photo
       ? 'http://filmania.ddns.net:8000/' + user.profile_photo
-      : 'assets/img/Perfil_Inicial.jpg';
+      : 'http://filmania.ddns.net:8000/Perfil_Inicial.jpg';
 
     // Verifica si el usuario tiene el foro bloqueado temporalmente
     const ahora = new Date();

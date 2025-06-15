@@ -59,7 +59,7 @@ export class UserPublicProfileComponent implements OnInit {
           this.userName = response.name;
           this.profilePhoto = response.profile_photo
             ? `http://filmania.ddns.net:8000/${response.profile_photo}`
-            : 'assets/img/Perfil_Inicial.jpg';
+            : 'http://filmania.ddns.net:8000/Perfil_Inicial.jpg';
           this.comments = response.comments || [];
           this.favoriteMovies = response.favorites || [];
           this.friends = response.friends || [];
@@ -180,7 +180,7 @@ export class UserPublicProfileComponent implements OnInit {
   getFriendPhoto(friend: any): string {
     return friend.profile_photo
       ? `http://filmania.ddns.net:8000/${friend.profile_photo}`
-      : 'assets/img/Perfil_Inicial.jpg';
+      : 'http://filmania.ddns.net:8000/Perfil_Inicial.jpg';
   }
 
   goBack(): void {

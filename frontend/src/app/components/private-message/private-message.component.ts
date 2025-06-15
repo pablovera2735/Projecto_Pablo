@@ -41,23 +41,28 @@ export class PrivateMessageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.currentUserId = this.authService.getCurrentUserId();
+  this.currentUserId = this.authService.getCurrentUserId();
 
-    this.route.paramMap.subscribe(params => {
-      const id = params.get('userId');
-      if (id) {
-        this.userId = id;
-        this.loadRecipientName();
-        this.loadMessages();
-        this.checkIfRecipientOnline();
+  this.route.paramMap.subscribe(params => {
+    const id = params.get('userId');
+    if (id) {
+      this.userId = id;
+      this.loadRecipientName();
+      this.loadMessages();
+      this.checkIfRecipientOnline();
 
-        // Verifica si está online cada 30s
-        setInterval(() => this.checkIfRecipientOnline(), 30000);
-      }
-    });
+      // Verifica si está online cada 30s
+      /*setInterval(() => this.checkIfRecipientOnline(), 30000);*/
 
-    this.startPing(); // Marca al usuario actual como online cada minuto
-  }
+      setInterval(() => this.checkIfRecipientOnline(), 5000);
+
+      // 🔁 Auto-reload mensajes cada 5s
+      setInterval(() => this.loadMessages(), 5000);
+    }
+  });
+
+  this.startPing();
+}
 
   isAuthenticated(): boolean {
     return this.authService.isLoggedIn();
