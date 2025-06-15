@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -20,7 +19,10 @@ export class UserPublicProfileComponent implements OnInit {
   selectedTab: string = 'comments';
   isOwnProfile: boolean = false;
   isFriend: boolean = false;
-  isPending: boolean = false;  // Nueva variable para estado pendiente
+  isPending: boolean = false;
+
+  alertMessage: string = '';
+  alertType: 'alert-success' | 'alert-error' = 'alert-success';
 
   constructor(
     private route: ActivatedRoute,
@@ -39,9 +41,18 @@ export class UserPublicProfileComponent implements OnInit {
         this.loadComments();
         this.loadFavoriteMovies();
         this.loadWatchedMovies();
-        this.loadFriends(); // Carga amigos y checa estado
+        this.loadFriends();
       }
     });
+  }
+
+  showAlert(message: string, type: 'success' | 'error' = 'success'): void {
+    this.alertMessage = message;
+    this.alertType = type === 'success' ? 'alert-success' : 'alert-error';
+
+    setTimeout(() => {
+      this.alertMessage = '';
+    }, 4000);
   }
 
   checkIfOwnProfile(): void {
@@ -51,6 +62,8 @@ export class UserPublicProfileComponent implements OnInit {
 
   loadUserProfile(): void {
     const token = sessionStorage.getItem('token');
+    if (!token) return;
+
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
     this.http.get<any>(`http://filmania.ddns.net:8000/api/user/${this.userId}/public-profile`, { headers })
@@ -67,54 +80,86 @@ export class UserPublicProfileComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error al cargar perfil público:', err);
+          this.showAlert('Error al cargar perfil público', 'error');
         }
       });
   }
 
   sendPrivateMessage(): void {
-  this.router.navigate(['/messages', this.userId]);
-}
+    this.router.navigate(['/messages', this.userId]);
+  }
 
   loadComments(): void {
     const token = sessionStorage.getItem('token');
+    if (!token) return;
+
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
     this.http.get<any[]>(`http://filmania.ddns.net:8000/api/profile-comments/${this.userId}`, { headers })
-      .subscribe(response => {
-        this.comments = response;
+      .subscribe({
+        next: response => {
+          this.comments = response;
+        },
+        error: err => {
+          console.error('Error al cargar comentarios:', err);
+          this.showAlert('Error al cargar comentarios', 'error');
+        }
       });
   }
 
   loadFavoriteMovies(): void {
     const token = sessionStorage.getItem('token');
+    if (!token) return;
+
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
     this.http.get<any>(`http://filmania.ddns.net:8000/api/favorites/${this.userId}`, { headers })
-      .subscribe(response => {
-        this.favoriteMovies = response.favorites || [];
+      .subscribe({
+        next: response => {
+          this.favoriteMovies = response.favorites || [];
+        },
+        error: err => {
+          console.error('Error al cargar favoritas:', err);
+          this.showAlert('Error al cargar favoritas', 'error');
+        }
       });
   }
 
   loadWatchedMovies(): void {
     const token = sessionStorage.getItem('token');
+    if (!token) return;
+
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
     this.http.get<any>(`http://filmania.ddns.net:8000/api/watched/${this.userId}`, { headers })
-      .subscribe(response => {
-        this.watchedMovies = response.watchedMovies || [];
+      .subscribe({
+        next: response => {
+          this.watchedMovies = response.watchedMovies || [];
+        },
+        error: err => {
+          console.error('Error al cargar películas vistas:', err);
+          this.showAlert('Error al cargar películas vistas', 'error');
+        }
       });
   }
 
   loadFriends(): void {
     const token = sessionStorage.getItem('token');
+    if (!token) return;
+
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    // Carga lista de amigos confirmados
     this.http.get<any>(`http://filmania.ddns.net:8000/api/friends/${this.userId}`, { headers })
-      .subscribe(response => {
-        this.friends = response || [];
-        this.checkIfFriend();
-        this.checkIfPending();
+      .subscribe({
+        next: response => {
+          this.friends = response || [];
+          this.checkIfFriend();
+          this.checkIfPending();
+        },
+        error: err => {
+          console.error('Error al cargar amigos:', err);
+          this.showAlert('Error al cargar amigos', 'error');
+        }
       });
   }
 
@@ -135,16 +180,20 @@ export class UserPublicProfileComponent implements OnInit {
     }
 
     const token = sessionStorage.getItem('token');
+    if (!token) return;
+
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
-    // Aquí necesitas un endpoint en tu backend que verifique si hay solicitud pendiente
     this.http.get<any>(
-      `http://filmania.ddns.net:8000/api/friend-requests/status?user1=${currentUser.id}&user2=${this.userId}`, 
+      `http://filmania.ddns.net:8000/api/friend-requests/status?user1=${currentUser.id}&user2=${this.userId}`,
       { headers }
-    ).subscribe(response => {
-      this.isPending = response.pending || false;
-    }, error => {
-      this.isPending = false;
+    ).subscribe({
+      next: response => {
+        this.isPending = response.pending || false;
+      },
+      error: () => {
+        this.isPending = false;
+      }
     });
   }
 
@@ -152,6 +201,8 @@ export class UserPublicProfileComponent implements OnInit {
     if (this.isOwnProfile || this.isPending || this.isFriend) return;
 
     const token = sessionStorage.getItem('token');
+    if (!token) return;
+
     const headers = new HttpHeaders({ Authorization: `Bearer ${token}` });
 
     const body = { friend_id: this.userId };
@@ -159,11 +210,11 @@ export class UserPublicProfileComponent implements OnInit {
     this.http.post('http://filmania.ddns.net:8000/api/friends', body, { headers })
       .subscribe({
         next: () => {
-          alert('Solicitud de amistad enviada');
+          this.showAlert('Solicitud de amistad enviada', 'success');
           this.isPending = true;
         },
         error: () => {
-          alert('Error al enviar solicitud de amistad');
+          this.showAlert('Error al enviar solicitud de amistad', 'error');
         }
       });
   }
@@ -171,10 +222,22 @@ export class UserPublicProfileComponent implements OnInit {
   selectTab(tab: string): void {
     this.selectedTab = tab;
 
-    if (tab === 'favoritas') this.loadFavoriteMovies();
-    else if (tab === 'vistas') this.loadWatchedMovies();
-    else if (tab === 'friends') this.loadFriends();
-    else if (tab === 'comments') this.loadComments();
+    switch(tab) {
+      case 'favoritas':
+        this.loadFavoriteMovies();
+        break;
+      case 'vistas':
+        this.loadWatchedMovies();
+        break;
+      case 'friends':
+        this.loadFriends();
+        break;
+      case 'comments':
+        this.loadComments();
+        break;
+      default:
+        break;
+    }
   }
 
   getFriendPhoto(friend: any): string {

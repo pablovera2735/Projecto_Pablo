@@ -145,6 +145,61 @@
     margin-bottom: 1rem;
   }
 
+  .pending-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background-color: #1e1e1e;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1rem;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.05);
+}
+
+.pending-card .friend-photo {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+}
+
+.pending-card .friend-name {
+  flex-grow: 1;
+  font-weight: bold;
+  font-size: 1rem;
+  color: white;
+}
+
+.accept-btn,
+.reject-btn {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.accept-btn {
+  background-color: #28a745;
+  color: white;
+}
+
+.reject-btn {
+  background-color: #dc3545;
+  color: white;
+  margin-left: 0.5rem;
+}
+
+.accept-btn:hover {
+  background-color: #218838;
+}
+
+.reject-btn:hover {
+  background-color: #c82333;
+}
+
   .favorites-container {
   width: 100%;
   overflow-x: auto; /* Para scroll horizontal si es necesario */
