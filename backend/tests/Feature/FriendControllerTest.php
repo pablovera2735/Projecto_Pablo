@@ -24,6 +24,6 @@ class FriendControllerTest extends TestCase
         ]);
 
         $response->assertStatus(200)
-                 ->assertJson(['message' => 'Amigo agregado']);
+                 ->assertJson(['message' => 'Solicitud de amistad enviada']);
     }
 }

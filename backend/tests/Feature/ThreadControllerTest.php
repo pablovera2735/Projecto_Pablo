@@ -13,6 +13,6 @@ class ThreadControllerTest extends TestCase
     {
         $response = $this->getJson('/api/threads/555');
         $response->assertStatus(200)
-                 ->assertJsonPath('movie_id', 555);
+                 ->assertJsonPath('movie_id', '555');
     }
 }

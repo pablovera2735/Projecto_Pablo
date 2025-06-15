@@ -22,7 +22,8 @@ class FavoriteControllerTest extends TestCase
             'title' => 'Peli test'
         ]);
 
-        $response->assertStatus(200)
-                 ->assertJsonPath('movie_id', 100);
+        $response->assertStatus(201)
+         ->assertJsonPath('movie_id', 100);
+
     }
 }
